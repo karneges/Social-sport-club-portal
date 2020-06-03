@@ -3,13 +3,13 @@
     "node_modules/codelyzer"
   ],
   "rules": {
-    "trailing-comma": [
-      true,
-      {
-        "multiline": "always",
-        "singleline": "never"
-      }
-    ],
+//    "trailing-comma": [
+//      true,
+//      {
+//        "multiline": "always",
+//        "singleline": "never"
+//      }
+//    ],
     "arrow-return-shorthand": true,
     "callable-types": true,
     "class-name": true,
@@ -105,13 +105,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "ngx",
+      "app",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "ngx",
+      "app",
       "kebab-case"
     ],
     "ban": [
