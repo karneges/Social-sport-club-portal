@@ -73,10 +73,10 @@
       "single"
     ],
     "radix": true,
-    "semicolon": [
-      true,
-      "always"
-    ],
+//    "semicolon": [
+//      true,
+//      "always"
+//    ],
     "triple-equals": [
       true,
       "allow-null-check"
@@ -105,13 +105,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "app",
+      "ngx",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "app",
+      "ngx",
       "kebab-case"
     ],
     "ban": [
