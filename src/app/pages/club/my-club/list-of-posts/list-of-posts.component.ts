@@ -1,17 +1,24 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post } from '../../models/post.model';
 
 @Component({
   selector: 'ngx-list-of-posts',
-  templateUrl: './list-of-posts.component.html',
-  styleUrls: ['./list-of-posts.component.scss']
+  templateUrl: 'list-of-posts.component.html',
+  styleUrls: ['list-of-posts.component.scss'],
 })
 export class ListOfPostsComponent implements OnInit {
-  @Input() posts$: Observable<Post[]>
-  constructor() { }
+
+ @Input() posts$: Observable<Post[]>
+  @Output() loadNextPage = new EventEmitter()
+
+
+  constructor() {
+  }
+  loadNext(cardData) {
+    this.loadNextPage.emit()
+  }
 
   ngOnInit(): void {
   }
-
 }
