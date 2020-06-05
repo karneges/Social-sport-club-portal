@@ -5,6 +5,10 @@
 // material themes
 @import './material/material-dark';
 @import './material/material-light';
+@import "~quill/dist/quill.core.css";
+@import "~quill/dist/quill.snow.css";
+@import "~quill/dist/quill.bubble.css";
+
 
 $nb-themes: nb-register-theme((
   layout-padding-top: 2.25rem,
