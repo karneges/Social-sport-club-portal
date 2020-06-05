@@ -23,6 +23,7 @@ import {
   LayoutDirectionSwitcherComponent,
   SearchInputComponent,
   SwitcherComponent,
+  TinyMCEComponent
 } from './components';
 import {
   CapitalizePipe,
@@ -66,6 +67,7 @@ const COMPONENTS = [
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
+  TinyMCEComponent
 ];
 const PIPES = [
   CapitalizePipe,
