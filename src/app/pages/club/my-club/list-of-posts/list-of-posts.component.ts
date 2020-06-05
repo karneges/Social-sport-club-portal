@@ -12,7 +12,12 @@ export class ListOfPostsComponent implements OnInit {
  @Input() posts$: Observable<Post[]>
   @Output() loadNextPage = new EventEmitter()
 
-
+  firstCard = {
+    news: [],
+    placeholders: [],
+    loading: false,
+    pageToLoadNext: 1,
+  };
   constructor() {
   }
   loadNext(cardData) {

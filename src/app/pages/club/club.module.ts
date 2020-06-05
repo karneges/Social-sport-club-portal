@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MyClubComponent } from './my-club/my-club.component';
 import { ThemeModule } from '../../@theme/theme.module';
-import { NbCardModule, NbListModule } from '@nebular/theme';
+import { NbCardModule, NbFormFieldModule, NbIconModule, NbInputModule, NbListModule } from '@nebular/theme';
 import { StoreModule } from '@ngrx/store';
 import * as fromClub from './reducers';
 import { EffectsModule } from '@ngrx/effects';
@@ -15,6 +15,7 @@ import { Post } from './models/post.model';
 import { BannerOfClubComponent } from './my-club/banner-of-club/banner-of-club.component';
 import { NewsPostComponent } from './my-club/list-of-posts/news-post/news-post.component';
 import { NewsPostPlaceholderComponent } from './my-club/list-of-posts/news-post-placeholder/news-post-placeholder.component';
+import { AddPostComponent } from './my-club/add-post/add-post.component';
 
 
 const entityMetadata: EntityMetadataMap = {
@@ -30,7 +31,8 @@ const entityMetadata: EntityMetadataMap = {
     , ListOfPostsComponent,
     BannerOfClubComponent,
     NewsPostComponent,
-    NewsPostPlaceholderComponent],
+    NewsPostPlaceholderComponent,
+    AddPostComponent],
   imports: [
     CommonModule,
     ThemeModule,
@@ -38,6 +40,9 @@ const entityMetadata: EntityMetadataMap = {
     StoreModule.forFeature(fromClub.clubFeatureKey, fromClub.clubReducer),
     EffectsModule.forFeature([ClubEffects]),
     NbListModule,
+    NbFormFieldModule,
+    NbIconModule,
+    NbInputModule,
   ],
   exports: [MyClubComponent],
   providers: [PostEntityService, PostDataService]
