@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from './login/login.component';
 import { NbAuthModule } from '@nebular/auth';
-import { NbCardModule, NbLayoutModule } from '@nebular/theme';
+import { NbButtonModule, NbCardModule, NbCheckboxModule, NbInputModule, NbLayoutModule } from '@nebular/theme';
 
 const COMPONENTS = [LoginComponent]
 
@@ -12,7 +12,10 @@ const COMPONENTS = [LoginComponent]
     CommonModule,
     NbAuthModule,
     NbCardModule,
-    NbLayoutModule
+    NbLayoutModule,
+    NbCheckboxModule,
+    NbInputModule,
+    NbButtonModule
   ],
   exports: COMPONENTS
 })
