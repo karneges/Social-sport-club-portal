@@ -11,7 +11,6 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Post } from '../../pages/club/models/post.model';
 import { Blur, QuillEditorComponent } from 'ngx-quill';
-import { $e } from 'codelyzer/angular/styles/chars';
 
 @Component({
   selector: 'ngx-editor',
@@ -60,11 +59,14 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.postForm.reset()
   }
 
-  onBlurEmit($event: Blur) {
+  onBlurEmit() {
     this.onBlur.emit()
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.editor.quillEditor.root.focus(), 150)
+    setTimeout(() => {
+      this.editor.doc.activeElement.addEventListener('click', () => this.onBlurEmit())
+      this.editor.quillEditor.root.focus()
+    }, 150)
   }
 }

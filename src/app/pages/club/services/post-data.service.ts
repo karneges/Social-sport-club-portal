@@ -38,5 +38,12 @@ export class PostDataService extends DefaultDataService<Post> {
       )
   }
 
+  delete(key: number | string): Observable<number | string> {
+    return this.http.delete<{ message: string }>(`${ environment.API_BASE_URL }/clubs/${ this.clubId }/posts/${ key }`)
+      .pipe(
+        map(res => res.message)
+      )
+  }
+
 
 }

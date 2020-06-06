@@ -6,6 +6,7 @@ import { PagesComponent } from './pages.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { PagesRoutingModule } from './pages-routing.module';
 import { ClubModule } from './club/club.module';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { ClubModule } from './club/club.module';
     ThemeModule,
     NbMenuModule,
     DashboardModule,
-    ClubModule
+    ClubModule,
+    AuthModule
   ],
   declarations: [
     PagesComponent,

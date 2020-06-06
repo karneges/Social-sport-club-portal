@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
 import { MyClubComponent } from './club/my-club/my-club.component';
+import { LoginComponent } from './auth/login/login.component';
 
 const routes: Routes = [{
   path: '',
@@ -11,6 +12,10 @@ const routes: Routes = [{
     {
       path: 'general',
       component: MyClubComponent
+    },
+    {
+      path: 'login',
+      component: LoginComponent
     },
     { path: '', redirectTo: 'general', pathMatch: 'full' },
   ],

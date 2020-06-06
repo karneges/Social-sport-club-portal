@@ -16,7 +16,9 @@ export class AddPostComponent implements OnInit {
   }
 
   onSubmitPost(formValue) {
-    this.postEntityService.add(formValue).subscribe()
+    this.postEntityService.add(formValue).subscribe(res => {
+      this.changeEditorMode()
+    })
   }
 
   ngOnInit(): void {

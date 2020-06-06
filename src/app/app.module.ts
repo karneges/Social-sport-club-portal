@@ -25,6 +25,7 @@ import { QuillModule } from 'ngx-quill';
 import { modules } from '../utils/quill-settings';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from './shared/shared.module';
+import { NbAuthModule } from '@nebular/auth';
 
 @NgModule({
   declarations: [AppComponent],
@@ -43,6 +44,7 @@ import { SharedModule } from './shared/shared.module';
     NbDialogModule.forRoot(),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
+    NbAuthModule.forRoot(),
     NbChatModule.forRoot({
       messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
     }),

@@ -29,6 +29,7 @@ import { QuillModule } from 'ngx-quill';
 import { ReactiveFormsModule } from '@angular/forms';
 import { dateComparer } from '../../../utils/utils';
 import { SharedModule } from '../../shared/shared.module';
+import { NbAuthModule } from '@nebular/auth';
 
 
 const entityMetadata: EntityMetadataMap = {
@@ -62,6 +63,7 @@ const entityMetadata: EntityMetadataMap = {
     NbChatModule,
     NbButtonModule,
     ReactiveFormsModule,
+    NbAuthModule,
   ],
   exports: [MyClubComponent],
   providers: [PostEntityService, PostDataService]

@@ -36,4 +36,7 @@ export class NewsPostComponent {
     const updatedPost = {...this.post, ...value}
     this.postEntityService.update(updatedPost).subscribe()
   }
+  onDeletePost() {
+    this.postEntityService.delete(this.post)
+  }
 }

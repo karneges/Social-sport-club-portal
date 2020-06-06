@@ -6,10 +6,16 @@
       <p class="mb-0"> Public date: {{post.publicationDate | date: 'medium'}}</p>
     </div>
   </div>
-  <button nbButton ghost status="warning" (click)="onEdit()">
-    <nb-icon icon="{{'edit-2-outline'}}"></nb-icon>
-    Edit Post
-  </button>
+  <div class="d-flex flex-column">
+    <button nbButton ghost status="danger" (click)="onDeletePost()">
+      <nb-icon icon="{{'trash-2-outline'}}"></nb-icon>
+      Delete Post
+    </button>
+    <button nbButton ghost status="warning" (click)="onEdit()">
+      <nb-icon icon="{{'edit-2-outline'}}"></nb-icon>
+      Edit Post
+    </button>
+  </div>
 </div>
 <ng-container *ngIf="!isEditMode; else editor">
   <article class="ql-editor" #articlePost [ngClass]="!showMore? 'single-post__overflow-hidden': 'single-post' ">
