@@ -9,8 +9,9 @@ import { Post } from '../../models/post.model';
 })
 export class ListOfPostsComponent implements OnInit {
 
- @Input() posts$: Observable<Post[]>
+  @Input() posts$: Observable<Post[]>
   @Output() loadNextPage = new EventEmitter()
+  showMore = false
 
   firstCard = {
     news: [],
@@ -18,12 +19,15 @@ export class ListOfPostsComponent implements OnInit {
     loading: false,
     pageToLoadNext: 1,
   };
+
   constructor() {
   }
+
   loadNext(cardData) {
     this.loadNextPage.emit()
   }
 
   ngOnInit(): void {
   }
+
 }

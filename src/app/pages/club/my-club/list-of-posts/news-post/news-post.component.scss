@@ -1,0 +1,46 @@
+@import '../../../../../@theme/styles/themes';
+:host {
+  height: 100%;
+  width: 100%;
+
+  .single-post {
+    transition: all 1s cubic-bezier(.44, .99, .48, 1);
+    max-height: 600px;
+    overflow: auto;
+
+    &__overflow-hidden {
+      max-height: 100px;
+      overflow: hidden;
+      transition: all 1s cubic-bezier(.44, .99, .48, 1);
+    }
+  }
+
+}
+
+
+@include nb-install-component {
+
+  .author {
+    font-weight: 400;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    &_avatar {
+      width: 30px;
+      height: 30px;
+      border-radius:50% ;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background-color: nb-theme(color-primary-500);
+    }
+    //&_name {
+    //  margin-left: 20px;
+    //  margin-bottom: 0;
+    //}
+  }
+}
+
+

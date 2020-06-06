@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { MyClubComponent } from './my-club/my-club.component';
 import { ThemeModule } from '../../@theme/theme.module';
 import {
-    NbButtonModule,
-    NbCardModule,
-    NbChatModule,
-    NbFormFieldModule,
-    NbIconModule,
-    NbInputModule,
-    NbListModule
+  NbButtonModule,
+  NbCardModule,
+  NbChatModule,
+  NbFormFieldModule,
+  NbIconModule,
+  NbInputModule,
+  NbListModule
 } from '@nebular/theme';
 import { StoreModule } from '@ngrx/store';
 import * as fromClub from './reducers';
@@ -26,11 +26,15 @@ import { NewsPostPlaceholderComponent } from './my-club/list-of-posts/news-post-
 import { AddPostComponent } from './my-club/add-post/add-post.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { QuillModule } from 'ngx-quill';
+import { ReactiveFormsModule } from '@angular/forms';
+import { dateComparer } from '../../../utils/utils';
+import { SharedModule } from '../../shared/shared.module';
 
 
 const entityMetadata: EntityMetadataMap = {
   Posts: {
-    selectId: (post: Post) => post._id
+    selectId: (post: Post) => post._id,
+    sortComparer: dateComparer
   }
 }
 
@@ -43,20 +47,22 @@ const entityMetadata: EntityMetadataMap = {
     NewsPostComponent,
     NewsPostPlaceholderComponent,
     AddPostComponent],
-    imports: [
-        CommonModule,
-        ThemeModule,
-        NbCardModule,
-        StoreModule.forFeature(fromClub.clubFeatureKey, fromClub.clubReducer),
-        EffectsModule.forFeature([ClubEffects]),
-        NbListModule,
-        NbFormFieldModule,
-        NbIconModule,
-        NbInputModule,
-        QuillModule,
-        NbChatModule,
-        NbButtonModule,
-    ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    ThemeModule,
+    NbCardModule,
+    StoreModule.forFeature(fromClub.clubFeatureKey, fromClub.clubReducer),
+    EffectsModule.forFeature([ClubEffects]),
+    NbListModule,
+    NbFormFieldModule,
+    NbIconModule,
+    NbInputModule,
+    QuillModule,
+    NbChatModule,
+    NbButtonModule,
+    ReactiveFormsModule,
+  ],
   exports: [MyClubComponent],
   providers: [PostEntityService, PostDataService]
 })

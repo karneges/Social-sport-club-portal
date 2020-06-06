@@ -1,19 +1,19 @@
-
-<div class="infinite-cards row">
-  <div class="col-md-12 col-lg-12 col-xxxl-12">
-    <nb-card size="medium" class="own-scroll">
+<!--<div class="infinite-cards row">-->
+<!--  <div class="col-md-12 col-lg-12 col-xxxl-12">-->
+    <nb-card class="own-scroll">
       <nb-card-header>Own Scroll</nb-card-header>
       <nb-list
         nbInfiniteList
         [threshold]="500"
         (bottomThreshold)="loadNext('')">
-        <nb-list-item *ngFor="let post of posts$ | async">
-          <ngx-news-post [post]="post"></ngx-news-post>
+        <nb-list-item class="overflow-hidden align-items-lg-start"
+                      *ngFor="let post of posts$ | async">
+          <ngx-single-post [post]="post"></ngx-single-post>
         </nb-list-item>
         <nb-list-item *ngFor="let _ of firstCard.placeholders">
           <ngx-news-post-placeholder></ngx-news-post-placeholder>
         </nb-list-item>
       </nb-list>
     </nb-card>
-  </div>
-
+<!--  </div>-->
+<!--</div>-->

@@ -1,4 +1,3 @@
-
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
@@ -23,7 +22,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { EntityDataModule } from '@ngrx/data';
 import { entityConfig } from './entity-metadata';
 import { QuillModule } from 'ngx-quill';
-import { modules } from '../utils';
+import { modules } from '../utils/quill-settings';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +33,7 @@ import { modules } from '../utils';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
+    SharedModule,
 
     ThemeModule.forRoot(),
 
@@ -41,8 +43,6 @@ import { modules } from '../utils';
     NbDialogModule.forRoot(),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
-    QuillModule.forRoot({ modules: modules
-    }),
     NbChatModule.forRoot({
       messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
     }),
@@ -50,6 +50,7 @@ import { modules } from '../utils';
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
     EffectsModule.forRoot([]),
     EntityDataModule.forRoot(entityConfig),
+    ReactiveFormsModule,
   ],
   bootstrap: [AppComponent],
 })

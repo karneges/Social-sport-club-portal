@@ -1,6 +1,9 @@
-<nb-card>
-<div class="bg-white">
-  <quill-editor ></quill-editor>
-</div>
-  <button nbButton> send post</button>
-</nb-card>
+
+  <nb-form-field *ngIf="editorIsHide ; else  editor">
+    <nb-icon nbPrefix icon="at-outline" pack="eva"></nb-icon>
+    <input type="text" nbInput fullWidth status="primary" placeholder="Add Post!" (click)="changeEditorMode()">
+  </nb-form-field>
+  <ng-template #editor>
+    <ngx-editor (submitForm)="onSubmitPost($event)" (onBlur)="changeEditorMode()"></ngx-editor>
+  </ng-template>
+

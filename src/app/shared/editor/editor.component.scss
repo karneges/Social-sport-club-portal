@@ -1,0 +1,10 @@
+:host::ng-deep {
+  button * {
+    outline-style:none;
+    box-shadow:none;
+    border-color:transparent;
+  }
+  .ql-editor *{
+    color: black;
+  }
+}

@@ -17,7 +17,6 @@ export const modules = {
 
     [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
     [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
     [{ 'color': ['black'] }, { 'background': ['black'] }],          // dropdown with defaults from theme
     [{ 'font': [] }],
     [{ 'align': [] }],
@@ -26,7 +25,7 @@ export const modules = {
 
     ['link', 'image', 'video']                         // link and image, video
   ],
-  imageResize: true
+  // imageResize: { readOnly: true }
 };
 
 

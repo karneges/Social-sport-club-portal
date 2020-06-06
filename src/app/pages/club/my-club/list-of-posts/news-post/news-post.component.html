@@ -1,4 +1,32 @@
-<article>
-  <h2>{{post.author}}</h2>
-  <p>{{post.content}}</p>
-</article>
+<div class="d-flex justify-content-between mr-1 mt-1">
+  <div class="author">
+    <div class="author_avatar">{{post.author | slice: 0:1}}</div>
+    <div class="d-flex flex-column ml-2">
+      <p class="mb-0"> Author: {{post.author}}</p>
+      <p class="mb-0"> Public date: {{post.publicationDate | date: 'medium'}}</p>
+    </div>
+  </div>
+  <button nbButton ghost status="warning" (click)="onEdit()">
+    <nb-icon icon="{{'edit-2-outline'}}"></nb-icon>
+    Edit Post
+  </button>
+</div>
+<ng-container *ngIf="!isEditMode; else editor">
+  <article class="ql-editor" #articlePost [ngClass]="!showMore? 'single-post__overflow-hidden': 'single-post' ">
+    <p #paragraphElement [innerHTML]="post.content"></p>
+  </article>
+  <div class="d-flex justify-content-between">
+    <button nbButton ghost status="primary" (click)="onShowMore()">
+      <nb-icon icon="{{!showMore? 'arrow-down-outline':'arrow-up-outline' }}"></nb-icon>
+      Show More
+    </button>
+    <button nbButton ghost status="danger" (click)="onLike()">
+      <nb-icon icon="{{'heart-outline'}}"></nb-icon>
+      {{post.likes}}
+    </button>
+  </div>
+</ng-container>
+<ng-template #editor>
+  <ngx-editor [initialValue]="post" (submitForm)="onEditPost($event)"></ngx-editor>
+</ng-template>
+

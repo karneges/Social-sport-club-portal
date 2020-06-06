@@ -1,0 +1,13 @@
+<!--<quill-editor [formControl]="formControlField"></quill-editor>-->
+
+
+<nb-card>
+  <form [formGroup]="postForm" (ngSubmit)="onSubmitPost()" class="flex-row">
+    <div class="bg-white">
+      <quill-editor #editor formControlName="content" (onBlur)="onBlurEmit($event)"></quill-editor>
+    </div>
+    <button nbButton [status]="'primary'" type="submit" class="w-100">Send post</button>
+  </form>
+
+</nb-card>
+
