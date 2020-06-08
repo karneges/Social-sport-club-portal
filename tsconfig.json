@@ -20,5 +20,6 @@
     "plugins": [
       { "name": "tslint-language-service"}
     ]
-  }
+  },
+  "exclude": ["node_modules"]
 }
