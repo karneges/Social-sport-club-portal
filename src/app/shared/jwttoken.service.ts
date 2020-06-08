@@ -9,24 +9,25 @@ import { AccessToken, AccessTokenResponse } from '../pages/auth/models/auth.mode
   providedIn: 'root'
 })
 export class JWTTokenService {
-  token$: BehaviorSubject<string>
+  token$: BehaviorSubject<AccessToken>
 
   constructor(private localStorageService: LocalStorageService, private http: HttpClient) {
   }
 
-  setToken(value: AccessToken ) {
+  setToken(value: AccessToken) {
     this.localStorageService.addItem('token', value)
   }
 
-  getToken(): Observable<string> {
-    return this.token$.asObservable().pipe(
-      switchMap(token => {
-        if (token) {
-          return token
-        }
-        return this.http.get<string>('url').pipe()
-      })
-    )
+  getToken(): Observable<AccessToken> {
+    return new Observable<AccessToken>(subscriber => {
+      const token: AccessToken = this.localStorageService.getField('token') as AccessToken
+      if (token) {
+        subscriber.next(token)
+        subscriber.complete()
+      } else {
+        subscriber.error('No Cached Token')
+      }
+    })
   }
 
 

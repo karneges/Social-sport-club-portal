@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { MENU_ITEMS } from './pages-menu';
+import { Store } from '@ngrx/store';
+import { AppState } from '../reducers';
+import { AuthActions } from './auth/auth.actions';
 
 @Component({
   selector: 'app-pages',
@@ -12,7 +15,14 @@ import { MENU_ITEMS } from './pages-menu';
     </ngx-one-column-layout>
   `,
 })
-export class PagesComponent {
+export class PagesComponent implements OnInit{
 
   menu = MENU_ITEMS;
+  constructor(private store: Store<AppState>) {
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(AuthActions.authByCachedToken())
+  }
+
 }

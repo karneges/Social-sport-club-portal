@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from './services/auth.service';
 import { AuthActions } from './auth.actions';
-import { distinct, filter, map, mergeMap, take, tap } from 'rxjs/operators';
+import { catchError, distinct, filter, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { AuthState } from './auth.reducer';
-import { CdkStep } from '@angular/cdk/stepper';
 import { AuthSelectors } from './auth.selectors';
 import { JWTTokenService } from '../../shared/jwttoken.service';
 
@@ -33,10 +32,6 @@ export class AuthEffects {
     )
   )
 
-  // getTokenFromLocalStorage$ = createEffect(() => this.actions$.pipe(
-  //   ofType(AuthActions.)
-  // ))
-
   loginUser$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.login),
     tap(cred => this.store.dispatch(AuthActions.accessTokenLoginPageRequest(cred))),
@@ -48,6 +43,23 @@ export class AuthEffects {
     map(({ token }) => AuthActions.userInformationRequest({ token }))
     )
   )
+
+  loginUserByCachedToken$ = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.authByCachedToken),
+    switchMap(() => this.jwtTokenService.getToken()),
+    map(({ token }) => {
+      if (token) {
+        return AuthActions.userInformationRequest({ token })
+      }
+    })
+    )
+  )
+
+  getToken$ = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.getAuthToken),
+    switchMap(() => this.jwtTokenService.getToken()),
+    map((token) => AuthActions.setAuthToken(token) )
+  ))
 
   constructor(private actions$: Actions, private authService: AuthService,
               private store: Store<AuthState>,

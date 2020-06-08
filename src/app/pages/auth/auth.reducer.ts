@@ -46,6 +46,12 @@ export const reducer = createReducer(
       user: action.user,
       loadingUser: false
     }
+  })),
+  on (AuthActions.setAuthToken, ((state, action) => {
+    return {
+      ...state,
+      token: { ...action }
+    }
   }))
 );
 

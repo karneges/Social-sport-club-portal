@@ -37,10 +37,8 @@ export class LocalStorageService {
 
   private searchItemInStorage(findKey): {} {
     const findValue: [string, string] = Object.entries(localStorage).find(([key, value]) => key.startsWith(findKey))
-    if (findValue[0].endsWith('[OBJ]')) {
+    if (findValue && findValue[0].endsWith('[OBJ]')) {
       return JSON.parse(findValue[1])
-    } else  {
-      throw Error('this is not Object!')
     }
   }
 }

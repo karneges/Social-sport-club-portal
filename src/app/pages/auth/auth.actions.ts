@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { User } from '../../models/user.model';
+import { AccessToken } from './models/auth.models';
 
 
 const login = createAction(
@@ -22,6 +23,18 @@ const accessTokenReceived = createAction(
 )
 
 
+const authByCachedToken = createAction(
+  '[Dashboard] Auth By Cached Token'
+)
+
+const getAuthToken = createAction(
+  '[Dashboard] Get Auth Token'
+)
+
+const setAuthToken = createAction(
+  '[Dashboard] Set Auth Token',
+  props<AccessToken>()
+)
 
 const userInformationRequest = createAction(
   '[Login Page] User Information Request',
@@ -45,7 +58,10 @@ export const AuthActions = {
   userInformationReceived,
   loginFailure,
   accessTokenRequest,
-  accessTokenLoginPageRequest
+  accessTokenLoginPageRequest,
+  authByCachedToken,
+  getAuthToken,
+  setAuthToken
 }
 
 
