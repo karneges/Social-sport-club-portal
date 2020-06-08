@@ -33,9 +33,9 @@ export class AuthEffects {
     )
   )
 
-  getTokenFromLocalStorage$ = createEffect(() => this.actions$.pipe(
-    ofType(AuthActions.)
-  ))
+  // getTokenFromLocalStorage$ = createEffect(() => this.actions$.pipe(
+  //   ofType(AuthActions.)
+  // ))
 
   loginUser$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.login),
