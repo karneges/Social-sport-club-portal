@@ -7,18 +7,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthActions } from '../../pages/auth/auth.actions';
 import { AuthSelectors } from '../../pages/auth/auth.selectors';
 import { catchError, distinct, filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { tokenize } from '@angular/compiler/src/ml_parser/lexer';
+import { JWTTokenService } from '../jwttoken.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(private store: Store<AuthState>,
               private activatedRoute: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private jwtTokenService: JWTTokenService) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (req.url.includes('token') && req.url.includes('login') && req.url.includes('register')) {
+    if (req.url.includes('token') || req.url.includes('login') || req.url.includes('register')) {
       return next.handle(req)
     }
 

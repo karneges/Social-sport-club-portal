@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from './services/auth.service';
 import { AuthActions } from './auth.actions';
-import { catchError, distinct, filter, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { catchError, distinct, filter, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { AuthState } from './auth.reducer';
 import { AuthSelectors } from './auth.selectors';
 import { JWTTokenService } from '../../shared/jwttoken.service';
+import { Router } from '@angular/router';
+import { EMPTY } from 'rxjs';
 
 
 @Injectable()
@@ -46,7 +48,12 @@ export class AuthEffects {
 
   loginUserByCachedToken$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.authByCachedToken),
-    switchMap(() => this.jwtTokenService.getToken()),
+    tap(() => this.store.dispatch(AuthActions.getAuthToken())),
+    switchMap(() => this.store.pipe(
+      select(AuthSelectors.token)
+    )),
+    filter(token => !!token),
+    take(1),
     map(({ token }) => {
       if (token) {
         return AuthActions.userInformationRequest({ token })
@@ -58,12 +65,18 @@ export class AuthEffects {
   getToken$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.getAuthToken),
     switchMap(() => this.jwtTokenService.getToken()),
-    map((token) => AuthActions.setAuthToken(token) )
+    distinct(({token}) => token),
+    map((token) => AuthActions.setAuthToken(token)),
+    catchError(err => {
+      this.router.navigate(['/pages/login'])
+      return EMPTY
+    })
   ))
 
   constructor(private actions$: Actions, private authService: AuthService,
               private store: Store<AuthState>,
-              private jwtTokenService: JWTTokenService) {
+              private jwtTokenService: JWTTokenService,
+              private router: Router) {
   }
 
 }

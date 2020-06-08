@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AccessToken, AccessTokenResponse } from '../models/auth.models';
 import { User } from '../../../models/user.model';
-import {  map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -24,7 +24,7 @@ export class AuthService {
     )
   }
 
-    getUserInformation(token: string) {
+  getUserInformation(token: string) {
     return this.http.get<{ success: boolean, user: User }>(`${ this.rootUrl }/me`,
       { headers: { 'Authorization': `Bearer ${ token }` } }).pipe(
       map(res => {
@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   getNewAccessTokenByRefreshToken(refreshToken: string) {
-    return this.http.get<AccessTokenResponse>(`${ this.rootUrl }/token`)
+    return this.http.get<AccessTokenResponse>(`${ this.rootUrl }/token`, { headers: { 'Authorization': `Bearer ${ refreshToken }` } })
   }
 
 
