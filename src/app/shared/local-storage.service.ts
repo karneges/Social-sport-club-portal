@@ -32,7 +32,7 @@ export class LocalStorageService {
   }
 
   removeField(key: string) {
-    localStorage.removeItem(key)
+    localStorage.removeItem(`${key}[OBJ]`)
   }
 
   private searchItemInStorage(findKey): {} {

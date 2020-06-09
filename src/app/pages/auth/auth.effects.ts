@@ -2,18 +2,21 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from './services/auth.service';
 import { AuthActions } from './auth.actions';
-import { catchError, distinct, filter, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, delay, distinct, filter, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { AuthState } from './auth.reducer';
 import { AuthSelectors } from './auth.selectors';
 import { JWTTokenService } from '../../shared/jwttoken.service';
 import { Router } from '@angular/router';
-import { EMPTY } from 'rxjs';
+import { EMPTY, of, throwError } from 'rxjs';
+import { LocalStorageService } from '../../shared/local-storage.service';
+import { AccessToken } from './models/auth.models';
+import { isTokenExpired } from '../../../utils/utils';
 
 
 @Injectable()
 export class AuthEffects {
-
+  callCounter = 0
   fetchTokenByCredentials$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.accessTokenLoginPageRequest),
     mergeMap(({ login, password }) => this.authService.getAccessTokenByCredentials(login, password)
@@ -58,16 +61,64 @@ export class AuthEffects {
       if (token) {
         return AuthActions.userInformationRequest({ token })
       }
+      return AuthActions.removeAuthToken()
     })
     )
   )
 
+  // getToken$ = createEffect(() => this.actions$.pipe(
+  //   ofType(AuthActions.getAuthToken),
+  //
+  //   switchMap(() => this.jwtTokenService.tokenFetching$),
+  //   filter(fetching => !fetching),
+  //   switchMap(() => this.jwtTokenService.getToken()),
+  //   tap((r) => {
+  //     debugger
+  //   }),
+  //   filter((token) => !!token),
+  //   distinct(({ token }) => token),
+  //   map((token) => AuthActions.setAuthToken(token)),
+  //   catchError(err => {
+  //     this.router.navigate(['/pages/login'])
+  //     return EMPTY
+  //   })
+  // ))
+
   getToken$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.getAuthToken),
-    switchMap(() => this.jwtTokenService.getToken()),
-    distinct(({token}) => token),
+    switchMap(() => {
+      return this.store.pipe(
+        select(AuthSelectors.fetchingToken)
+      )
+    }),
+    filter((isfetching => !isfetching)),
+    switchMap(() => {
+      debugger
+      const token = this.localStorageService.getField('token') as AccessToken
+      if (isTokenExpired(token.expiresIn)) {
+        this.localStorageService.removeField('token')
+        this.store.dispatch(AuthActions.removeAuthToken())
+        this.store.dispatch(AuthActions.authTokenFetching())
+        const { refreshToken } = token
+        return this.authService.getNewAccessTokenByRefreshToken(refreshToken).pipe(
+          tap(res => {
+            this.localStorageService.addItem('token', res)
+          }),
+          delay(2000),
+          // catchError(err => {
+          //   this.router.navigate(['/pages/login'])
+          //
+          //   debugger
+          //   return throwError(err)
+          // })
+        )
+      }
+      return of(token)
+    }),
     map((token) => AuthActions.setAuthToken(token)),
     catchError(err => {
+      debugger
+      this.store.dispatch(AuthActions.removeAuthToken())
       this.router.navigate(['/pages/login'])
       return EMPTY
     })
@@ -76,7 +127,8 @@ export class AuthEffects {
   constructor(private actions$: Actions, private authService: AuthService,
               private store: Store<AuthState>,
               private jwtTokenService: JWTTokenService,
-              private router: Router) {
+              private router: Router,
+              private localStorageService: LocalStorageService) {
   }
 
 }

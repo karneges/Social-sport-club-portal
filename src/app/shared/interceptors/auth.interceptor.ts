@@ -6,8 +6,9 @@ import { AuthState } from '../../pages/auth/auth.reducer';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthActions } from '../../pages/auth/auth.actions';
 import { AuthSelectors } from '../../pages/auth/auth.selectors';
-import { catchError, distinct, filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, delay, distinct, filter, first, map, switchMap, take, tap } from 'rxjs/operators';
 import { JWTTokenService } from '../jwttoken.service';
+import { isTokenExpired } from '../../../utils/utils';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -25,10 +26,13 @@ export class AuthInterceptor implements HttpInterceptor {
 
     this.store.dispatch(AuthActions.getAuthToken())
     return this.store.pipe(
-      select(AuthSelectors.token)
+      select(AuthSelectors.token),
+      tap(res => {
+      }),
+      filter(token => !!token && !isTokenExpired(token.expiresIn)),
+
+      first()
     ).pipe(
-      filter(token => !!token),
-      take(1),
       switchMap(({ token }) => {
         const newReq = req.clone({
           headers: req.headers.set('Authorization', `Bearer ${ token }`)

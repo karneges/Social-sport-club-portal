@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { User } from '../../models/user.model';
 import { AuthActions } from './auth.actions';
+import { state } from '@angular/animations';
 
 
 export const authFeatureKey = 'auth';
@@ -47,10 +48,25 @@ export const reducer = createReducer(
       loadingUser: false
     }
   })),
-  on (AuthActions.setAuthToken, ((state, action) => {
+  on(AuthActions.setAuthToken, ((state, action) => {
     return {
       ...state,
-      token: { ...action }
+      token: { ...action },
+      fetchingToken: false
+    }
+  })),
+  on(AuthActions.removeAuthToken, ((state, action) => {
+
+    return {
+      ...state,
+      token: null,
+    }
+  })),
+  on(AuthActions.authTokenFetching, ((state, action) => {
+    return {
+      ...state,
+      token: null,
+      fetchingToken: true
     }
   }))
 );

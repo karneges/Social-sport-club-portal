@@ -36,6 +36,14 @@ const setAuthToken = createAction(
   props<AccessToken>()
 )
 
+const removeAuthToken = createAction(
+  '[Dashboard] Remove Auth Token'
+)
+
+const authTokenFetching = createAction(
+  '[Dashboard] Auth Token fetching'
+)
+
 const userInformationRequest = createAction(
   '[Login Page] User Information Request',
   props<{ token: string }>()
@@ -61,7 +69,9 @@ export const AuthActions = {
   accessTokenLoginPageRequest,
   authByCachedToken,
   getAuthToken,
-  setAuthToken
+  setAuthToken,
+  removeAuthToken,
+  authTokenFetching
 }
 
 
