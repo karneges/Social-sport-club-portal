@@ -43,6 +43,10 @@ const removeAuthToken = createAction(
 const authTokenFetching = createAction(
   '[Dashboard] Auth Token fetching'
 )
+const tokenFailure = createAction(
+  '[Dashboard] Token Failure',
+  props<{ error: string }>()
+)
 
 const userInformationRequest = createAction(
   '[Login Page] User Information Request',
@@ -59,6 +63,11 @@ const loginFailure = createAction(
   props<{ error: Error }>()
 )
 
+const authFailure = createAction(
+  '[Dashboard] Auth Failure',
+  props<{ error: string }>()
+)
+
 export const AuthActions = {
   login,
   userInformationRequest,
@@ -71,7 +80,8 @@ export const AuthActions = {
   getAuthToken,
   setAuthToken,
   removeAuthToken,
-  authTokenFetching
+  authTokenFetching,
+  authFailure
 }
 
 

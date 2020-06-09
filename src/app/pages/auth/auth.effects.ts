@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from './services/auth.service';
 import { AuthActions } from './auth.actions';
-import { catchError, delay, distinct, filter, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, delay, distinct, filter, first, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { AuthState } from './auth.reducer';
 import { AuthSelectors } from './auth.selectors';
@@ -44,7 +44,7 @@ export class AuthEffects {
       select(AuthSelectors.token)
     )),
     filter((token) => !!token),
-    distinct(),
+    first(),
     map(({ token }) => AuthActions.userInformationRequest({ token }))
     )
   )
@@ -56,7 +56,7 @@ export class AuthEffects {
       select(AuthSelectors.token)
     )),
     filter(token => !!token),
-    take(1),
+    first(),
     map(({ token }) => {
       if (token) {
         return AuthActions.userInformationRequest({ token })
@@ -85,7 +85,13 @@ export class AuthEffects {
   // ))
 
   getToken$ = createEffect(() => this.actions$.pipe(
+    tap(r => {
+      debugger
+    }),
     ofType(AuthActions.getAuthToken),
+    tap(r => {
+      debugger
+    }),
     switchMap(() => {
       return this.store.pipe(
         select(AuthSelectors.fetchingToken)
@@ -95,7 +101,7 @@ export class AuthEffects {
     switchMap(() => {
       debugger
       const token = this.localStorageService.getField('token') as AccessToken
-      if (isTokenExpired(token.expiresIn)) {
+      if (isTokenExpired(token?.expiresIn)) {
         this.localStorageService.removeField('token')
         this.store.dispatch(AuthActions.removeAuthToken())
         this.store.dispatch(AuthActions.authTokenFetching())
@@ -105,24 +111,27 @@ export class AuthEffects {
             this.localStorageService.addItem('token', res)
           }),
           delay(2000),
-          // catchError(err => {
-          //   this.router.navigate(['/pages/login'])
-          //
-          //   debugger
-          //   return throwError(err)
-          // })
+          catchError(err => of(AuthActions.authFailure({ error: 'authFail' })))
         )
       }
-      return of(token)
+      if (token) {
+        return of(token)
+      }
+      if (!token) {
+        this.store.dispatch(AuthActions.authFailure({ error: 'authFail' }))
+      }
     }),
-    map((token) => AuthActions.setAuthToken(token)),
-    catchError(err => {
-      debugger
-      this.store.dispatch(AuthActions.removeAuthToken())
-      this.router.navigate(['/pages/login'])
-      return EMPTY
-    })
+    filter(token => !!token),
+    map((token: AccessToken) => AuthActions.setAuthToken(token)),
+    //TODO
+    // catchError(err => {
+    //   debugger
+    //   this.store.dispatch(AuthActions.removeAuthToken())
+    //   this.router.navigate(['/pages/login'])
+    //   return EMPTY
+    // })
   ))
+
 
   constructor(private actions$: Actions, private authService: AuthService,
               private store: Store<AuthState>,

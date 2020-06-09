@@ -12,16 +12,19 @@ export interface AuthState {
   token: {
     token: string,
     refreshToken
-    expiresIn: string
+    expiresIn: string,
+    error?: string
   }
-  fetchingToken: boolean
+  fetchingToken: boolean,
+  error: string
 }
 
 export const initialState: AuthState = {
   user: undefined,
   loadingUser: false,
   token: undefined,
-  fetchingToken: undefined
+  fetchingToken: undefined,
+  error: undefined
 };
 
 
@@ -67,6 +70,12 @@ export const reducer = createReducer(
       ...state,
       token: null,
       fetchingToken: true
+    }
+  })),
+  on(AuthActions.authFailure, ((state, action) => {
+    return {
+      ...state,
+      error: action.error
     }
   }))
 );

@@ -27,10 +27,10 @@ export class AuthInterceptor implements HttpInterceptor {
     this.store.dispatch(AuthActions.getAuthToken())
     return this.store.pipe(
       select(AuthSelectors.token),
-      tap(res => {
+      tap(() => {
+        debugger
       }),
-      filter(token => !!token && !isTokenExpired(token.expiresIn)),
-
+      filter((token) => !!token && !isTokenExpired(token.expiresIn)),
       first()
     ).pipe(
       switchMap(({ token }) => {
