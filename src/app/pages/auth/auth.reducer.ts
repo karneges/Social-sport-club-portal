@@ -24,7 +24,7 @@ export const initialState: AuthState = {
   user: undefined,
   loadingUser: false,
   token: undefined,
-  fetchingToken: undefined,
+  fetchingToken: false,
   error: undefined,
   unAuthAccess: true
 };
@@ -57,7 +57,7 @@ export const reducer = createReducer(
   on(AuthActions.setAuthToken, ((state, action) => {
     return {
       ...state,
-      token: { ...action },
+      token: action.token,
       fetchingToken: false
     }
   })),
@@ -81,6 +81,12 @@ export const reducer = createReducer(
       unAuthAccess: true,
       user: undefined,
       token: undefined
+    }
+  })),
+  on(AuthActions.loginFailure, ((state, action) =>  {
+    return {
+      ...state,
+      error: action.error.message
     }
   }))
 );

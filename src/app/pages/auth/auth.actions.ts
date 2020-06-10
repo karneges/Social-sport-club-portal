@@ -33,7 +33,7 @@ const getAuthToken = createAction(
 
 const setAuthToken = createAction(
   '[Dashboard] Set Auth Token',
-  props<AccessToken>()
+  props<{token: AccessToken }>()
 )
 
 const removeAuthToken = createAction(
