@@ -68,6 +68,10 @@ const authFailure = createAction(
   props<{ error: string }>()
 )
 
+const unAuthorizeAccess = createAction(
+  '[Dashboard] Un Auth Access'
+)
+
 export const AuthActions = {
   login,
   userInformationRequest,
@@ -81,7 +85,8 @@ export const AuthActions = {
   setAuthToken,
   removeAuthToken,
   authTokenFetching,
-  authFailure
+  authFailure,
+  unAuthorizeAccess
 }
 
 

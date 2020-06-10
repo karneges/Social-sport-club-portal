@@ -33,8 +33,14 @@ export class AuthService {
     )
   }
 
-  getNewAccessTokenByRefreshToken(refreshToken: string) {
-    return this.http.get<AccessTokenResponse>(`${ this.rootUrl }/token`, { headers: { 'Authorization': `Bearer ${ refreshToken }` } })
+  getNewAccessTokenByRefreshToken(refreshToken: string): Observable<AccessToken> {
+    return this.http.get<AccessTokenResponse>(`${ this.rootUrl }/token`,
+      { headers: { 'Authorization': `Bearer ${ refreshToken }` } }).pipe(
+        map(res => {
+          const {success, ...token} = res
+          return token
+        })
+    )
   }
 
 

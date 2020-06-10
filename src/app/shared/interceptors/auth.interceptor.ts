@@ -26,16 +26,16 @@ export class AuthInterceptor implements HttpInterceptor {
 
     this.store.dispatch(AuthActions.getAuthToken())
     return this.store.pipe(
-      select(AuthSelectors.token),
-      tap(() => {
-        debugger
-      }),
-      filter((token) => !!token && !isTokenExpired(token.expiresIn)),
-      first()
+      select(AuthSelectors.tokenWithAccessType),
+      filter(({ token, unAuthAccess }) => (!!token && !isTokenExpired(token.expiresIn)) || unAuthAccess),
+      first(),
     ).pipe(
-      switchMap(({ token }) => {
+      switchMap(({ token, unAuthAccess }) => {
+        if (unAuthAccess) {
+          return next.handle(req)
+        }
         const newReq = req.clone({
-          headers: req.headers.set('Authorization', `Bearer ${ token }`)
+          headers: req.headers.set('Authorization', `Bearer ${ token.token }`)
         })
         return next.handle(newReq)
       })

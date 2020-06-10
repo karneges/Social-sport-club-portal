@@ -2,6 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { User } from '../../models/user.model';
 import { AuthActions } from './auth.actions';
 import { state } from '@angular/animations';
+import { AccessToken } from './models/auth.models';
 
 
 export const authFeatureKey = 'auth';
@@ -16,7 +17,8 @@ export interface AuthState {
     error?: string
   }
   fetchingToken: boolean,
-  error: string
+  error: string,
+  unAuthAccess: boolean
 }
 
 export const initialState: AuthState = {
@@ -24,7 +26,8 @@ export const initialState: AuthState = {
   loadingUser: false,
   token: undefined,
   fetchingToken: undefined,
-  error: undefined
+  error: undefined,
+  unAuthAccess: true
 };
 
 
@@ -48,7 +51,8 @@ export const reducer = createReducer(
     return {
       ...state,
       user: action.user,
-      loadingUser: false
+      loadingUser: false,
+      unAuthAccess: false
     }
   })),
   on(AuthActions.setAuthToken, ((state, action) => {
@@ -59,10 +63,10 @@ export const reducer = createReducer(
     }
   })),
   on(AuthActions.removeAuthToken, ((state, action) => {
-
+    const newToken = { error: 'asxasxasx' } as unknown as AccessToken
     return {
       ...state,
-      token: null,
+      token: newToken
     }
   })),
   on(AuthActions.authTokenFetching, ((state, action) => {
@@ -75,7 +79,10 @@ export const reducer = createReducer(
   on(AuthActions.authFailure, ((state, action) => {
     return {
       ...state,
-      error: action.error
+      error: action.error,
+      unAuthAccess: true,
+      user: undefined,
+      token: {error: action.error}
     }
   }))
 );

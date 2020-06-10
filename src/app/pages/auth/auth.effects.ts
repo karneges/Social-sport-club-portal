@@ -2,7 +2,19 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from './services/auth.service';
 import { AuthActions } from './auth.actions';
-import { catchError, delay, distinct, filter, first, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
+import {
+  catchError,
+  delay,
+  distinct,
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  mergeMap,
+  switchMap,
+  take,
+  tap
+} from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { AuthState } from './auth.reducer';
 import { AuthSelectors } from './auth.selectors';
@@ -12,6 +24,7 @@ import { EMPTY, of, throwError } from 'rxjs';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { AccessToken } from './models/auth.models';
 import { isTokenExpired } from '../../../utils/utils';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Injectable()
@@ -44,7 +57,8 @@ export class AuthEffects {
       select(AuthSelectors.token)
     )),
     filter((token) => !!token),
-    first(),
+    // first(),
+    distinct((token) => token.token),
     map(({ token }) => AuthActions.userInformationRequest({ token }))
     )
   )
@@ -55,9 +69,22 @@ export class AuthEffects {
     switchMap(() => this.store.pipe(
       select(AuthSelectors.token)
     )),
-    filter(token => !!token),
-    first(),
+    // map(token => {
+    //   if (token?.error) {
+    //     return AuthActions.unAuthorizeAccess()
+    //   }
+    //   return token
+    // }),
+    tap((r) => {
+      debugger
+    }, e => {
+      debugger
+    }),
+    filter(token => !!token?.token),
+    // first(),
+    distinct((token) => token.token),
     map(({ token }) => {
+      debugger
       if (token) {
         return AuthActions.userInformationRequest({ token })
       }
@@ -85,16 +112,10 @@ export class AuthEffects {
   // ))
 
   getToken$ = createEffect(() => this.actions$.pipe(
-    tap(r => {
-      debugger
-    }),
     ofType(AuthActions.getAuthToken),
-    tap(r => {
-      debugger
-    }),
     switchMap(() => {
       return this.store.pipe(
-        select(AuthSelectors.fetchingToken)
+        select(AuthSelectors.fetchingToken),
       )
     }),
     filter((isfetching => !isfetching)),
@@ -111,25 +132,24 @@ export class AuthEffects {
             this.localStorageService.addItem('token', res)
           }),
           delay(2000),
-          catchError(err => of(AuthActions.authFailure({ error: 'authFail' })))
+          catchError((err: HttpErrorResponse) => of(AuthActions.authFailure({ error: `http error: ${ err.message }` })))
         )
       }
       if (token) {
         return of(token)
       }
       if (!token) {
-        this.store.dispatch(AuthActions.authFailure({ error: 'authFail' }))
+        this.store.dispatch(AuthActions.authFailure({ error: 'no cached token' }))
+        return EMPTY
       }
     }),
-    filter(token => !!token),
-    map((token: AccessToken) => AuthActions.setAuthToken(token)),
-    //TODO
-    // catchError(err => {
-    //   debugger
-    //   this.store.dispatch(AuthActions.removeAuthToken())
-    //   this.router.navigate(['/pages/login'])
-    //   return EMPTY
-    // })
+    distinct((token: AccessToken) => token?.token),
+    map((token: AccessToken) => {
+      if (token) {
+        return AuthActions.setAuthToken(token)
+      }
+      return AuthActions.unAuthorizeAccess()
+    })
   ))
 
 
