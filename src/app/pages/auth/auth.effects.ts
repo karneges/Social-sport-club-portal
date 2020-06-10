@@ -57,7 +57,7 @@ export class AuthEffects {
       select(AuthSelectors.token)
     )),
     filter((token) => !!token),
-    // first(),
+    first(),
     distinct((token) => token.token),
     map(({ token }) => AuthActions.userInformationRequest({ token }))
     )
@@ -69,26 +69,11 @@ export class AuthEffects {
     switchMap(() => this.store.pipe(
       select(AuthSelectors.token)
     )),
-    // map(token => {
-    //   if (token?.error) {
-    //     return AuthActions.unAuthorizeAccess()
-    //   }
-    //   return token
-    // }),
-    tap((r) => {
-      debugger
-    }, e => {
-      debugger
-    }),
     filter(token => !!token?.token),
-    // first(),
+    first(),
     distinct((token) => token.token),
     map(({ token }) => {
-      debugger
-      if (token) {
-        return AuthActions.userInformationRequest({ token })
-      }
-      return AuthActions.removeAuthToken()
+      return AuthActions.userInformationRequest({ token })
     })
     )
   )
@@ -120,7 +105,6 @@ export class AuthEffects {
     }),
     filter((isfetching => !isfetching)),
     switchMap(() => {
-      debugger
       const token = this.localStorageService.getField('token') as AccessToken
       if (isTokenExpired(token?.expiresIn)) {
         this.localStorageService.removeField('token')
@@ -135,19 +119,14 @@ export class AuthEffects {
           catchError((err: HttpErrorResponse) => of(AuthActions.authFailure({ error: `http error: ${ err.message }` })))
         )
       }
-      if (token) {
-        return of(token)
-      }
-      if (!token) {
-        this.store.dispatch(AuthActions.authFailure({ error: 'no cached token' }))
-        return EMPTY
-      }
+      return of(token)
     }),
     distinct((token: AccessToken) => token?.token),
     map((token: AccessToken) => {
       if (token) {
         return AuthActions.setAuthToken(token)
       }
+      this.store.dispatch(AuthActions.authFailure({ error: 'no cached token' }))
       return AuthActions.unAuthorizeAccess()
     })
   ))

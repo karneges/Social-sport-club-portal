@@ -13,8 +13,7 @@ export interface AuthState {
   token: {
     token: string,
     refreshToken
-    expiresIn: string,
-    error?: string
+    expiresIn: string
   }
   fetchingToken: boolean,
   error: string,
@@ -63,10 +62,9 @@ export const reducer = createReducer(
     }
   })),
   on(AuthActions.removeAuthToken, ((state, action) => {
-    const newToken = { error: 'asxasxasx' } as unknown as AccessToken
     return {
       ...state,
-      token: newToken
+      token: null
     }
   })),
   on(AuthActions.authTokenFetching, ((state, action) => {
@@ -82,7 +80,7 @@ export const reducer = createReducer(
       error: action.error,
       unAuthAccess: true,
       user: undefined,
-      token: {error: action.error}
+      token: undefined
     }
   }))
 );
