@@ -3,10 +3,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from './services/auth.service';
 import { AuthActions } from './auth.actions';
 import {
-  catchError,
-  delay,
+  catchError, delay,
   distinct,
-  filter, finalize,
+  filter,
   first,
   map,
   mergeMap,
@@ -60,18 +59,6 @@ export class AuthEffects {
     )
   }
 
-
-  // loginUser$ = createEffect(() => this.actions$.pipe(
-  //   ofType(AuthActions.login),
-  //   tap(cred => this.store.dispatch(AuthActions.accessTokenLoginPageRequest(cred))),
-  //   mergeMap(() => this.store.pipe(
-  //     select(AuthSelectors.token)
-  //   )),
-  //   filter((token) => !!token),
-  //   first(),
-  //   map(({ token }) => AuthActions.userInformationRequest({ token }))
-  //   )
-  // )
 
   loginUser$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.login),

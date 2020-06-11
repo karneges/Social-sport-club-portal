@@ -8,6 +8,7 @@ import * as fromAuthReducer from './auth.reducer'
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './auth.effects';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AuthRoutingModule } from './auth-routing.module';
 
 const COMPONENTS = [LoginComponent]
 
@@ -21,11 +22,12 @@ const COMPONENTS = [LoginComponent]
     NbCheckboxModule,
     StoreModule.forFeature(fromAuthReducer.authFeatureKey, fromAuthReducer.reducer),
     EffectsModule.forFeature([AuthEffects]),
+    AuthRoutingModule,
     NbInputModule,
     NbButtonModule,
     ReactiveFormsModule
   ],
-  exports: COMPONENTS
+  // exports: COMPONENTS
 })
 export class AuthModule {
 }
