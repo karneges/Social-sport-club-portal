@@ -19,17 +19,13 @@ export class MyClubComponent implements OnInit {
   club$: Observable<Club>
   posts$: Observable<Post[]>
 
-  constructor(private clubService: ClubService, private store: Store<AppState>, private postEntityService: PostEntityService) {
+  constructor(private clubService: ClubService, private store: Store<AppState>) {
   }
 
   ngOnInit(): void {
     this.club$ = this.store.pipe(
       select(ClubSelectors.club)
     )
-    this.posts$ = this.postEntityService.entities$
-
-    this.store.dispatch(ClubActions.loadClub())
-    this.postEntityService.getAll()
   }
 
 }

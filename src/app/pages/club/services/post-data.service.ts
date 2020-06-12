@@ -4,8 +4,9 @@ import { Post } from '../models/post.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { catchError, delay, map, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';
+import { Params } from '@angular/router';
 
 
 @Injectable()
@@ -42,6 +43,14 @@ export class PostDataService extends DefaultDataService<Post> {
     return this.http.delete<{ message: string }>(`${ environment.API_BASE_URL }/clubs/${ this.clubId }/posts/${ key }`)
       .pipe(
         map(res => res.message)
+      )
+  }
+
+  getWithQuery(params: Params): Observable<Post[]> {
+    return this.http.get<{ status: string, posts: Post[] }>
+    (`${ environment.API_BASE_URL }/clubs/${ this.clubId }/posts`, { params })
+      .pipe(
+        map(res => res.posts)
       )
   }
 

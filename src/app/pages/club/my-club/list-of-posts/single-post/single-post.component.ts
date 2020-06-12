@@ -5,10 +5,10 @@ import { PostEntityService } from '../../../services/post-entity.service';
 
 @Component({
   selector: 'ngx-single-post',
-  templateUrl: 'news-post.component.html',
-  styleUrls: ['news-post.component.scss']
+  templateUrl: 'single-post.component.html',
+  styleUrls: ['single-post.component.scss']
 })
-export class NewsPostComponent {
+export class SinglePostComponent {
   @Input() post: Post
   @ViewChild('paragraphElement') postParagraph: ElementRef
   @ViewChild('articlePost') postArticle: ElementRef

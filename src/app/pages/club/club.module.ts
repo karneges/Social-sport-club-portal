@@ -16,15 +16,18 @@ import * as fromClub from './reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { ClubEffects } from './club.effects';
 import { ListOfPostsComponent } from './my-club/list-of-posts/list-of-posts.component';
-import { EntityDataService, EntityDefinitionService, EntityMetadataMap } from '@ngrx/data';
+import {
+  EntityDataService,
+  EntityDefinitionService,
+  EntityMetadataMap
+} from '@ngrx/data';
 import { PostEntityService } from './services/post-entity.service';
 import { PostDataService } from './services/post-data.service';
 import { Post } from './models/post.model';
 import { BannerOfClubComponent } from './my-club/banner-of-club/banner-of-club.component';
-import { NewsPostComponent } from './my-club/list-of-posts/news-post/news-post.component';
+import { SinglePostComponent } from './my-club/list-of-posts/single-post/single-post.component';
 import { NewsPostPlaceholderComponent } from './my-club/list-of-posts/news-post-placeholder/news-post-placeholder.component';
 import { AddPostComponent } from './my-club/add-post/add-post.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { QuillModule } from 'ngx-quill';
 import { ReactiveFormsModule } from '@angular/forms';
 import { dateComparer } from '../../../utils/utils';
@@ -45,7 +48,7 @@ const entityMetadata: EntityMetadataMap = {
     MyClubComponent
     , ListOfPostsComponent,
     BannerOfClubComponent,
-    NewsPostComponent,
+    SinglePostComponent,
     NewsPostPlaceholderComponent,
     AddPostComponent],
   imports: [

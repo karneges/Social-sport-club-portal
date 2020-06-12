@@ -4,6 +4,8 @@
       <nb-card-header>Own Scroll</nb-card-header>
       <nb-list
         nbInfiniteList
+        listenWindowScroll
+        (bottomThreshold)="loadNext(firstCard)">
         [threshold]="500"
         (bottomThreshold)="loadNext('')">
         <nb-list-item class="overflow-hidden align-items-lg-start"

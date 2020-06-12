@@ -1,6 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post } from '../../models/post.model';
+import { ClubActions } from '../../club.actions';
+import { PostEntityService } from '../../services/post-entity.service';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../reducers';
 
 @Component({
   selector: 'ngx-list-of-posts',
@@ -10,8 +14,10 @@ import { Post } from '../../models/post.model';
 export class ListOfPostsComponent implements OnInit {
 
   @Input() posts$: Observable<Post[]>
-  @Output() loadNextPage = new EventEmitter()
-  showMore = false
+  defaultQueryConfig = {
+    page: 1,
+    limit: 10
+  }
 
   firstCard = {
     news: [],
@@ -20,14 +26,40 @@ export class ListOfPostsComponent implements OnInit {
     pageToLoadNext: 1,
   };
 
-  constructor() {
+
+  constructor(private postEntityService: PostEntityService, private store: Store<AppState>) {
   }
 
+  // loadNext(cardData) {
+  //   this.loadNextPage.emit()
+  // }
+
+  getPosts() {
+    this.posts$ = this.postEntityService.entities$
+    this.store.dispatch(ClubActions.loadClub())
+    this.postEntityService.getAll()
+  }
+
+
   loadNext(cardData) {
-    this.loadNextPage.emit()
+    console.log('load')
+    // if (cardData.loading) {
+    //   return
+    // }
+
+    // cardData.loading = true;
+    // cardData.placeholders = new Array(this.pageSize);
+    // this.newsService.load(cardData.pageToLoadNext, this.pageSize)
+    //   .subscribe(nextNews => {
+    //     cardData.placeholders = [];
+    //     cardData.news.push(...nextNews);
+    //     cardData.loading = false;
+    //     cardData.pageToLoadNext++;
+    //   });
   }
 
   ngOnInit(): void {
+    this.getPosts()
   }
 
 }

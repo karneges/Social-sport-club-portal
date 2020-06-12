@@ -4,7 +4,7 @@ import { AuthService } from './services/auth.service';
 import { AuthActions } from './auth.actions';
 import {
   catchError, delay,
-  distinct,
+  distinct, distinctUntilChanged, distinctUntilKeyChanged,
   filter,
   first,
   map,
@@ -96,7 +96,7 @@ export class AuthEffects {
       }
       return of(token)
     }),
-    distinct((token: AccessToken) => token?.token),
+    distinctUntilChanged((oldToken: AccessToken, newToken: AccessToken) => oldToken?.token === newToken?.token),
     map((token: AccessToken) => {
       if (token) {
         return AuthActions.setAuthToken({ token })
