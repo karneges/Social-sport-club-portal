@@ -1,23 +1,29 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { combineLatest, Observable, of } from 'rxjs';
 import { Post } from '../../models/post.model';
 import { ClubActions } from '../../club.actions';
 import { PostEntityService } from '../../services/post-entity.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../reducers';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { delay, distinct, filter, finalize, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Params } from '@angular/router';
+import { log } from 'util';
 
 @Component({
   selector: 'ngx-list-of-posts',
   templateUrl: 'list-of-posts.component.html',
   styleUrls: ['list-of-posts.component.scss'],
 })
-export class ListOfPostsComponent implements OnInit {
+export class ListOfPostsComponent implements OnInit, AfterViewInit {
 
   @Input() posts$: Observable<Post[]>
-  defaultQueryConfig = {
-    page: 1,
-    limit: 10
-  }
+  @ViewChild(CdkVirtualScrollViewport)
+  viewport: CdkVirtualScrollViewport;
+
+  page = 1
+  limit = 15
+
 
   firstCard = {
     news: [],
@@ -30,36 +36,48 @@ export class ListOfPostsComponent implements OnInit {
   constructor(private postEntityService: PostEntityService, private store: Store<AppState>) {
   }
 
-  // loadNext(cardData) {
-  //   this.loadNextPage.emit()
-  // }
 
   getPosts() {
     this.posts$ = this.postEntityService.entities$
     this.store.dispatch(ClubActions.loadClub())
-    this.postEntityService.getAll()
+    this.postEntityService.getWithQuery({ page: this.page.toString(), limit: this.limit.toString() })
   }
 
-
-  loadNext(cardData) {
-    console.log('load')
-    // if (cardData.loading) {
-    //   return
-    // }
-
-    // cardData.loading = true;
-    // cardData.placeholders = new Array(this.pageSize);
-    // this.newsService.load(cardData.pageToLoadNext, this.pageSize)
-    //   .subscribe(nextNews => {
-    //     cardData.placeholders = [];
-    //     cardData.news.push(...nextNews);
-    //     cardData.loading = false;
-    //     cardData.pageToLoadNext++;
-    //   });
+  getNextPageQuery(): Params {
+    const page = ++this.page
+    const limit = this.limit
+    return {
+      limit: limit.toString(),
+      page: page.toString()
+    }
   }
+
+  infinityScrollSubscribe() {
+    return combineLatest([
+      this.viewport.scrolledIndexChange,
+      this.postEntityService.loading$,
+      this.postEntityService.entities$
+    ]).pipe(
+      filter(([scrollIndex, loading, posts]) => {
+        console.log(scrollIndex)
+        return !loading
+          && scrollIndex >= +this.limit - 5
+          && scrollIndex >= posts.length - 5
+      }),
+      distinct(([value, loading, posts]) => posts.length),
+      switchMap(() => this.postEntityService.getWithQuery(this.getNextPageQuery())),
+      first(r => r.length < this.limit || !r)
+    ).subscribe()
+  }
+
 
   ngOnInit(): void {
     this.getPosts()
+  }
+
+
+  ngAfterViewInit(): void {
+    this.infinityScrollSubscribe()
   }
 
 }

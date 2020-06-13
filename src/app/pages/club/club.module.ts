@@ -33,6 +33,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { dateComparer } from '../../../utils/utils';
 import { SharedModule } from '../../shared/shared.module';
 import { NbAuthModule } from '@nebular/auth';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { InfiniteListModule } from 'angular-infinite-list';
 
 
 const entityMetadata: EntityMetadataMap = {
@@ -53,6 +55,7 @@ const entityMetadata: EntityMetadataMap = {
     AddPostComponent],
   imports: [
     CommonModule,
+    InfiniteListModule,
     SharedModule,
     ThemeModule,
     NbCardModule,
@@ -67,6 +70,7 @@ const entityMetadata: EntityMetadataMap = {
     NbButtonModule,
     ReactiveFormsModule,
     NbAuthModule,
+    ScrollingModule,
   ],
   exports: [MyClubComponent],
   providers: [PostEntityService, PostDataService]

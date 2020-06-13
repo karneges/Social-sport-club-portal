@@ -1,12 +1,43 @@
-.infinite-cards {
-  nb-card {
-    &.own-scroll {
-      height: 50vh;
-    }
+//.infinite-cards {
+//  nb-card {
+//    &.own-scroll {
+//      height: 50vh;
+//    }
+//  }
+//}
+//
+//.post-item {
+//  position: absolute;
+//  top: 0;
+//}
+//cdk-virtual-scroll-viewport {
+//  height: 100vw;
+//  width: 100%;
+//  li {
+//    height: 300px;
+//  }
+//  &::-webkit-scrollbar {
+//    width: 1em;
+//  }
+//}
+//:host ::ng-deep {
+//  .cdk-virtual-scroll-content-wrapper {
+//    width: 100%;
+//  }
+//}
+//
+
+@import "~animate.css/animate.min.css";
+cdk-virtual-scroll-viewport {
+  height: 100vh;
+
+  li {
+    height: 100px;
+  }
+
+  // Bonus points
+  &::-webkit-scrollbar {
+    width: 1em;
   }
 }
 
-.post-item {
-  position: absolute;
-  top: 0;
-}
