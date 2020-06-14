@@ -40,7 +40,7 @@ import { InfiniteListModule } from 'angular-infinite-list';
 const entityMetadata: EntityMetadataMap = {
   Posts: {
     selectId: (post: Post) => post._id,
-    // sortComparer: dateComparer
+    sortComparer: dateComparer
   }
 }
 

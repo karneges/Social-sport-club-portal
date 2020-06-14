@@ -6,4 +6,5 @@ export interface Post {
   publicationDate: Date
   likes: number
   content: string
+  updateDate: Date
 }
