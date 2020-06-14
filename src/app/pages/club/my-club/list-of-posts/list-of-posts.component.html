@@ -1,14 +1,17 @@
     <nb-card class="own-scroll">
       <nb-card-header>Own Scroll</nb-card-header>
-        <cdk-virtual-scroll-viewport itemSize="257">
+      <nb-list
+        nbInfiniteList
+        [threshold]="500"
+        (bottomThreshold)="onDown($event)">
         <nb-list-item class="overflow-hidden align-items-lg-start"
-                      *cdkVirtualFor="let post of posts$ | async">
+                      *ngFor="let post of posts$ | async">
           <ngx-single-post [post]="post"></ngx-single-post>
         </nb-list-item>
-        </cdk-virtual-scroll-viewport>
-        <nb-list-item *ngFor="let _ of firstCard.placeholders">
+        <nb-list-item *ngFor="let _ of placeholders">
           <ngx-news-post-placeholder></ngx-news-post-placeholder>
         </nb-list-item>
+        </nb-list>
     </nb-card>
 
 
@@ -25,4 +28,32 @@
 <!--&lt;!&ndash;    <ngx-news-post-placeholder></ngx-news-post-placeholder>&ndash;&gt;-->
 <!--&lt;!&ndash;  </nb-list-item>&ndash;&gt;-->
 <!--&lt;!&ndash;</nb-card>&ndash;&gt;-->
+
+<!--    <infinitelist-->
+<!--      [height]='"100%"'-->
+<!--      [width]='"100%"'-->
+<!--      [data]='posts$ | async'-->
+<!--      [itemSize]='115'-->
+<!--      [scrollDirection]='"vertical"'-->
+<!--      [useob]='true'-->
+<!--      (update)='onDown($event)'>-->
+<!--      <nb-list-item class="overflow-hidden align-items-lg-start"-->
+<!--                    *ngFor="let post of posts$ | async">-->
+<!--        <ngx-single-post [post]="post"></ngx-single-post>-->
+<!--      </nb-list-item>-->
+<!--    </infinitelist>-->
+
+<!--<nb-card class="own-scroll">-->
+<!--  <nb-card-header>-->
+<!--    Own scroll-->
+<!--  </nb-card-header>-->
+<!--  <nb-list-->
+<!--    nbInfiniteList-->
+<!--    [threshold]="500"-->
+<!--    (bottomThreshold)="onDown($event)">-->
+<!--    <nb-list-item *ngFor="let post of posts$ | async">-->
+<!--      <ngx-single-post [post]="post"></ngx-single-post>-->
+<!--    </nb-list-item>-->
+<!--  </nb-list>-->
+<!--</nb-card>-->
 

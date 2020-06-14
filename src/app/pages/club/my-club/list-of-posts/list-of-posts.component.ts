@@ -1,14 +1,20 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { combineLatest, Observable, of } from 'rxjs';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { Post } from '../../models/post.model';
 import { ClubActions } from '../../club.actions';
 import { PostEntityService } from '../../services/post-entity.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../reducers';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { delay, distinct, filter, finalize, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  filter,
+  first,
+  skip,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 import { Params } from '@angular/router';
-import { log } from 'util';
 
 @Component({
   selector: 'ngx-list-of-posts',
@@ -20,18 +26,11 @@ export class ListOfPostsComponent implements OnInit, AfterViewInit {
   @Input() posts$: Observable<Post[]>
   @ViewChild(CdkVirtualScrollViewport)
   viewport: CdkVirtualScrollViewport;
-
+  scrollSubject = new Subject<boolean>()
+  event: any;
   page = 1
   limit = 15
-
-
-  firstCard = {
-    news: [],
-    placeholders: [],
-    loading: false,
-    pageToLoadNext: 1,
-  };
-
+  placeholders = []
 
   constructor(private postEntityService: PostEntityService, private store: Store<AppState>) {
   }
@@ -53,20 +52,16 @@ export class ListOfPostsComponent implements OnInit, AfterViewInit {
   }
 
   infinityScrollSubscribe() {
-    return combineLatest([
-      this.viewport.scrolledIndexChange,
-      this.postEntityService.loading$,
-      this.postEntityService.entities$
-    ]).pipe(
-      filter(([scrollIndex, loading, posts]) => {
-        console.log(scrollIndex)
-        return !loading
-          && scrollIndex >= +this.limit - 5
-          && scrollIndex >= posts.length - 5
-      }),
-      distinct(([value, loading, posts]) => posts.length),
+
+    return this.scrollSubject.pipe(
+      skip(1),
+      distinctUntilChanged(),
+      filter(v => v),
+      tap(() => this.placeholders = Array(this.limit)),
       switchMap(() => this.postEntityService.getWithQuery(this.getNextPageQuery())),
-      first(r => r.length < this.limit || !r)
+      tap(() => this.placeholders = []),
+      tap(() => this.scrollSubject.next(false)),
+      first(r => r.length < this.limit || !r),
     ).subscribe()
   }
 
@@ -80,4 +75,7 @@ export class ListOfPostsComponent implements OnInit, AfterViewInit {
     this.infinityScrollSubscribe()
   }
 
+  onDown(e) {
+    this.scrollSubject.next(true)
+  }
 }
