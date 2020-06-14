@@ -4,6 +4,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 import { Component, OnInit } from '@angular/core';
+import { NbIconLibraries } from '@nebular/theme';
 // import Quill from 'quill';
 //
 // // add image resize module
@@ -16,7 +17,12 @@ import { Component, OnInit } from '@angular/core';
 
 export class AppComponent implements OnInit {
 
-  constructor() {
+  constructor(private iconLibraries: NbIconLibraries, private iconsLibrary: NbIconLibraries) {
+    this.iconLibraries.registerFontPack('font-awesome', { packClass: 'fa', iconClassPrefix: 'fa' });
+    this.iconLibraries.registerFontPack('regular', { packClass: 'far', iconClassPrefix: 'fa' });
+    this.iconLibraries.registerFontPack('solid', { packClass: 'fas', iconClassPrefix: 'fa' });
+    this.iconsLibrary.registerSvgPack('mySportIcons', { 'gym': '<img src="../assets/images/gym.svg">', })
+
   }
 
   ngOnInit() {

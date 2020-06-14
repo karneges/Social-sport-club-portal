@@ -9,7 +9,7 @@ import {
   NbFormFieldModule,
   NbIconModule,
   NbInputModule,
-  NbListModule
+  NbListModule, NbStepperModule, NbTooltipModule
 } from '@nebular/theme';
 import { StoreModule } from '@ngrx/store';
 import * as fromClub from './reducers';
@@ -29,12 +29,18 @@ import { SinglePostComponent } from './my-club/list-of-posts/single-post/single-
 import { NewsPostPlaceholderComponent } from './my-club/list-of-posts/news-post-placeholder/news-post-placeholder.component';
 import { AddPostComponent } from './my-club/add-post/add-post.component';
 import { QuillModule } from 'ngx-quill';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { dateComparer } from '../../../utils/utils';
 import { SharedModule } from '../../shared/shared.module';
 import { NbAuthModule } from '@nebular/auth';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InfiniteListModule } from 'angular-infinite-list';
+import { EventStepperComponent } from './my-club/event-stepper/event-stepper.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 
 const entityMetadata: EntityMetadataMap = {
@@ -52,7 +58,8 @@ const entityMetadata: EntityMetadataMap = {
     BannerOfClubComponent,
     SinglePostComponent,
     NewsPostPlaceholderComponent,
-    AddPostComponent],
+    AddPostComponent,
+    EventStepperComponent],
   imports: [
     CommonModule,
     InfiniteListModule,
@@ -71,6 +78,14 @@ const entityMetadata: EntityMetadataMap = {
     ReactiveFormsModule,
     NbAuthModule,
     ScrollingModule,
+    NbStepperModule,
+    MatStepperModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    NbTooltipModule
   ],
   exports: [MyClubComponent],
   providers: [PostEntityService, PostDataService]
