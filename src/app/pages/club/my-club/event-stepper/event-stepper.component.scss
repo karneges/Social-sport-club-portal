@@ -1,21 +1,36 @@
-:host::ng-deep nb-icon {
-  display: flex;
-  justify-content: center;
-  font-size: 50px !important;
-
+:host {
+  nb-card-body {
+    overflow: hidden;
+  }
+  &::ng-deep {
+    nb-icon {
+      display: flex;
+      justify-content: center;
+      font-size: 25px !important;
+      color: white;
+      transition: all 1s;
+      &:hover {
+        transform: rotate(360deg);
+      }
+      &.arrow {
+        font-size: 15px !important;
+      }
+    }
+  }
 }
-.shadow-icon {
-  box-shadow: 0 0 12px -5px;
-  border-radius: 50%;
-  z-index: 5;
-}
 
+.btn-circle {
+  border-radius: 50% !important;
+  background-color: #2f3c61 !important;
+  z-index: 10;
+}
 
 .items-rows {
   display: flex;
   justify-content: space-between;
 }
-.btn-with-arrow{
+
+.btn-with-arrow {
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -49,9 +64,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-    div {
-      position: absolute;
-    }
+
+  div {
+    position: absolute;
+  }
+
   &.not-active {
     .circle {
       display: none;

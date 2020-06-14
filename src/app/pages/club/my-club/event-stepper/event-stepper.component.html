@@ -1,20 +1,23 @@
 <nb-card>
-  <nb-card-header>Events</nb-card-header>
+  <nb-card-header>Button Hero</nb-card-header>
   <nb-card-body class="items-rows">
-    <div class="btn-with-arrow" *ngFor="let i of [1,2,3]">
-
+    <div class="btn-with-arrow" *ngFor="let i of [1,2,3,4,5]">
       <div class="animate-circle" [ngClass]="i !== 3 ? 'not-active': ''">
-        <div class="shadow-icon">
-          <nb-icon nbTooltip="This is a tooltip" nbTooltipStatus="primary" class="event-icon" icon="gym"
-                   pack="mySportIcons"></nb-icon>
-        </div>
+        <button nbTooltip="This  is a tooltip" nbTooltipStatus="primary" nbButton class="btn-circle" size="giant" outline status="primary">
+          <nb-icon icon="dumbbell" pack="font-awesome"></nb-icon>
+        </button>
         <div class="circle" style="animation-delay: 0s"></div>
         <div class="circle" style="animation-delay: 1s"></div>
         <div class="circle" style="animation-delay: 2s"></div>
         <div class="circle" style="animation-delay: 3s"></div>
       </div>
-      <nb-icon icon="chevron-right" pack="font-awesome"></nb-icon>
+      <nb-icon class="arrow" icon="chevron-right" pack="font-awesome"></nb-icon>
     </div>
 
+
+    <!--    <button nbButton hero status="success">Success</button>-->
+    <!--    <button nbButton hero status="info">Info</button>-->
+    <!--    <button nbButton hero status="warning">Warning</button>-->
+    <!--    <button nbButton hero status="danger">Danger</button>-->
   </nb-card-body>
 </nb-card>
