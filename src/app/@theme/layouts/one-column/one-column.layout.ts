@@ -13,8 +13,18 @@ import { Component } from '@angular/core';
         <ng-content select="nb-menu"></ng-content>
       </nb-sidebar>
 
-      <nb-layout-column>
-        <ng-content select="router-outlet"></ng-content>
+      <nb-layout-column class="container">
+        <div class="row">
+          <div class="col-md-12 col-lg-9 col-xxxl-9">
+            <ng-content select="router-outlet"></ng-content>
+          </div>
+          <div class="col-lg-3 col-xxxl-3">
+            <div class="sticky-top">
+              <ng-content></ng-content>
+            </div>
+          </div>
+        </div>
+
       </nb-layout-column>
 
       <nb-layout-footer fixed>
@@ -23,4 +33,5 @@ import { Component } from '@angular/core';
     </nb-layout>
   `,
 })
-export class OneColumnLayoutComponent {}
+export class OneColumnLayoutComponent {
+}

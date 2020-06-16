@@ -7,12 +7,13 @@ import { AuthActions } from './auth/auth.actions';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-pages',
+  selector: 'ngx-pages',
   styleUrls: ['pages.component.scss'],
   template: `
     <ngx-one-column-layout>
       <nb-menu [items]="menu"></nb-menu>
       <router-outlet></router-outlet>
+      <ngx-list-of-users></ngx-list-of-users>
     </ngx-one-column-layout>
   `,
 })
