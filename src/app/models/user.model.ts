@@ -1,18 +1,17 @@
 export interface User {
+  _id: string
   name: string
   email: string
   age: number
   sex: 'male' | 'female'
-  dateAddToClub: Date
+  dateAddToClub: string
   role: 'admin' | 'trainer' | 'user'
   countDaysInClub: number
-  rating: string
+  rating: number
   training: string
-  invites: string
-  challenges: string
+  invites?: any
+  challenges?: any
   statistics: string,
   password: string
-  resetPasswordToken: string
-  resetPasswordExpire: Date
-  createdAt: Date
+  createdAt: string
 }

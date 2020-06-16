@@ -1,5 +1,13 @@
 import { NgModule } from '@angular/core';
-import { NbCardModule, NbLayoutModule, NbMenuModule } from '@nebular/theme';
+import {
+  NbCardModule,
+  NbIconModule,
+  NbLayoutModule,
+  NbListModule,
+  NbMenuModule,
+  NbTabsetModule,
+  NbUserModule
+} from '@nebular/theme';
 
 import { ThemeModule } from '../@theme/theme.module';
 import { PagesComponent } from './pages.component';
@@ -18,7 +26,11 @@ import { ListOfUsersComponent } from './list-of-users/list-of-users.component';
     ClubModule,
     AuthModule,
     NbLayoutModule,
-    NbCardModule
+    NbCardModule,
+    NbTabsetModule,
+    NbListModule,
+    NbUserModule,
+    NbIconModule
   ],
   declarations: [
     PagesComponent,

@@ -5,7 +5,6 @@ import { QuillModule } from 'ngx-quill';
 import { modules } from '../../utils/quill-settings';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NbButtonModule, NbCardModule } from '@nebular/theme';
-import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 const SHARED_COMPONENTS = [EditorComponent]
 

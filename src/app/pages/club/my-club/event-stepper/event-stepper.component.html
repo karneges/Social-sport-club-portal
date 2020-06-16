@@ -1,15 +1,19 @@
 <nb-card>
   <nb-card-header>Button Hero</nb-card-header>
-  <nb-card-body class="items-rows">
-    <div class="btn-with-arrow" *ngFor="let i of [1,2,3,4,5]">
-      <div class="animate-circle" [ngClass]="i !== 3 ? 'not-active': ''">
-        <button nbTooltip="This  is a tooltip" nbTooltipStatus="primary" nbButton class="btn-circle" size="giant" outline status="primary">
-          <nb-icon icon="dumbbell" pack="font-awesome"></nb-icon>
-        </button>
-        <div class="circle" style="animation-delay: 0s"></div>
-        <div class="circle" style="animation-delay: 1s"></div>
-        <div class="circle" style="animation-delay: 2s"></div>
-        <div class="circle" style="animation-delay: 3s"></div>
+  <nb-card-body class="d-flex pb-5">
+    <div class="btn-with-arrow" *ngFor="let event of events$ | async let i = index let last = last">
+      <div>
+        <div class="animate-circle" [ngClass]="i !== 3 ? 'not-active': ''">
+          <button nbTooltip="{{event.name}} " nbTooltipStatus="primary" nbButton
+                  class="btn-circle" size="giant" outline status="primary">
+            <nb-icon icon="dumbbell" pack="font-awesome"></nb-icon>
+          </button>
+          <div class="circle" style="animation-delay: 0s"></div>
+          <div class="circle" style="animation-delay: 1s"></div>
+          <div class="circle" style="animation-delay: 2s"></div>
+          <div class="circle" style="animation-delay: 3s"></div>
+        </div>
+        <p class="event-date"> {{event.startDateTime | date}}</p>
       </div>
       <nb-icon class="arrow" icon="chevron-right" pack="font-awesome"></nb-icon>
     </div>

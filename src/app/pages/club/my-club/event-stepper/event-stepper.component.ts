@@ -1,17 +1,14 @@
-import { AfterContentInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { NbStepComponent } from '@nebular/theme';
-import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { Event } from '../../../../models/event.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'ngx-event-stepper',
   templateUrl: './event-stepper.component.html',
   styleUrls: ['./event-stepper.component.scss'],
-  providers: [{
-    provide: STEPPER_GLOBAL_OPTIONS, useValue: {displayDefaultIndicatorType: false}
-  }]
 })
 export class EventStepperComponent implements OnInit {
+  @Input() events$: Observable<Event[]>
   constructor() {}
 
   ngOnInit() {

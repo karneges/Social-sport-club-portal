@@ -24,13 +24,14 @@ import {
 import { PostEntityService } from './services/post-entity.service';
 import { PostDataService } from './services/post-data.service';
 import { Post } from './models/post.model';
+import { Event } from '../../models/event.model'
 import { BannerOfClubComponent } from './my-club/banner-of-club/banner-of-club.component';
 import { SinglePostComponent } from './my-club/list-of-posts/single-post/single-post.component';
 import { NewsPostPlaceholderComponent } from './my-club/list-of-posts/news-post-placeholder/news-post-placeholder.component';
 import { AddPostComponent } from './my-club/add-post/add-post.component';
 import { QuillModule } from 'ngx-quill';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { dateComparer } from '../../../utils/utils';
+import { dateComparerFact } from '../../../utils/utils';
 import { SharedModule } from '../../shared/shared.module';
 import { NbAuthModule } from '@nebular/auth';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -41,12 +42,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { EventEntityService } from './services/event-entity.service';
+import { EventDataService } from './services/event-data.service';
 
 
 const entityMetadata: EntityMetadataMap = {
   Posts: {
     selectId: (post: Post) => post._id,
-    sortComparer: dateComparer
+    sortComparer: dateComparerFact('publicationDate')
+  },
+  Events: {
+    selectId: (event: Event) => event._id,
+    sortComparer: dateComparerFact('startDateTime', true)
   }
 }
 
@@ -88,13 +95,15 @@ const entityMetadata: EntityMetadataMap = {
     NbTooltipModule
   ],
   exports: [MyClubComponent],
-  providers: [PostEntityService, PostDataService]
+  providers: [PostEntityService, PostDataService, EventEntityService, EventDataService]
 })
 export class ClubModule {
   constructor(private eds: EntityDefinitionService,
               private entityDataService: EntityDataService,
-              private postDataService: PostDataService) {
+              private postDataService: PostDataService,
+              private eventDataService: EventDataService) {
     eds.registerMetadataMap(entityMetadata)
     this.entityDataService.registerService('Posts', postDataService)
+    this.entityDataService.registerService('Events', eventDataService )
   }
 }

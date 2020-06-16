@@ -1,7 +1,23 @@
+<nb-card size="giant">
+  <nb-tabset fullWidth>
 
-  <nb-card size="tiny" >
-    <nb-card-body >
-      <div class="text-center">content </div>
-    </nb-card-body>
-  </nb-card>
+    <nb-tab tabTitle="Contacts">
+      <nb-list>
+        <nb-list-item class="contact" *ngFor="let user of users">
+          <nb-user  [name]="user.name" [title]="user.email" size="large"></nb-user>
+          <nb-icon icon="phone-outline" pack="eva"></nb-icon>
+        </nb-list-item>
+      </nb-list>
+    </nb-tab>
 
+    <nb-tab tabTitle="Recent">
+      <nb-list>
+        <nb-list-item class="contact" *ngFor="let user of users">
+          <nb-user  [name]="user.name" [title]="user.role" size="large"></nb-user>
+          <span class="caption">{{ user.dateAddToClub | date: 'shortTime' }}</span>
+        </nb-list-item>
+      </nb-list>
+    </nb-tab>
+
+  </nb-tabset>
+</nb-card>
