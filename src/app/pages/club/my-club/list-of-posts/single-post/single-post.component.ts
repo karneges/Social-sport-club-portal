@@ -1,5 +1,4 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { select, Store } from '@ngrx/store';
 import { Post } from '../../../models/post.model';
 import { PostEntityService } from '../../../services/post-entity.service';
 import { User } from '../../../../../models/user.model';

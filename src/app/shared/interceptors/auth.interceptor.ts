@@ -25,18 +25,6 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     this.store.dispatch(AuthActions.getAuthToken())
-    // return this.store.pipe(
-    //   select(AuthSelectors.token),
-    //   filter((token) => !!token && !isTokenExpired(token.expiresIn)),
-    //   first()
-    // ).pipe(
-    //   switchMap(({ token }) => {
-    //     const newReq = req.clone({
-    //       headers: req.headers.set('Authorization', `Bearer ${ token }`)
-    //     })
-    //     return next.handle(newReq)
-    //   })
-    // )
     const addAuthHeader$ = this.store.pipe(
       select(AuthSelectors.token),
       filter((token) => !!token && !isTokenExpired(token.expiresIn)),

@@ -9,7 +9,7 @@ import {
   NbFormFieldModule,
   NbIconModule,
   NbInputModule,
-  NbListModule, NbStepperModule, NbTooltipModule
+  NbListModule, NbStepperModule, NbTooltipModule, NbUserModule
 } from '@nebular/theme';
 import { StoreModule } from '@ngrx/store';
 import * as fromClub from './reducers';
@@ -92,7 +92,8 @@ const entityMetadata: EntityMetadataMap = {
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
-    NbTooltipModule
+    NbTooltipModule,
+    NbUserModule
   ],
   exports: [MyClubComponent],
   providers: [PostEntityService, PostDataService, EventEntityService, EventDataService]

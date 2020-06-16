@@ -1,6 +1,10 @@
 <div class="d-flex justify-content-between mr-1 mt-1">
   <div class="author">
-    <div class="author_avatar">{{post.author.name | slice: 0:1}}</div>
+    <nb-user size="large"
+             name="{{post.author.name}}"
+             onlyPicture
+             color="#2f3c61">
+    </nb-user>
     <div class="d-flex flex-column ml-2">
       <p class="mb-0"> Author: {{post.author.name}}</p>
       <p class="mb-0"> Public date: {{post.publicationDate | date: 'medium'}}</p>
