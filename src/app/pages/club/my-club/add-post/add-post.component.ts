@@ -1,8 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NbChatFormComponent } from '@nebular/theme';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PostDataService } from '../../services/post-data.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { PostEntityService } from '../../services/post-entity.service';
+import { User } from '../../../../models/user.model';
 
 @Component({
   selector: 'ngx-add-post',
@@ -10,13 +8,14 @@ import { PostEntityService } from '../../services/post-entity.service';
   styleUrls: ['./add-post.component.scss']
 })
 export class AddPostComponent implements OnInit {
+  @Input() currentUser: User
   editorIsHide = true
-
   constructor(private postEntityService: PostEntityService) {
   }
 
   onSubmitPost(formValue) {
-    this.postEntityService.add(formValue).subscribe(res => {
+    const addPostValues = {...formValue, author: this.currentUser._id}
+    this.postEntityService.add(addPostValues).subscribe(res => {
       this.changeEditorMode()
     })
   }

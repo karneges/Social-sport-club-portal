@@ -1,18 +1,18 @@
 <div class="d-flex justify-content-between mr-1 mt-1">
   <div class="author">
-    <div class="author_avatar">{{post.author | slice: 0:1}}</div>
+    <div class="author_avatar">{{post.author.name | slice: 0:1}}</div>
     <div class="d-flex flex-column ml-2">
-      <p class="mb-0"> Author: {{post.author}}</p>
+      <p class="mb-0"> Author: {{post.author.name}}</p>
       <p class="mb-0"> Public date: {{post.publicationDate | date: 'medium'}}</p>
       <p class="mb-0" *ngIf="post.updateDate"> Update date: {{post.updateDate | date: 'medium'}}</p>
     </div>
   </div>
   <div class="d-flex flex-column">
-    <button nbButton ghost status="danger" (click)="onDeletePost()">
+    <button nbButton ghost status="danger" *ngIf="currentUser?._id === post.author._id" (click)="onDeletePost()">
       <nb-icon icon="{{'trash-2-outline'}}"></nb-icon>
       Delete Post
     </button>
-    <button nbButton ghost status="warning" (click)="onEdit()">
+    <button nbButton ghost status="warning" *ngIf="currentUser?._id === post.author._id" (click)="onEdit()">
       <nb-icon icon="{{'edit-2-outline'}}"></nb-icon>
       Edit Post
     </button>

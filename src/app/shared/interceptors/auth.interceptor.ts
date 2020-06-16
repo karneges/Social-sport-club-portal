@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { merge, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { AuthState } from '../../pages/auth/auth.reducer';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthActions } from '../../pages/auth/auth.actions';
 import { AuthSelectors } from '../../pages/auth/auth.selectors';
-import { catchError, delay, distinct, filter, first, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, delay, distinct, filter, first, map, pluck, switchMap, take, tap } from 'rxjs/operators';
 import { JWTTokenService } from '../jwttoken.service';
 import { isTokenExpired } from '../../../utils/utils';
 
@@ -25,16 +25,38 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     this.store.dispatch(AuthActions.getAuthToken())
-    return this.store.pipe(
+    // return this.store.pipe(
+    //   select(AuthSelectors.token),
+    //   filter((token) => !!token && !isTokenExpired(token.expiresIn)),
+    //   first()
+    // ).pipe(
+    //   switchMap(({ token }) => {
+    //     const newReq = req.clone({
+    //       headers: req.headers.set('Authorization', `Bearer ${ token }`)
+    //     })
+    //     return next.handle(newReq)
+    //   })
+    // )
+    const addAuthHeader$ = this.store.pipe(
       select(AuthSelectors.token),
       filter((token) => !!token && !isTokenExpired(token.expiresIn)),
-      first()
-    ).pipe(
-      switchMap(({ token }) => {
-        const newReq = req.clone({
-          headers: req.headers.set('Authorization', `Bearer ${ token }`)
-        })
-        return next.handle(newReq)
+      pluck('token')
+    )
+    const withoutAuthHeader$ = this.store.pipe(
+      select(AuthSelectors.isUnAuthAccess),
+      first(is => is)
+    )
+
+    return merge(addAuthHeader$, withoutAuthHeader$).pipe(
+      first(),
+      switchMap((value) => {
+        if (typeof value === 'string') {
+          const newReq = req.clone({
+            headers: req.headers.set('Authorization', `Bearer ${ value }`)
+          })
+          return next.handle(newReq)
+        }
+        return next.handle(req)
       })
     )
   }

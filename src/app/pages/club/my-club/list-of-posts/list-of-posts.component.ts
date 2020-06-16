@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { Post } from '../../models/post.model';
 import { ClubActions } from '../../club.actions';
 import { PostEntityService } from '../../services/post-entity.service';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../reducers';
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import {
   distinctUntilChanged,
   filter,
@@ -15,6 +14,7 @@ import {
   tap,
 } from 'rxjs/operators';
 import { Params } from '@angular/router';
+import { AuthSelectors } from '../../../auth/auth.selectors';
 
 @Component({
   selector: 'ngx-list-of-posts',
@@ -25,6 +25,7 @@ export class ListOfPostsComponent implements OnInit, AfterViewInit {
 
   @Input() posts$: Observable<Post[]>
   scrollSubject = new Subject<boolean>()
+  currentUser$
   event: any;
   page = 0
   limit = 15
@@ -35,7 +36,11 @@ export class ListOfPostsComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.getPosts()
+    this.currentUser$ = this.store.pipe(
+      select(AuthSelectors.user)
+    )
   }
+
   ngAfterViewInit(): void {
     this.infinityScrollSubscribe()
   }

@@ -30,24 +30,13 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit(): void {
-    if (this.initialValue) {
       this.createUpdatePostForm()
-    } else {
-      this.createNewPostForm()
-    }
   }
 
-  createNewPostForm() {
-    this.postForm = this.fb.group({
-      content: ['', [Validators.required]],
-      author: ['5ed53f58700e1a97755dcee6']
-    })
-  }
 
   createUpdatePostForm() {
     this.postForm = this.fb.group({
-      content: [this.initialValue.content, [Validators.required]],
-      author: ['5ed53f58700e1a97755dcee6'],
+      content: [this.initialValue?.content ? this.initialValue.content : '', [Validators.required]],
     })
   }
 

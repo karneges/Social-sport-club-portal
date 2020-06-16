@@ -6,7 +6,7 @@
         (bottomThreshold)="onDown($event)">
         <nb-list-item class="overflow-hidden align-items-lg-start"
                       *ngFor="let post of posts$ | async">
-          <ngx-single-post [post]="post"></ngx-single-post>
+          <ngx-single-post [post]="post" [currentUser]="currentUser$ | async"></ngx-single-post>
         </nb-list-item>
         <nb-list-item *ngFor="let _ of placeholders">
           <ngx-news-post-placeholder></ngx-news-post-placeholder>

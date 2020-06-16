@@ -8,6 +8,8 @@ import { ClubSelectors } from '../club.selectors';
 import { Post } from '../models/post.model';
 import { Event } from '../../../models/event.model';
 import { EventEntityService } from '../services/event-entity.service';
+import { User } from '../../../models/user.model';
+import { AuthSelectors } from '../../auth/auth.selectors';
 
 @Component({
   selector: 'ngx-my-club',
@@ -18,6 +20,7 @@ export class MyClubComponent implements OnInit {
   club$: Observable<Club>
   posts$: Observable<Post[]>
   events$: Observable<Event[]>
+  currentUser$: Observable<User>
 
   constructor(private clubService: ClubService,
               private store: Store<AppState>,
@@ -30,6 +33,9 @@ export class MyClubComponent implements OnInit {
     )
     this.eventDataService.getAll()
     this.events$ = this.eventDataService.entities$
+    this.currentUser$ = this.store.pipe(
+      select(AuthSelectors.user)
+    )
   }
 
 }
