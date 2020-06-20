@@ -13,5 +13,6 @@ export interface User {
   challenges?: any
   statistics: string,
   password: string
-  createdAt: string
+  createdAt: string,
+  photoUrl?: string
 }

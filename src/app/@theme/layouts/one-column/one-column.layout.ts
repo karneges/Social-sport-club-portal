@@ -15,7 +15,7 @@ import { Component } from '@angular/core';
 
       <nb-layout-column>
         <div class="row">
-          <div class="col-md-12 col-lg-8 col-xxxl-9">
+            <div class="col-md-12 col-lg-8 col-xxxl-9">
             <ng-content select="router-outlet"></ng-content>
           </div>
           <div class="col-lg-4 col-xxxl-3">

@@ -32,8 +32,8 @@ export class AuthEffects {
   */
   fetchTokenByCredentials$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.accessTokenLoginPageRequest),
-    mergeMap(({ login, password = '', gId = '' }) => this.authService.getAccessTokenByCredentials({
-      login,
+    mergeMap(({ email, password = '', gId = '' }) => this.authService.getAccessTokenByCredentials({
+      email,
       password,
       gId
     })
@@ -51,8 +51,8 @@ export class AuthEffects {
   */
   fetchTokenByNewUserCredentials$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.accessTokenRegisterPageRequest),
-    mergeMap(({ login, password = '', gId = '' }) => this.authService
-      .registerUserAndGetAccessToken({ login, password, gId })
+    mergeMap((credential) => this.authService
+      .registerUserAndGetAccessToken(credential)
       .pipe(
         tap(res => this.jwtTokenService.setToken(res)),
         map(res => AuthActions.accessTokenReceived({ ...res })),
@@ -177,3 +177,4 @@ export class AuthEffects {
   }
 
 }
+

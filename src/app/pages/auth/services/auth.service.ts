@@ -6,6 +6,7 @@ import { User } from '../../../models/user.model';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { forEachComment } from 'tslint';
+import { RegisterModelResponse } from '../../../models/register.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class AuthService {
   constructor(private http: HttpClient) {
   }
 
-  getAccessTokenByCredentials(credentials: { login: string, password?: string, gId?: string }): Observable<AccessToken> {
+  getAccessTokenByCredentials(credentials: { email: string, password?: string, gId?: string }): Observable<AccessToken> {
     const url = `${ this.rootUrl }/login`
     return this.http.put<AccessTokenResponse>(url, credentials).pipe(
       map(res => {
@@ -27,9 +28,9 @@ export class AuthService {
   }
 
 
-  registerUserAndGetAccessToken(credentials: { login: string, password?: string, gId?: string }): Observable<AccessToken> {
+  registerUserAndGetAccessToken(credentials: RegisterModelResponse): Observable<AccessToken> {
     const url = `${ this.rootUrl }/register`
-    return this.http.put<AccessTokenResponse>(url, credentials).pipe(
+    return this.http.post<AccessTokenResponse>(url, credentials).pipe(
       map(res => {
         delete res.success
         return res

@@ -1,26 +1,28 @@
 import { createAction, props } from '@ngrx/store';
 import { User } from '../../models/user.model';
 import { AccessToken } from './models/auth.models';
+import { RegisterModelRequest, RegisterModelResponse } from '../../models/register.model';
+import { LoginModel } from '../../models/login.model';
 
 
 const login = createAction(
   '[Login Page] User Login',
-  props<{ login: string, password?: string, gId?: string }>()
+  props<LoginModel>()
 )
 
 const register = createAction(
   '[Login Page] User Register',
-  props<{ login: string, password?: string, gId?: string }>()
+  props<RegisterModelResponse>()
 )
 
 
 const accessTokenLoginPageRequest = createAction(
   '[Login Page] Access Token Login Page Request',
-  props<{ login: string, password?: string, gId?: string }>()
+  props<LoginModel>()
 )
 const accessTokenRegisterPageRequest = createAction(
   '[Register Page] Access Token Register Page Request',
-  props<{ login: string, password?: string, gId?: string }>()
+  props<RegisterModelRequest>()
 )
 const accessTokenRequest = createAction(
   '[Dashboard] Access Token Login Page Request',

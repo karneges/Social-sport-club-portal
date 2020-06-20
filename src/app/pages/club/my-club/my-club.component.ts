@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ClubService } from '../services/club.service';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../../../reducers';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Club } from '../models/club.model';
 import { ClubSelectors } from '../club.selectors';
 import { Post } from '../models/post.model';
@@ -17,11 +17,12 @@ import { SocketIoService } from '../../../shared/socket-io.service';
   templateUrl: './my-club.component.html',
   styleUrls: ['./my-club.component.scss']
 })
-export class MyClubComponent implements OnInit {
+export class MyClubComponent implements OnInit, OnDestroy {
   club$: Observable<Club>
   posts$: Observable<Post[]>
   events$: Observable<Event[]>
   currentUser$: Observable<User>
+  private socketSubscription: Subscription
 
   constructor(private clubService: ClubService,
               private store: Store<AppState>,
@@ -39,8 +40,11 @@ export class MyClubComponent implements OnInit {
       select(AuthSelectors.user)
     )
 
-    this.socketService.fromEvent('message').subscribe(console.log)
+    this.socketSubscription = this.socketService.fromEvent('message').subscribe(console.log)
 
+  }
+  ngOnDestroy() {
+    this.socketSubscription.unsubscribe()
   }
 
 }

@@ -5,6 +5,11 @@ import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeServ
 import { debounceTime, delay, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { Subject, Observable } from 'rxjs';
 import { RippleGlobalOptions } from '@angular/material/core';
+import { select, Store } from '@ngrx/store';
+import { AppState } from '../../../reducers';
+import { AuthActions } from '../../../pages/auth/auth.actions';
+import { AuthSelectors } from '../../../pages/auth/auth.selectors';
+import { User } from '../../../models/user.model';
 
 @Component({
   selector: 'ngx-header',
@@ -16,7 +21,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   public readonly materialTheme$: Observable<boolean>;
   userPictureOnly: boolean = false;
-  user: any;
+  user$: Observable<User>;
 
   themes = [
     {
@@ -54,6 +59,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private themeService: NbThemeService,
     private breakpointService: NbMediaBreakpointsService,
     private rippleService: RippleService,
+    private store: Store<AppState>
   ) {
     this.materialTheme$ = this.themeService.onThemeChange()
       .pipe(map(theme => {
@@ -63,6 +69,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.user$ = this.store.pipe(
+      select(AuthSelectors.user)
+    )
     this.currentTheme = this.themeService.currentTheme;
 
 
@@ -104,6 +113,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateHome() {
     this.menuService.navigateHome();
     return false;
+  }
+
+  onLogout() {
+    this.store.dispatch(AuthActions.logout())
   }
 }
 
