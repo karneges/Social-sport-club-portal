@@ -17,8 +17,9 @@ export class RemoveEmptyFieldInterceptor implements HttpInterceptor {
     if (!body) {
       return body
     }
+    const newBody = {}
     Object.keys(body)
-      .forEach(key => body[key] ? {} : delete body[key])
-    return body
+      .forEach(key => body[key] ? newBody[key] = body[key] : '')
+    return newBody
   }
 }

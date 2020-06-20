@@ -62,7 +62,8 @@ import { RemoveEmptyFieldInterceptor } from './shared/interceptors/removeEmptyFi
     ReactiveFormsModule,
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: RemoveEmptyFieldInterceptor, multi: true }, {
+    { provide: HTTP_INTERCEPTORS, useClass: RemoveEmptyFieldInterceptor, multi: true },
+    {
       provide: 'SocialAuthServiceConfig',
       useValue: {
         autoLogin: false,

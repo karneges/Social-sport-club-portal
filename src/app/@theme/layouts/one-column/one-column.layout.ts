@@ -14,16 +14,7 @@ import { Component } from '@angular/core';
       </nb-sidebar>
 
       <nb-layout-column>
-        <div class="row">
-            <div class="col-md-12 col-lg-8 col-xxxl-9">
-            <ng-content select="router-outlet"></ng-content>
-          </div>
-          <div class="col-lg-4 col-xxxl-3">
-            <div class="sticky-top">
-              <ng-content></ng-content>
-            </div>
-          </div>
-        </div>
+        <ng-content></ng-content>
 
       </nb-layout-column>
 

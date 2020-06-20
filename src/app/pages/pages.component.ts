@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { AuthActions } from './auth/auth.actions';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, tap } from 'rxjs/operators';
+import { filter, startWith, tap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { ifError } from 'assert';
 
@@ -15,8 +15,16 @@ import { ifError } from 'assert';
   template: `
     <ngx-one-column-layout>
       <nb-menu [items]="menu"></nb-menu>
-      <router-outlet></router-outlet>
-      <ngx-list-of-users *ngIf="!isAuth"></ngx-list-of-users>
+      <div class="row">
+        <div class="col-md-12" [ngClass]="getClasses()">
+          <router-outlet></router-outlet>
+        </div>
+        <div *ngIf="!isAuth" class="col-lg-4 col-xxxl-3">
+          <div class="sticky-top">
+            <ngx-list-of-users></ngx-list-of-users>
+          </div>
+        </div>
+      </div>
     </ngx-one-column-layout>
   `,
 })
@@ -24,6 +32,7 @@ export class PagesComponent implements OnInit {
 
   menu = MENU_ITEMS;
   isAuth: boolean
+
   constructor(private store: Store<AppState>,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -32,14 +41,17 @@ export class PagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.router.events.pipe(
-      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
-      tap(e => console.log(this.isAuth)),
-      // tap(e => this.isAuth = e.url.includes('auth'))
+      startWith(this.router.url),
+      tap(e => this.isAuth = this.router.url.includes('auth'))
     ).subscribe()
     if (!this.isAuth) {
       this.store.dispatch(AuthActions.authByCachedToken())
     }
 
+  }
+
+  getClasses() {
+    return this.isAuth ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9'
   }
 
 }

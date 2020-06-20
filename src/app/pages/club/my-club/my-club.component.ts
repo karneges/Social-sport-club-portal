@@ -40,9 +40,11 @@ export class MyClubComponent implements OnInit, OnDestroy {
       select(AuthSelectors.user)
     )
 
-    this.socketSubscription = this.socketService.fromEvent('message').subscribe(console.log)
+    this.socketSubscription = this.socketService.fromEvent('auth').subscribe(console.log)
+    this.socketService.emit('auth', 'new auth')
 
   }
+
   ngOnDestroy() {
     this.socketSubscription.unsubscribe()
   }
