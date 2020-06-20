@@ -10,6 +10,7 @@ import { Event } from '../../../models/event.model';
 import { EventEntityService } from '../services/event-entity.service';
 import { User } from '../../../models/user.model';
 import { AuthSelectors } from '../../auth/auth.selectors';
+import { SocketIoService } from '../../../shared/socket-io.service';
 
 @Component({
   selector: 'ngx-my-club',
@@ -24,7 +25,8 @@ export class MyClubComponent implements OnInit {
 
   constructor(private clubService: ClubService,
               private store: Store<AppState>,
-              private eventDataService: EventEntityService) {
+              private eventDataService: EventEntityService,
+              private socketService: SocketIoService) {
   }
 
   ngOnInit(): void {
@@ -36,6 +38,9 @@ export class MyClubComponent implements OnInit {
     this.currentUser$ = this.store.pipe(
       select(AuthSelectors.user)
     )
+
+    this.socketService.fromEvent('message').subscribe(console.log)
+
   }
 
 }

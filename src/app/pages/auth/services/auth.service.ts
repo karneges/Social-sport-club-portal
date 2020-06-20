@@ -5,6 +5,7 @@ import { AccessToken, AccessTokenResponse } from '../models/auth.models';
 import { User } from '../../../models/user.model';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { forEachComment } from 'tslint';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,20 @@ export class AuthService {
   constructor(private http: HttpClient) {
   }
 
-  getAccessTokenByCredentials(login: string, password: string): Observable<AccessToken> {
-    return this.http.put<AccessTokenResponse>(`${ this.rootUrl }/login`, { login, password }).pipe(
+  getAccessTokenByCredentials(credentials: { login: string, password?: string, gId?: string }): Observable<AccessToken> {
+    const url = `${ this.rootUrl }/login`
+    return this.http.put<AccessTokenResponse>(url, credentials).pipe(
+      map(res => {
+        delete res.success
+        return res
+      })
+    )
+  }
+
+
+  registerUserAndGetAccessToken(credentials: { login: string, password?: string, gId?: string }): Observable<AccessToken> {
+    const url = `${ this.rootUrl }/register`
+    return this.http.put<AccessTokenResponse>(url, credentials).pipe(
       map(res => {
         delete res.success
         return res
@@ -36,10 +49,10 @@ export class AuthService {
   getNewAccessTokenByRefreshToken(refreshToken: string): Observable<AccessToken> {
     return this.http.get<AccessTokenResponse>(`${ this.rootUrl }/token`,
       { headers: { 'Authorization': `Bearer ${ refreshToken }` } }).pipe(
-        map(res => {
-          const {success, ...token} = res
-          return token
-        })
+      map(res => {
+        const { success, ...token } = res
+        return token
+      })
     )
   }
 

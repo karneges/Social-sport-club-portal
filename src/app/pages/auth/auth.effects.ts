@@ -4,7 +4,7 @@ import { AuthService } from './services/auth.service';
 import { AuthActions } from './auth.actions';
 import {
   catchError, delay,
-  distinct, distinctUntilChanged, distinctUntilKeyChanged,
+  distinctUntilChanged,
   filter,
   first,
   map,
@@ -17,19 +17,26 @@ import { AuthState } from './auth.reducer';
 import { AuthSelectors } from './auth.selectors';
 import { JWTTokenService } from '../../shared/jwttoken.service';
 import { Router } from '@angular/router';
-import { Observable, of, OperatorFunction } from 'rxjs';
+import { of } from 'rxjs';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { AccessToken } from './models/auth.models';
 import { isTokenExpired } from '../../../utils/utils';
 import { HttpErrorResponse } from '@angular/common/http';
-import { log } from 'util';
 
 
 @Injectable()
 export class AuthEffects {
+  /*
+   This is first step in login without token
+   Fetching token
+  */
   fetchTokenByCredentials$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.accessTokenLoginPageRequest),
-    mergeMap(({ login, password }) => this.authService.getAccessTokenByCredentials(login, password)
+    mergeMap(({ login, password = '', gId = '' }) => this.authService.getAccessTokenByCredentials({
+      login,
+      password,
+      gId
+    })
       .pipe(
         tap(res => this.jwtTokenService.setToken(res)),
         map(res => AuthActions.accessTokenReceived({ ...res })),
@@ -38,6 +45,23 @@ export class AuthEffects {
     )
   )
 
+  /*
+   This is first step in register
+   Fetching token
+  */
+  fetchTokenByNewUserCredentials$ = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.accessTokenRegisterPageRequest),
+    mergeMap(({ login, password = '', gId = '' }) => this.authService
+      .registerUserAndGetAccessToken({ login, password, gId })
+      .pipe(
+        tap(res => this.jwtTokenService.setToken(res)),
+        map(res => AuthActions.accessTokenReceived({ ...res })),
+        catchError(e => of(AuthActions.loginFailure({ error: e })))
+      ))
+    )
+  )
+
+  // Second auth step fetching user info with access token
   fetchUserInformationByToken$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.userInformationRequest),
     mergeMap(({ token }) => this.authService.getUserInformation(token)
@@ -49,6 +73,7 @@ export class AuthEffects {
     )
   )
 
+  // Util method just send only valid token from user information end point
   getUserDataByToken$ = () => {
     return this.store.pipe(
       select(AuthSelectors.token)
@@ -59,19 +84,44 @@ export class AuthEffects {
     )
   }
 
-
+  /*
+   Higher order method ,this place of start login
+   1) Run getting access token
+   2) Run getting user data with valid token
+  */
   loginUser$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.login),
     tap(cred => this.store.dispatch(AuthActions.accessTokenLoginPageRequest(cred))),
     switchMap(this.getUserDataByToken$)
   ))
-
+  /*
+   Higher order method ,this place of start register
+   1) Run getting access token
+   2) Run getting user data with valid token
+  */
+  registerUser$ = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.register),
+    tap(cred => this.store.dispatch(AuthActions.accessTokenRegisterPageRequest(cred))),
+    switchMap(this.getUserDataByToken$)
+  ))
+  /*
+   Higher order method ,this place of start auth with cached token
+   1) Check, if token has
+   2) Run getting user data with valid token
+  */
   loginUserByCachedToken$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.authByCachedToken),
     tap(() => this.store.dispatch(AuthActions.getAuthToken())),
     switchMap(this.getUserDataByToken$))
   )
 
+  /*
+   Util method of management tokens
+   If token is live return token
+   Else try get new token with refresh token
+   If have no token or, an error was received
+   Switch app in unAuthAccess mode
+  */
   getToken$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.getAuthToken),
     switchMap(() => this.store.pipe(select(AuthSelectors.fetchingToken))),
@@ -105,6 +155,18 @@ export class AuthEffects {
       return AuthActions.unAuthorizeAccess()
     })
   ))
+
+  /*
+ Delete token
+ And switch app in unAuthAccess mode
+*/
+  logout$ = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.logout),
+    tap(() => {
+      this.localStorageService.removeField('token')
+      this.store.dispatch(AuthActions.getAuthToken())
+    })
+  ), { dispatch: false })
 
 
   constructor(private actions$: Actions, private authService: AuthService,

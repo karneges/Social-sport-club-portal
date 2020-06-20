@@ -5,12 +5,22 @@ import { AccessToken } from './models/auth.models';
 
 const login = createAction(
   '[Login Page] User Login',
-  props<{ login: string, password: string }>()
+  props<{ login: string, password?: string, gId?: string }>()
 )
+
+const register = createAction(
+  '[Login Page] User Register',
+  props<{ login: string, password?: string, gId?: string }>()
+)
+
 
 const accessTokenLoginPageRequest = createAction(
   '[Login Page] Access Token Login Page Request',
-  props<{ login: string, password: string }>()
+  props<{ login: string, password?: string, gId?: string }>()
+)
+const accessTokenRegisterPageRequest = createAction(
+  '[Register Page] Access Token Register Page Request',
+  props<{ login: string, password?: string, gId?: string }>()
 )
 const accessTokenRequest = createAction(
   '[Dashboard] Access Token Login Page Request',
@@ -33,7 +43,7 @@ const getAuthToken = createAction(
 
 const setAuthToken = createAction(
   '[Dashboard] Set Auth Token',
-  props<{token: AccessToken }>()
+  props<{ token: AccessToken }>()
 )
 
 const removeAuthToken = createAction(
@@ -71,22 +81,28 @@ const authFailure = createAction(
 const unAuthorizeAccess = createAction(
   '[Dashboard] Un Auth Access'
 )
+const logout = createAction(
+  '[Login Page | Dashboard] Logout'
+)
 
 export const AuthActions = {
   login,
+  register,
   userInformationRequest,
   accessTokenReceived,
   userInformationReceived,
   loginFailure,
   accessTokenRequest,
   accessTokenLoginPageRequest,
+  accessTokenRegisterPageRequest,
   authByCachedToken,
   getAuthToken,
   setAuthToken,
   removeAuthToken,
   authTokenFetching,
   authFailure,
-  unAuthorizeAccess
+  unAuthorizeAccess,
+  logout
 }
 
 
