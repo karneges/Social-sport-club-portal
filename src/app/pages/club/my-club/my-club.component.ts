@@ -10,7 +10,10 @@ import { Event } from '../../../models/event.model';
 import { EventEntityService } from '../services/event-entity.service';
 import { User } from '../../../models/user.model';
 import { AuthSelectors } from '../../auth/auth.selectors';
+import { SocketIoBaseService } from '../../../shared/socket-io-base.service';
 import { SocketIoService } from '../../../shared/socket-io.service';
+import { filter, first, switchMap, tap } from 'rxjs/operators';
+import { log } from 'util';
 
 @Component({
   selector: 'ngx-my-club',
@@ -39,10 +42,14 @@ export class MyClubComponent implements OnInit, OnDestroy {
     this.currentUser$ = this.store.pipe(
       select(AuthSelectors.user)
     )
-
-    this.socketSubscription = this.socketService.fromEvent('auth').subscribe(console.log)
-    this.socketService.emit('auth', 'new auth')
-
+    this.store.pipe(
+      select(AuthSelectors.token),
+      first(token => !!token?.token),
+      switchMap(({ token }) => this.socketService.socketAuth(token))
+    ).subscribe()
+    this.socketService.socketConnect().pipe(
+      tap(r => console.log(r.id))
+    ).subscribe()
   }
 
   ngOnDestroy() {
