@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { share } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-// import * as io from 'socket.io-client';
 import * as io from 'socket.io-client'
 
 @Injectable({
@@ -12,10 +11,10 @@ export class SocketIoBaseService {
   subscribersCounter: Record<string, number> = {};
   eventObservables$: Record<string, Observable<any>> = {};
   ioSocket: SocketIOClient.Socket;
-  url = environment.API_BASE_URL_SOCKET;
 
   constructor() {
-    // this.ioSocket = io(url, { autoConnect: false, query })
+    const url: string = environment.API_BASE_URL_SOCKET;
+    this.ioSocket = io(url)
   }
 
   of(namespace: string) {
@@ -30,21 +29,8 @@ export class SocketIoBaseService {
     this.ioSocket.once(eventName, callback);
   }
 
-  connect(token): Observable<SocketIOClient.Socket> {
-    this.ioSocket = io(this.url, {
-      autoConnect: false,
-      query: {
-        token
-      }
-    })
-    return new Observable(observer => {
-      const socket = this.ioSocket.connect()
-      this.ioSocket.on('connect', () => {
-        observer.next(socket)
-      })
-      return observer.unsubscribe
-    })
-
+  connect() {
+    return this.ioSocket.connect();
   }
 
   disconnect(close?: any) {

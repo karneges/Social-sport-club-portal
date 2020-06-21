@@ -15,4 +15,5 @@ export interface User {
   password: string
   createdAt: string,
   photoUrl?: string
+  isOnline: boolean
 }

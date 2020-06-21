@@ -17,7 +17,8 @@ export interface AuthState {
   }
   fetchingToken: boolean,
   error: string,
-  unAuthAccess: boolean
+  unAuthAccess: boolean,
+  webSocketAuthConnect: boolean
 }
 
 export const initialState: AuthState = {
@@ -26,7 +27,8 @@ export const initialState: AuthState = {
   token: undefined,
   fetchingToken: false,
   error: undefined,
-  unAuthAccess: true
+  unAuthAccess: true,
+  webSocketAuthConnect: undefined
 };
 
 
@@ -79,14 +81,21 @@ export const reducer = createReducer(
       ...state,
       error: action.error,
       unAuthAccess: true,
+      webSocketAuthConnect: false,
       user: undefined,
       token: undefined
     }
   })),
-  on(AuthActions.loginFailure, ((state, action) =>  {
+  on(AuthActions.loginFailure, ((state, action) => {
     return {
       ...state,
       error: action.error.message
+    }
+  })),
+  on(AuthActions.authenticationSocketReceived, ((state) => {
+    return {
+      ...state,
+      webSocketAuthConnect: true
     }
   }))
 );

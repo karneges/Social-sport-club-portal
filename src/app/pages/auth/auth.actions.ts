@@ -69,7 +69,12 @@ const userInformationReceived = createAction(
   props<{ user: User }>()
 )
 
-// const
+const authenticationSocketWithToken = createAction(
+  '[Login Page | Dashboard] Authorization ws connect'
+)
+const authenticationSocketReceived = createAction(
+  '[Login Page | Dashboard] Authorization ws received'
+)
 
 const loginFailure = createAction(
   '[Login Page] Login Failure',
@@ -99,11 +104,13 @@ export const AuthActions = {
   accessTokenLoginPageRequest,
   accessTokenRegisterPageRequest,
   authByCachedToken,
+  authenticationSocketWithToken,
   getAuthToken,
   setAuthToken,
   removeAuthToken,
   authTokenFetching,
   authFailure,
+  authenticationSocketReceived,
   unAuthorizeAccess,
   logout
 }

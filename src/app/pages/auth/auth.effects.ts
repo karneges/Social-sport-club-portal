@@ -22,6 +22,7 @@ import { LocalStorageService } from '../../shared/local-storage.service';
 import { AccessToken } from './models/auth.models';
 import { isTokenExpired } from '../../../utils/utils';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SocketIoService } from '../../shared/socket-io.service';
 
 
 @Injectable()
@@ -72,6 +73,18 @@ export class AuthEffects {
       ))
     )
   )
+
+
+  authenticationWebsocketConnect$ = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.userInformationRequest),
+    tap(() => this.store.dispatch(AuthActions.authenticationSocketWithToken())),
+    switchMap(({ token }) => this.socketIoService.socketAuth(token)),
+    tap(r => {
+      debugger
+    }),
+    filter(res => res),
+    map(res => AuthActions.authenticationSocketReceived())
+  ))
 
   // Util method just send only valid token from user information end point
   getUserDataByToken$ = () => {
@@ -157,6 +170,15 @@ export class AuthEffects {
   ))
 
   /*
+Disconnect token
+And switch app in unAuthAccess mode
+*/
+  websocketDisconnect$ = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.unAuthorizeAccess),
+    tap(() => this.socketIoService.socketDisconnect())
+  ), { dispatch: false })
+
+  /*
  Delete token
  And switch app in unAuthAccess mode
 */
@@ -173,7 +195,8 @@ export class AuthEffects {
               private store: Store<AuthState>,
               private jwtTokenService: JWTTokenService,
               private router: Router,
-              private localStorageService: LocalStorageService) {
+              private localStorageService: LocalStorageService,
+              private socketIoService: SocketIoService) {
   }
 
 }

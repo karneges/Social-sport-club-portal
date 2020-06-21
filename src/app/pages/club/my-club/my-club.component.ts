@@ -42,18 +42,10 @@ export class MyClubComponent implements OnInit, OnDestroy {
     this.currentUser$ = this.store.pipe(
       select(AuthSelectors.user)
     )
-    this.store.pipe(
-      select(AuthSelectors.token),
-      first(token => !!token?.token),
-      switchMap(({ token }) => this.socketService.socketAuth(token))
-    ).subscribe()
-    this.socketService.socketConnect().pipe(
-      tap(r => console.log(r.id))
-    ).subscribe()
   }
 
   ngOnDestroy() {
-    this.socketSubscription.unsubscribe()
+    // this.socketSubscription.unsubscribe()
   }
 
 }

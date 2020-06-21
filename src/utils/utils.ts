@@ -1,15 +1,7 @@
 import { Post } from '../app/pages/club/models/post.model';
 import { AccessToken } from '../app/pages/auth/models/auth.models';
+import { User } from '../app/models/user.model';
 
-export const dateComparer = (a: Post, b: Post): 1 | -1 => {
-  const aDate = new Date(a.publicationDate).getTime()
-  const bDate = new Date(b.publicationDate).getTime()
-  if (aDate < bDate) {
-    return 1
-  } else {
-    return -1
-  }
-}
 
 export const dateComparerFact = (fieldName: string, reverse = false) => (a: Post, b: Post): 1 | -1 => {
   const aDate = new Date(a[fieldName]).getTime()
@@ -20,6 +12,7 @@ export const dateComparerFact = (fieldName: string, reverse = false) => (a: Post
     return -1
   }
 }
+export const onlineComparer = ({ isOnline }: User) => isOnline ? -1 : 1
 
 export const isTokenExpired = (expiresIn: string) => {
   const tokenExpireDate = new Date(expiresIn).getTime()
