@@ -3,20 +3,15 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { merge, Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { AuthState } from '../../pages/auth/auth.reducer';
-import { ActivatedRoute, Router } from '@angular/router';
 import { AuthActions } from '../../pages/auth/auth.actions';
 import { AuthSelectors } from '../../pages/auth/auth.selectors';
-import { catchError, delay, distinct, filter, first, map, pluck, switchMap, take, tap } from 'rxjs/operators';
-import { JWTTokenService } from '../jwttoken.service';
+import { filter, first, pluck, switchMap } from 'rxjs/operators';
 import { isTokenExpired } from '../../../utils/utils';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private store: Store<AuthState>,
-              private activatedRoute: ActivatedRoute,
-              private router: Router,
-              private jwtTokenService: JWTTokenService) {
+  constructor(private store: Store<AuthState>) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

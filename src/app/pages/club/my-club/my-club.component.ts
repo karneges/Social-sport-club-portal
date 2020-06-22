@@ -44,8 +44,4 @@ export class MyClubComponent implements OnInit, OnDestroy {
     )
   }
 
-  ngOnDestroy() {
-    // this.socketSubscription.unsubscribe()
-  }
-
 }

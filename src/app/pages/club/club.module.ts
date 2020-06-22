@@ -31,7 +31,7 @@ import { NewsPostPlaceholderComponent } from './my-club/list-of-posts/news-post-
 import { AddPostComponent } from './my-club/add-post/add-post.component';
 import { QuillModule } from 'ngx-quill';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { dateComparerFact, onlineComparer } from '../../../utils/utils';
+import { dateComparerFact } from '../../../utils/utils';
 import { SharedModule } from '../../shared/shared.module';
 import { NbAuthModule } from '@nebular/auth';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -44,9 +44,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { EventEntityService } from './services/event-entity.service';
 import { EventDataService } from './services/event-data.service';
-import { User } from '../../models/user.model';
-import { UserDataService } from './services/user-data.service';
-import { UserEntityService } from './services/user-entity.service';
 
 
 const entityMetadata: EntityMetadataMap = {
@@ -58,10 +55,6 @@ const entityMetadata: EntityMetadataMap = {
     selectId: (event: Event) => event._id,
     sortComparer: dateComparerFact('startDateTime', true)
   },
-  Users: {
-    selectId: (user: User) => user._id,
-    sortComparer: onlineComparer
-  }
 }
 
 @NgModule({
@@ -103,17 +96,15 @@ const entityMetadata: EntityMetadataMap = {
     NbUserModule
   ],
   exports: [MyClubComponent],
-  providers: [PostEntityService, PostDataService, EventEntityService, EventDataService, UserDataService, UserEntityService]
+  providers: [PostEntityService, PostDataService, EventEntityService, EventDataService]
 })
 export class ClubModule {
   constructor(private eds: EntityDefinitionService,
               private entityDataService: EntityDataService,
               private postDataService: PostDataService,
-              private eventDataService: EventDataService,
-              private userDataService: UserDataService) {
+              private eventDataService: EventDataService) {
     eds.registerMetadataMap(entityMetadata)
     this.entityDataService.registerService('Posts', postDataService)
     this.entityDataService.registerService('Events', eventDataService)
-    this.entityDataService.registerService('Users', userDataService)
   }
 }

@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { UserEntityService } from '../club/services/user-entity.service';
 import { User } from '../../models/user.model';
 import { Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { UsersState } from '../../shared/users/users.reducer';
+import { UsersSelectors } from '../../shared/users/users.selectors';
+import { UserActions } from '../../shared/users/users.actions';
 
 @Component({
   selector: 'ngx-list-of-users',
@@ -10,12 +13,14 @@ import { Observable } from 'rxjs';
 })
 export class ListOfUsersComponent implements OnInit {
   users$: Observable<User[]>
-  constructor(private userEntityService: UserEntityService) {
+
+  constructor(private store: Store<UsersState>) {
   }
 
   ngOnInit(): void {
-    this.users$ = this.userEntityService.entities$
-    this.userEntityService.getAll()
+    this.store.dispatch(UserActions.loadUsers())
+    this.store.dispatch(UserActions.userStatusChangedWSSubscription())
+    this.users$ = this.store.pipe(select(UsersSelectors.users))
   }
 
 }

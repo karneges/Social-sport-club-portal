@@ -1,15 +1,6 @@
-import {
-  ActionReducer,
-  ActionReducerMap,
-  createFeatureSelector,
-  createSelector,
-  MetaReducer
-} from '@ngrx/store';
-
 
 export interface AppState {
-
+  user: boolean
 }
 
-export const reducers: ActionReducerMap<AppState> = {
-};
+export const reducers: {} = {};

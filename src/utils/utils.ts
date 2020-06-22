@@ -1,5 +1,4 @@
 import { Post } from '../app/pages/club/models/post.model';
-import { AccessToken } from '../app/pages/auth/models/auth.models';
 import { User } from '../app/models/user.model';
 
 

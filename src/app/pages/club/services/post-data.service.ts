@@ -32,8 +32,11 @@ export class PostDataService extends DefaultDataService<Post> {
   }
 
   update(update: Update<Post>): Observable<Post> {
+    let params: Params
+      params = update.changes
+    const url = `${ environment.API_BASE_URL }/clubs/${ this.clubId }/posts/${ update.id }`
     return this.http
-      .put<{ message: string, post: Post }>(`${ environment.API_BASE_URL }/clubs/${ this.clubId }/posts/${ update.id }`, update.changes)
+      .put<{ message: string, post: Post }>(url, update.changes, { params })
       .pipe(
         map(res => res.post)
       )

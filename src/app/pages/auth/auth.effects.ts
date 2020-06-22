@@ -15,7 +15,6 @@ import {
 import { select, Store } from '@ngrx/store';
 import { AuthState } from './auth.reducer';
 import { AuthSelectors } from './auth.selectors';
-import { JWTTokenService } from '../../shared/jwttoken.service';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { LocalStorageService } from '../../shared/local-storage.service';
@@ -39,7 +38,7 @@ export class AuthEffects {
       gId
     })
       .pipe(
-        tap(res => this.jwtTokenService.setToken(res)),
+        tap(res => this.localStorageService.addItem('token', res)),
         map(res => AuthActions.accessTokenReceived({ ...res })),
         catchError(e => of(AuthActions.loginFailure({ error: e })))
       ))
@@ -55,7 +54,7 @@ export class AuthEffects {
     mergeMap((credential) => this.authService
       .registerUserAndGetAccessToken(credential)
       .pipe(
-        tap(res => this.jwtTokenService.setToken(res)),
+        tap(res => this.localStorageService.addItem('token', res)),
         map(res => AuthActions.accessTokenReceived({ ...res })),
         catchError(e => of(AuthActions.loginFailure({ error: e })))
       ))
@@ -79,9 +78,6 @@ export class AuthEffects {
     ofType(AuthActions.userInformationRequest),
     tap(() => this.store.dispatch(AuthActions.authenticationSocketWithToken())),
     switchMap(({ token }) => this.socketIoService.socketAuth(token)),
-    tap(r => {
-      debugger
-    }),
     filter(res => res),
     map(res => AuthActions.authenticationSocketReceived())
   ))
@@ -193,7 +189,6 @@ And switch app in unAuthAccess mode
 
   constructor(private actions$: Actions, private authService: AuthService,
               private store: Store<AuthState>,
-              private jwtTokenService: JWTTokenService,
               private router: Router,
               private localStorageService: LocalStorageService,
               private socketIoService: SocketIoService) {

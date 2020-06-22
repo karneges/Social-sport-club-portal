@@ -5,6 +5,7 @@ import { QuillModule } from 'ngx-quill';
 import { modules } from '../../utils/quill-settings';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NbButtonModule, NbCardModule } from '@nebular/theme';
+import { UsersModule } from './users/users.module';
 
 const SHARED_COMPONENTS = [EditorComponent]
 
@@ -17,6 +18,7 @@ const SHARED_COMPONENTS = [EditorComponent]
     }),
     ReactiveFormsModule,
     NbButtonModule,
+    UsersModule,
     NbCardModule,
   ],
   exports: SHARED_COMPONENTS

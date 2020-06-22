@@ -16,7 +16,6 @@ export class SocketIoService {
     const authStream$: Observable<boolean> = new Observable(observer => {
       this.socketIoBaseService.emit('auth', authToken, (answer: boolean) => {
         observer.next(answer)
-        // observer.complete()
       })
     })
     return connect$.pipe(
@@ -33,7 +32,6 @@ export class SocketIoService {
       }
       socket.on('connect', () => {
         observer.next(socket)
-        // observer.complete()
       })
     })
   }
@@ -45,7 +43,6 @@ export class SocketIoService {
   getMessage() {
     return this.socketIoBaseService.fromEvent('message')
   }
-
   sendPrivateMessageTo(fromUserId: string, message: string) {
     this.socketIoBaseService.emit('privateMessage', { fromUserId, message })
   }
