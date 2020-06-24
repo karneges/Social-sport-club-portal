@@ -1,22 +1,28 @@
 <nb-card>
   <nb-tabset fullWidth>
 
-    <nb-tab tabTitle="Contacts">
+    <nb-tab tabTitle="Contacts" class="overflow-visible">
       <nb-list>
-        <nb-list-item class="d-flex justify-content-between" *ngFor="let user of users$ | async">
-          <div class="position-relative d-flex justify-content-around">
+        <nb-list-item class="d-flex justify-content-between" *ngFor="let user of users$ | async let idx = index"
+                      [class.selected]="user?._id === currentChatUserId">
+          <div class="user-container">
+            <div cdkDrag *ngIf="currentChatUserId === user?._id">
+              <ngx-chat [reverseHeader]="idx >= 7" [user]="user" (onCloseChat)="currentChatUserId = ''"></ngx-chat>
+            </div>
+
             <nb-user
               [name]="user.name"
-                     [title]="user.role"
-                     [picture]="user.photoUrl"
-                     badgeText="0"
-                     badgeStatus="success"
-                     badgePosition="bottom right"
-                     size="large">
+              [title]="user.role"
+              [picture]="user.photoUrl"
+              badgeText="0"
+              badgeStatus="success"
+              badgePosition="bottom right"
+              size="medium">
             </nb-user>
             <div *ngIf="user.isOnline" class="online-status"></div>
           </div>
-          <nb-icon icon="message-circle-outline" pack="eva"></nb-icon>
+          <nb-icon icon="message-circle-outline" class="cursor-pointer" (click)="setCurrentChatUser(user._id)"
+                   pack="eva"></nb-icon>
 
         </nb-list-item>
       </nb-list>
@@ -24,10 +30,10 @@
 
     <nb-tab tabTitle="Recent">
       <nb-list>
-<!--        <nb-list-item class="contact" *ngFor="let user of users">-->
-<!--          <nb-user [name]="user.name" [title]="user.role" size="large"></nb-user>-->
-<!--          <span class="caption">{{ user.dateAddToClub | date: 'shortTime' }}</span>-->
-<!--        </nb-list-item>-->
+        <!--        <nb-list-item class="contact" *ngFor="let user of users">-->
+        <!--          <nb-user [name]="user.name" [title]="user.role" size="large"></nb-user>-->
+        <!--          <span class="caption">{{ user.dateAddToClub | date: 'shortTime' }}</span>-->
+        <!--        </nb-list-item>-->
       </nb-list>
     </nb-tab>
 

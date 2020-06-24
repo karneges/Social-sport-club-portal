@@ -4,10 +4,8 @@ import { MENU_ITEMS } from './pages-menu';
 import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { AuthActions } from './auth/auth.actions';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, startWith, tap } from 'rxjs/operators';
-import { Location } from '@angular/common';
-import { ifError } from 'assert';
+import { Router } from '@angular/router';
+import { startWith, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-pages',
@@ -15,13 +13,15 @@ import { ifError } from 'assert';
   template: `
     <ngx-one-column-layout>
       <nb-menu [items]="menu"></nb-menu>
-      <div class="row">
-        <div class="col-md-12" [ngClass]="getClasses()">
-          <router-outlet></router-outlet>
-        </div>
-        <div *ngIf="!isAuth" class="col-lg-4 col-xxxl-3">
-          <div class="sticky-top">
-            <ngx-list-of-users></ngx-list-of-users>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12" [ngClass]="getClasses()">
+            <router-outlet></router-outlet>
+          </div>
+          <div *ngIf="!isAuth" class="col-lg-4 col-xxxl-3">
+            <div class="sticky-top">
+              <ngx-list-of-users></ngx-list-of-users>
+            </div>
           </div>
         </div>
       </div>
@@ -34,9 +34,7 @@ export class PagesComponent implements OnInit {
   isAuth: boolean
 
   constructor(private store: Store<AppState>,
-              private router: Router,
-              private activatedRoute: ActivatedRoute,
-              private  location: Location) {
+              private router: Router) {
   }
 
   ngOnInit(): void {

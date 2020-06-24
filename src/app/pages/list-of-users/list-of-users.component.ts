@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { User } from '../../models/user.model';
 import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -11,8 +11,9 @@ import { UserActions } from '../../shared/users/users.actions';
   templateUrl: './list-of-users.component.html',
   styleUrls: ['./list-of-users.component.scss']
 })
-export class ListOfUsersComponent implements OnInit {
+export class ListOfUsersComponent implements OnInit, AfterViewInit {
   users$: Observable<User[]>
+  currentChatUserId: string
 
   constructor(private store: Store<UsersState>) {
   }
@@ -23,6 +24,13 @@ export class ListOfUsersComponent implements OnInit {
     this.users$ = this.store.pipe(select(UsersSelectors.users))
   }
 
+  ngAfterViewInit(): void {
+
+  }
+
+  setCurrentChatUser(id: string) {
+    this.currentChatUserId = id
+  }
 }
 
 

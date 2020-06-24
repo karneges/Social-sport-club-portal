@@ -20,12 +20,11 @@ import { log } from 'util';
   templateUrl: './my-club.component.html',
   styleUrls: ['./my-club.component.scss']
 })
-export class MyClubComponent implements OnInit, OnDestroy {
+export class MyClubComponent implements OnInit {
   club$: Observable<Club>
   posts$: Observable<Post[]>
   events$: Observable<Event[]>
   currentUser$: Observable<User>
-  private socketSubscription: Subscription
 
   constructor(private clubService: ClubService,
               private store: Store<AppState>,
