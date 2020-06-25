@@ -8,6 +8,8 @@ import {
   ViewChild
 } from '@angular/core';
 import { User } from '../../../models/user.model';
+import { select, Store } from '@ngrx/store';
+import { MessageState } from '../messages.reducer';
 
 @Component({
   selector: 'ngx-chat',
@@ -25,10 +27,13 @@ export class ChatComponent implements OnInit, AfterViewInit {
     return this.reverseHeader ? `-399px` : 0
   }
 
-  constructor(private hostElement: ElementRef) {
+  constructor(private hostElement: ElementRef, private store: Store<MessageState>) {
   }
 
   ngOnInit(): void {
+    // this.store.pipe(
+    //   select
+    // )
   }
 
 

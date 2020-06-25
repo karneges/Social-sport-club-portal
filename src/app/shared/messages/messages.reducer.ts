@@ -1,12 +1,12 @@
 import { createReducer, on } from '@ngrx/store';
-import { Message } from './models/message.model';
 import { MessageActions } from './messages.actions';
+import { MessageCameFromServer } from './models/message.model';
 
 
 export const messagesFeatureKey = 'messages';
 
 export interface MessageState {
-  messages: Message[],
+  messages: MessageCameFromServer[],
   loadingMessage: boolean,
   wsSubscription: boolean
 }
@@ -27,7 +27,7 @@ export const reducer = createReducer(
       loadingMessage: false
     }
   }),
-  on(MessageActions.loadMessage, ((state, action) => {
+  on(MessageActions.loadMessagesFromUser, ((state, action) => {
     return {
       ...state,
       loadingMessage: true
