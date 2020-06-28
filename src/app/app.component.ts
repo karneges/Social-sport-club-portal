@@ -5,6 +5,8 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { NbIconLibraries } from '@nebular/theme';
+import { Store } from '@ngrx/store';
+import { AppState } from './reducers';
 // import Quill from 'quill';
 //
 // // add image resize module
@@ -17,7 +19,7 @@ import { NbIconLibraries } from '@nebular/theme';
 
 export class AppComponent implements OnInit {
 
-  constructor(private iconLibraries: NbIconLibraries, private iconsLibrary: NbIconLibraries) {
+  constructor(private iconLibraries: NbIconLibraries, private iconsLibrary: NbIconLibraries, private store: Store<AppState>) {
     this.iconLibraries.registerFontPack('font-awesome', { packClass: 'fa', iconClassPrefix: 'fa' });
     this.iconLibraries.registerFontPack('regular', { packClass: 'far', iconClassPrefix: 'fa' });
     this.iconLibraries.registerFontPack('solid', { packClass: 'fas', iconClassPrefix: 'fa' });

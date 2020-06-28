@@ -10,6 +10,13 @@ import {
 import { User } from '../../../models/user.model';
 import { select, Store } from '@ngrx/store';
 import { MessageState } from '../messages.reducer';
+import { MessageCameFromServerAndAdapt } from '../models/message.model';
+import { Messageslectors } from '../messages.selectors';
+import { first, map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { MessageActions } from '../messages.actions';
+import { prepareMessage } from '../utils/prepareMessage';
+import { AuthSelectors } from '../../../pages/auth/auth.selectors';
 
 @Component({
   selector: 'ngx-chat',
@@ -17,7 +24,7 @@ import { MessageState } from '../messages.reducer';
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent implements OnInit, AfterViewInit {
-  @Input() user: User
+  @Input('user') userChatCompanion: User
   @Input() reverseHeader: boolean
   @ViewChild('chatRef') chat
   @Output() onCloseChat = new EventEmitter()
@@ -27,38 +34,46 @@ export class ChatComponent implements OnInit, AfterViewInit {
     return this.reverseHeader ? `-399px` : 0
   }
 
+  user$: Observable<User>
+
+  messages$: Observable<MessageCameFromServerAndAdapt[]>
+
   constructor(private hostElement: ElementRef, private store: Store<MessageState>) {
   }
 
   ngOnInit(): void {
-    // this.store.pipe(
-    //   select
-    // )
+    this.messages$ = this.store.pipe(
+      select(Messageslectors.messages),
+      map((messages) => messages[this.userChatCompanion._id]))
+
+    this.user$ = this.store.pipe(
+      select(AuthSelectors.user)
+    )
+    this.store.dispatch(MessageActions.loadMessagesFromUser({ userId: this.userChatCompanion._id }))
   }
 
 
-  messages: any[] = [];
+  // sendMessage(event: { message: string, files: any[] }, replay: boolean) {
+  //   const files = !event.files ? [] : event.files.map((file) => {
+  //     return {
+  //       url: file.src,
+  //       type: file.type,
+  //       icon: 'file-text-outline',
+  //     };
+  //   });
+  //   this.store.dispatch(MessageActions.sendNewMessage())
+  // }
 
-  sendMessage(event: any, userName: string, avatar: string, reply: boolean) {
-    const files = !event.files ? [] : event.files.map((file) => {
-      return {
-        url: file.src,
-        type: file.type,
-        icon: 'file-text-outline',
-      };
-    });
+  sendMessage(event: { message: string, files: any[] }, replay: boolean) {
+    this.user$.pipe(
+      map((user) =>
+        prepareMessage(event.message, user._id, this.userChatCompanion._id)),
+      tap(message => this.store.dispatch(MessageActions.sendNewMessage({
+        message,
+        chatCompanionId: this.userChatCompanion._id
+      }))),
+      first()).subscribe()
 
-    this.messages.push({
-      text: event.message,
-      date: new Date(),
-      reply: reply,
-      type: files.length ? 'file' : 'text',
-      files: files,
-      user: {
-        name: userName,
-        avatar: avatar,
-      },
-    });
   }
 
 

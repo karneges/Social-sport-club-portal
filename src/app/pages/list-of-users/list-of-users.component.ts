@@ -20,7 +20,6 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.store.dispatch(UserActions.loadUsers())
-    this.store.dispatch(UserActions.userStatusChangedWSSubscription())
     this.users$ = this.store.pipe(select(UsersSelectors.users))
   }
 

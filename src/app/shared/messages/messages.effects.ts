@@ -16,7 +16,7 @@ export class MessagesEffects {
   openWsMessagesSubscription$ = createEffect(() => this.actions$.pipe(
     ofType(MessageActions.openWsMessageSubscription),
     switchMap(() => this.messagesService.wsMessagesSubscription()),
-    map((message) => MessageActions.receivedNewMessage({ message }))
+    map((message) => MessageActions.receivedNewMessage(message))
   ))
 
   sendNewMessage$ = createEffect(() => this.actions$.pipe(

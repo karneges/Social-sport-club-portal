@@ -1,10 +1,10 @@
 import { createAction, props } from '@ngrx/store';
-import { MessageCameFromServer, NewMessageClientCreated } from './models/message.model';
+import { MessageCameFromServerAndAdapt, NewMessageClientCreated } from './models/message.model';
 
 
 const fetchedMessages = createAction(
   '[Dashboard] message fetched',
-  props<{ messages: MessageCameFromServer[] }>()
+  props<{ messages: MessageCameFromServerAndAdapt[], chatCompanionId: string }>()
 )
 const loadMessagesFromUser = createAction(
   '[Dashboard] message fetching',
@@ -12,11 +12,11 @@ const loadMessagesFromUser = createAction(
 )
 const receivedNewMessage = createAction(
   '[Dashboard] received a new message',
-  props<{ message: MessageCameFromServer }>()
+  props<{ message: MessageCameFromServerAndAdapt, chatCompanionId: string}>()
 )
 const sendNewMessage = createAction(
   '[Dashboard] send a new message',
-  props<{ message: NewMessageClientCreated }>()
+  props<{ message: NewMessageClientCreated , chatCompanionId: string}>()
 )
 const openWsMessageSubscription = createAction(
   '[Dashboard] Open Ws Message Subscription'

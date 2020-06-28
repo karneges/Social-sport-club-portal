@@ -19,6 +19,7 @@ import { ListOfUsersComponent } from './list-of-users/list-of-users.component';
 import { SharedModule } from '../shared/shared.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MessagesModule } from '../shared/messages/messages.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
@@ -36,7 +37,7 @@ import { MessagesModule } from '../shared/messages/messages.module';
         NbIconModule,
         SharedModule,
         DragDropModule,
-        MessagesModule
+        MessagesModule,
     ],
   declarations: [
     PagesComponent,

@@ -1,20 +1,21 @@
-// import { createFeatureSelector, createSelector } from '@ngrx/store';
-//
-//
-// const selectClubState = createFeatureSelector<ClubState>('clubState')
-//
-// const club = createSelector(
-//   selectClubState,
-//   (clubState) => clubState.club
-// )
-//
-// const postsOfClub = createSelector(
-//   club,
-//   ({ posts }) => posts
-// )
-//
-//
-// export const ClubSelectors = {
-//   club,
-//   postsOfClub
-// }
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { MessageState } from './messages.reducer';
+
+
+const selectMessageState = createFeatureSelector<MessageState>('messages')
+
+const messages = createSelector(
+  selectMessageState,
+  (messageState) => messageState.messages
+)
+
+const isMessageLoading = createSelector(
+  selectMessageState,
+  (messageState) => messageState.loadingMessage
+)
+
+
+export const Messageslectors = {
+  messages,
+  isMessageLoading
+}

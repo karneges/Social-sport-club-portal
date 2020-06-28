@@ -1,18 +1,21 @@
 import { createReducer, on } from '@ngrx/store';
 import { MessageActions } from './messages.actions';
-import { MessageCameFromServer } from './models/message.model';
+import { MessageCameFromServerAndAdapt } from './models/message.model';
 
 
 export const messagesFeatureKey = 'messages';
 
 export interface MessageState {
-  messages: MessageCameFromServer[],
+  messages: {
+    [key: string]: MessageCameFromServerAndAdapt[]
+  }
   loadingMessage: boolean,
   wsSubscription: boolean
 }
 
 export const initialState: MessageState = {
-  messages: undefined,
+  // @ts-ignore
+  messages: [],
   loadingMessage: undefined,
   wsSubscription: undefined
 };
@@ -23,7 +26,10 @@ export const reducer = createReducer(
   on(MessageActions.fetchedMessages, (state, action) => {
     return {
       ...state,
-      message: action.messages,
+      messages: {
+        ...state.messages,
+        [action.chatCompanionId]: action.messages
+      },
       loadingMessage: false
     }
   }),
@@ -34,16 +40,31 @@ export const reducer = createReducer(
     }
   })),
   on(MessageActions.receivedNewMessage, ((state, action) => {
+    const newCurrentUserMessageState = state.messages[action.chatCompanionId]
+      // @ts-ignore
+      ? [...state.messages[action.chatCompanionId], action.message]
+      : [action.message]
       return {
         ...state,
-        message: [...state.messages, action.message]
+        messages: {
+          ...state.messages,
+          [action.chatCompanionId]: newCurrentUserMessageState
+        }
       }
     })
   ),
   on(MessageActions.sendNewMessage, ((state, action) => {
+    const { message: { text }, sender } = action.message
+    const newCurrentUserMessageState = state.messages[action.chatCompanionId]
+      // @ts-ignore
+      ? [...state.messages[action.chatCompanionId], { text, sender }]
+      : [{ text, sender }]
     return {
       ...state,
-      message: [...state.messages, action.message]
+      messages: {
+        ...state.messages,
+        [action.chatCompanionId]: newCurrentUserMessageState
+      }
     }
   })),
   on(MessageActions.openWsMessageSubscription, ((state, action) => {

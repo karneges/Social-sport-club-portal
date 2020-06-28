@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
 import { MENU_ITEMS } from './pages-menu';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { AuthActions } from './auth/auth.actions';
-import { Router } from '@angular/router';
+import { Router} from '@angular/router';
 import { startWith, tap } from 'rxjs/operators';
+import { UserActions } from '../shared/users/users.actions';
+import { MessageActions } from '../shared/messages/messages.actions';
 
 @Component({
   selector: 'ngx-pages',
@@ -18,7 +20,7 @@ import { startWith, tap } from 'rxjs/operators';
           <div class="col-md-12" [ngClass]="getClasses()">
             <router-outlet></router-outlet>
           </div>
-          <div *ngIf="!isAuth" class="col-lg-4 col-xxxl-3">
+          <div *ngIf="!isAuthPage" class="col-lg-4 col-xxxl-3">
             <div class="sticky-top">
               <ngx-list-of-users></ngx-list-of-users>
             </div>
@@ -31,25 +33,35 @@ import { startWith, tap } from 'rxjs/operators';
 export class PagesComponent implements OnInit {
 
   menu = MENU_ITEMS;
-  isAuth: boolean
+  isAuthPage: boolean
 
   constructor(private store: Store<AppState>,
               private router: Router) {
   }
 
   ngOnInit(): void {
-    this.router.events.pipe(
-      startWith(this.router.url),
-      tap(e => this.isAuth = this.router.url.includes('auth'))
-    ).subscribe()
-    if (!this.isAuth) {
+    this.initialWsSubscription()
+    this.routerEventsSubscription()
+    // Any first page except auth pages should try to regain access by token.
+    if (!this.isAuthPage) {
       this.store.dispatch(AuthActions.authByCachedToken())
     }
-
+  }
+  routerEventsSubscription() {
+    this.router.events.pipe(
+      startWith(this.router.url),
+      tap(e => this.isAuthPage = this.router.url.includes('auth'))
+    ).subscribe()
   }
 
   getClasses() {
-    return this.isAuth ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9'
+    return this.isAuthPage ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9'
+  }
+
+  // When app start this method init all static WS subscription
+  initialWsSubscription() {
+    this.store.dispatch(UserActions.userStatusChangedWSSubscription())
+    this.store.dispatch(MessageActions.openWsMessageSubscription())
   }
 
 }

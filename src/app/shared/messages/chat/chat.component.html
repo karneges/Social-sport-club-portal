@@ -1,18 +1,11 @@
 
   <nb-icon icon="close" (click)="onCloseChat.emit()"></nb-icon>
-  <nb-chat #chatRef *ngIf="user" [title]="user.name" size="medium" status="warning">
-    <nb-chat-message *ngFor="let message of messages"
-                     [type]="message.type"
+  <nb-chat #chatRef *ngIf="userChatCompanion" [title]="userChatCompanion.name" size="medium" status="warning">
+    <nb-chat-message *ngFor="let message of messages$ | async"
+                     [type]="'text'"
                      [message]="message.text"
-                     [reply]="message.reply"
-                     [sender]="message.user.name"
-                     [date]="message.date"
-                     [files]="message.files"
-                     [quote]="message.quote"
-                     [latitude]="message.latitude"
-                     [longitude]="message.longitude"
-                     [avatar]="message.user.avatar"></nb-chat-message>
-    <nb-chat-form (send)="sendMessage($event, 'Jake', 'http://www.reactiongifs.com/r/wnd1.gif', true)"
+                     [sender]="message.sender"></nb-chat-message>
+    <nb-chat-form (send)="sendMessage($event, true)"
                   [showButton]="false" [dropFiles]="true">
     </nb-chat-form>
   </nb-chat>
