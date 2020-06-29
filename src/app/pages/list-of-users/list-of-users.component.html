@@ -1,15 +1,14 @@
-<nb-card>
+<nb-card *ngIf="users$ | async as users">
+  <div #chatWrapper cdkDrag [cdkDragFreeDragPosition]="dragPosition">
+    <ngx-chat *ngIf="isChatOpen" [style.top]="chatOffset" [user]="currentChatUserId"
+              (onCloseChat)="isChatOpen = false"></ngx-chat>
+  </div>
   <nb-tabset fullWidth>
-
     <nb-tab tabTitle="Contacts" class="overflow-visible">
       <nb-list>
         <nb-list-item class="d-flex justify-content-between" *ngFor="let user of users$ | async let idx = index"
-                      [class.selected]="user?._id === currentChatUserId">
-          <div class="user-container">
-            <div cdkDrag *ngIf="currentChatUserId === user?._id">
-              <ngx-chat [reverseHeader]="idx >= 7" [user]="user" (onCloseChat)="currentChatUserId = ''"></ngx-chat>
-            </div>
-
+                      [class.selected]="user?._id === currentChatUserId?._id">
+          <div class="user-container" #userContainer>
             <nb-user
               [name]="user.name"
               [title]="user.role"
@@ -21,9 +20,9 @@
             </nb-user>
             <div *ngIf="user.isOnline" class="online-status"></div>
           </div>
-          <nb-icon icon="message-circle-outline" class="cursor-pointer" (click)="setCurrentChatUser(user._id)"
+          <nb-icon icon="message-circle-outline" class="cursor-pointer"
+                   (click)="setCurrentChatUser(userContainer, user)"
                    pack="eva"></nb-icon>
-
         </nb-list-item>
       </nb-list>
     </nb-tab>

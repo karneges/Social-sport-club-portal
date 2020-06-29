@@ -1,21 +1,20 @@
 import {
-  AfterViewInit,
+  AfterViewInit, ChangeDetectorRef,
   Component,
   ElementRef, EventEmitter,
   HostBinding,
-  Input,
-  OnInit, Output,
+  Input, OnChanges,
+  OnInit, Output, SimpleChanges,
   ViewChild
 } from '@angular/core';
 import { User } from '../../../models/user.model';
 import { select, Store } from '@ngrx/store';
 import { MessageState } from '../messages.reducer';
-import { MessageCameFromServerAndAdapt } from '../models/message.model';
+import { MessageCameFromServerAndAdapt, NewMessageClientCreated } from '../models/message.model';
 import { Messageslectors } from '../messages.selectors';
 import { first, map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { MessageActions } from '../messages.actions';
-import { prepareMessage } from '../utils/prepareMessage';
 import { AuthSelectors } from '../../../pages/auth/auth.selectors';
 
 @Component({
@@ -23,7 +22,7 @@ import { AuthSelectors } from '../../../pages/auth/auth.selectors';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent implements OnInit, AfterViewInit {
+export class ChatComponent implements OnInit, AfterViewInit, OnChanges {
   @Input('user') userChatCompanion: User
   @Input() reverseHeader: boolean
   @ViewChild('chatRef') chat
@@ -33,23 +32,25 @@ export class ChatComponent implements OnInit, AfterViewInit {
   get top() {
     return this.reverseHeader ? `-399px` : 0
   }
-
   user$: Observable<User>
 
   messages$: Observable<MessageCameFromServerAndAdapt[]>
 
-  constructor(private hostElement: ElementRef, private store: Store<MessageState>) {
+  constructor(private hostElement: ElementRef, private store: Store<MessageState>, private cd: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
-    this.messages$ = this.store.pipe(
-      select(Messageslectors.messages),
-      map((messages) => messages[this.userChatCompanion._id]))
-
     this.user$ = this.store.pipe(
       select(AuthSelectors.user)
     )
-    this.store.dispatch(MessageActions.loadMessagesFromUser({ userId: this.userChatCompanion._id }))
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.userChatCompanion) {
+      this.messages$ = this.store.pipe(
+        select(Messageslectors.messages),
+        map((messages) => messages[this.userChatCompanion._id]))
+      this.store.dispatch(MessageActions.loadMessagesFromUser({ userId: this.userChatCompanion._id }))
+    }
   }
 
 
@@ -67,7 +68,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   sendMessage(event: { message: string, files: any[] }, replay: boolean) {
     this.user$.pipe(
       map((user) =>
-        prepareMessage(event.message, user._id, this.userChatCompanion._id)),
+        new NewMessageClientCreated(event.message, user._id, this.userChatCompanion._id)),
       tap(message => this.store.dispatch(MessageActions.sendNewMessage({
         message,
         chatCompanionId: this.userChatCompanion._id
@@ -85,5 +86,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     }
 
   }
+
+
 
 }

@@ -19,11 +19,7 @@ export class MessagesService {
     return this.http.get<{ status: string, count: number, messages: MessageCameFromServer[] }>(`${ this.baseUrl }/${ chatCompanionId }`)
       .pipe(
         map((res) => {
-          const messages = res.messages.map(({ message, sender }) => ({
-            text: message.text,
-            time: message.time,
-            sender
-          }))
+          const messages = res.messages.map((res) => (new MessageCameFromServerAndAdapt(res)))
           return { messages, chatCompanionId }
         })
       )
@@ -31,14 +27,10 @@ export class MessagesService {
 
   wsMessagesSubscription(): Observable<{ message: MessageCameFromServerAndAdapt, chatCompanionId: string }> {
     return this.socketIoService.fromEvent<MessageCameFromServer>('newMessage').pipe(
-      map(({ message, sender }) => {
+      map((res) => {
         return {
-          message: {
-            text: message.text,
-            time: message.time,
-            sender
-          },
-          chatCompanionId: sender
+          message: new MessageCameFromServerAndAdapt(res),
+          chatCompanionId: res.sender
         }
       })
     )

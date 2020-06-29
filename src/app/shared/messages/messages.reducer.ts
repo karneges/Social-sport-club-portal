@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { MessageActions } from './messages.actions';
 import { MessageCameFromServerAndAdapt } from './models/message.model';
+import { messagesReducerAdapter } from './utils/messages.reducer-adapter';
 
 
 export const messagesFeatureKey = 'messages';
@@ -40,31 +41,16 @@ export const reducer = createReducer(
     }
   })),
   on(MessageActions.receivedNewMessage, ((state, action) => {
-    const newCurrentUserMessageState = state.messages[action.chatCompanionId]
-      // @ts-ignore
-      ? [...state.messages[action.chatCompanionId], action.message]
-      : [action.message]
       return {
         ...state,
-        messages: {
-          ...state.messages,
-          [action.chatCompanionId]: newCurrentUserMessageState
-        }
+        messages: messagesReducerAdapter(state, action)
       }
     })
   ),
   on(MessageActions.sendNewMessage, ((state, action) => {
-    const { message: { text }, sender } = action.message
-    const newCurrentUserMessageState = state.messages[action.chatCompanionId]
-      // @ts-ignore
-      ? [...state.messages[action.chatCompanionId], { text, sender }]
-      : [{ text, sender }]
     return {
       ...state,
-      messages: {
-        ...state.messages,
-        [action.chatCompanionId]: newCurrentUserMessageState
-      }
+      messages: messagesReducerAdapter(state, action)
     }
   })),
   on(MessageActions.openWsMessageSubscription, ((state, action) => {
