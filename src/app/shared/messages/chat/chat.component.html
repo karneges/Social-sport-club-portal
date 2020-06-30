@@ -1,12 +1,13 @@
-
-  <nb-icon icon="close" (click)="onCloseChat.emit()"></nb-icon>
-  <nb-chat #chatRef *ngIf="userChatCompanion" [title]="userChatCompanion.name" size="medium" status="warning">
-    <nb-chat-message *ngFor="let message of messages$ | async"
-                     [type]="'text'"
-                     [message]="message.text"
-                     [sender]="message.sender"></nb-chat-message>
-    <nb-chat-form (send)="sendMessage($event, true)"
-                  [showButton]="false" [dropFiles]="true">
-    </nb-chat-form>
-  </nb-chat>
+<nb-icon icon="close" (click)="onCloseChat.emit()"></nb-icon>
+<nb-chat #chatRef *ngIf="userChatCompanion" [title]="userChatCompanion.name" size="medium" status="warning">
+  <nb-chat-message *ngFor="let message of messages$ | async"
+                   [type]="'text'"
+                   [reply]="message.sender._id !== userChatCompanion._id"
+                   [avatar]="message.sender.photoUrl"
+                   [message]="message.text"
+                   [sender]="message.sender.name"></nb-chat-message>
+  <nb-chat-form (send)="sendMessage($event, true)"
+                [showButton]="false" [dropFiles]="true">
+  </nb-chat-form>
+</nb-chat>
 

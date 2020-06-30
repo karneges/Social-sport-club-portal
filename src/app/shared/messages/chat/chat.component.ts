@@ -77,7 +77,8 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges, AfterVie
     this.messages$ = this.changeDetector.pipe(
       switchMap(() => this.store.pipe(
         select(Messageslectors.messages),
-        map((messages) => messages[this.userChatCompanion._id]))
+        withLatestFrom(this.user$),
+        map(([messages]) => messages[this.userChatCompanion._id])),
       )
     )
   }
@@ -113,7 +114,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges, AfterVie
   sendMessage(event: { message: string, files: any[] }, replay: boolean) {
     this.user$.pipe(
       map((user) =>
-        new NewMessageClientCreated(event.message, user._id, this.userChatCompanion._id)),
+        new NewMessageClientCreated(event.message, user, this.userChatCompanion._id)),
       tap(message => this.store.dispatch(MessageActions.sendNewMessage({
         message,
         chatCompanionId: this.userChatCompanion._id

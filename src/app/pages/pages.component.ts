@@ -4,10 +4,12 @@ import { MENU_ITEMS } from './pages-menu';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { AuthActions } from './auth/auth.actions';
-import { Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { startWith, tap } from 'rxjs/operators';
 import { UserActions } from '../shared/users/users.actions';
 import { MessageActions } from '../shared/messages/messages.actions';
+import { NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'ngx-pages',
@@ -36,17 +38,21 @@ export class PagesComponent implements OnInit {
   isAuthPage: boolean
 
   constructor(private store: Store<AppState>,
-              private router: Router) {
+              private router: Router,
+              private toastrService: NbToastrService,
+              private updates$: Actions) {
   }
 
   ngOnInit(): void {
     this.initialWsSubscription()
     this.routerEventsSubscription()
+    this.globalSubscription()
     // Any first page except auth pages should try to regain access by token.
     if (!this.isAuthPage) {
       this.store.dispatch(AuthActions.authByCachedToken())
     }
   }
+
   routerEventsSubscription() {
     this.router.events.pipe(
       startWith(this.router.url),
@@ -64,4 +70,15 @@ export class PagesComponent implements OnInit {
     this.store.dispatch(MessageActions.openWsMessageSubscription())
   }
 
+  private globalSubscription() {
+    this.updates$.pipe(
+      ofType(MessageActions.receivedNewMessage),
+      tap(({ message }) => {
+        const { text, sender } = message[0]
+        this.toastrService.show(
+          `New Message from ${ sender.name }`,
+          `${ text }`, { position: NbGlobalLogicalPosition.BOTTOM_END, duration: 3000 })
+      })
+    ).subscribe()
+  }
 }

@@ -48,6 +48,7 @@ import { RemoveEmptyFieldInterceptor } from './shared/interceptors/removeEmptyFi
     NbMenuModule.forRoot(),
     NbDatepickerModule.forRoot(),
     NbDialogModule.forRoot(),
+    NbToastrModule.forRoot(),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
     NbAuthModule.forRoot(),

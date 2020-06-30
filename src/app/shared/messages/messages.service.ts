@@ -15,28 +15,23 @@ export class MessagesService {
   constructor(private http: HttpClient, private socketIoService: SocketIoBaseService) {
   }
 
-  getMessages(chatCompanionId: string): Observable<{ messages: MessageCameFromServerAndAdapt[], chatCompanionId: string }> {
+  getMessages(chatCompanionId: string): Observable<{ messages: MessageCameFromServer[], chatCompanionId: string }> {
     return this.http.get<{ status: string, count: number, messages: MessageCameFromServer[] }>(`${ this.baseUrl }/${ chatCompanionId }`)
-      .pipe(
-        map((res) => {
-          const messages = res.messages.map((res) => (new MessageCameFromServerAndAdapt(res)))
-          return { messages, chatCompanionId }
-        })
-      )
+      .pipe(map(({ messages }) => ({ messages, chatCompanionId })))
   }
 
-  wsMessagesSubscription(): Observable<{ message: MessageCameFromServerAndAdapt, chatCompanionId: string }> {
+  wsMessagesSubscription(): Observable<{ messages: MessageCameFromServer[], chatCompanionId: string }> {
     return this.socketIoService.fromEvent<MessageCameFromServer>('newMessage').pipe(
-      map((res) => {
-        return {
-          message: new MessageCameFromServerAndAdapt(res),
-          chatCompanionId: res.sender
-        }
-      })
+      map((res) => ({ messages: [res], chatCompanionId: res.sender })
+      )
     )
   }
 
   wsSendNewMessage(message: NewMessageClientCreated) {
-    return this.socketIoService.emit('newMessage', message)
+    const messageWithoutFullSender = { ...message, sender: message.sender._id }
+    return this.socketIoService.emit('newMessage', messageWithoutFullSender)
+  }
+  wsMessageWasReade(message: MessageCameFromServerAndAdapt) {
+    return this.socketIoService.emit('messageReade', message._id)
   }
 }

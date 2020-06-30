@@ -12,10 +12,14 @@ const loadMessagesFromUser = createAction(
 )
 const receivedNewMessage = createAction(
   '[Dashboard] received a new message',
-  props<{ message: MessageCameFromServerAndAdapt, chatCompanionId: string}>()
+  props<{ message: MessageCameFromServerAndAdapt[], chatCompanionId: string}>()
 )
 const sendNewMessage = createAction(
   '[Dashboard] send a new message',
+  props<{ message: NewMessageClientCreated , chatCompanionId: string}>()
+)
+const messageWasReade = createAction(
+  '[Chat Component] message was reade',
   props<{ message: NewMessageClientCreated , chatCompanionId: string}>()
 )
 const openWsMessageSubscription = createAction(
