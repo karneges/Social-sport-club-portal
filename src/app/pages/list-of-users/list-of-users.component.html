@@ -1,13 +1,16 @@
 <nb-card *ngIf="users$ | async as users">
-  <div #chatWrapper cdkDrag [cdkDragFreeDragPosition]="dragPosition">
-    <ngx-chat *ngIf="isChatOpen" [style.top]="chatOffset" [user]="currentChatUserId"
+  <div #chatWrapper cdkDrag>
+    <ngx-chat [reverseHeader]="reverseChatHeader"
+              *ngIf="isChatOpen"
+              [style.top]="chatOffset"
+              [user]="currentChatUser"
               (onCloseChat)="isChatOpen = false"></ngx-chat>
   </div>
   <nb-tabset fullWidth>
     <nb-tab tabTitle="Contacts" class="overflow-visible">
       <nb-list>
         <nb-list-item class="d-flex justify-content-between" *ngFor="let user of users$ | async let idx = index"
-                      [class.selected]="user?._id === currentChatUserId?._id">
+                      [class.selected]="user?._id === currentChatUser?._id && isChatOpen">
           <div class="user-container" #userContainer>
             <nb-user
               [name]="user.name"

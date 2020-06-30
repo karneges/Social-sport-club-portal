@@ -21,14 +21,13 @@ import { CdkDrag } from '@angular/cdk/drag-drop';
   styleUrls: ['./list-of-users.component.scss']
 })
 export class ListOfUsersComponent implements OnInit, AfterViewInit {
-  users$: Observable<User[]>
-  currentChatUserId: User
   @ViewChild('chatWrapper') chatWrapper: ElementRef
-  @ViewChild(CdkDrag) cdkDrag
-  @ViewChildren('userContainer') userContainer: QueryList<ElementRef>;
+  @ViewChild(CdkDrag) cdkDragEl: CdkDrag<HTMLDivElement>
+  users$: Observable<User[]>
+  currentChatUser: User
   chatOffset: string;
-  isChatOpen: boolean
-  dragPosition: any;
+  isChatOpen: boolean;
+  reverseChatHeader: boolean;
 
   constructor(private store: Store<UsersState>) {
 
@@ -43,14 +42,20 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
 
   }
 
-  setCurrentChatUser(e: HTMLDivElement, user: User) {
-    this.cdkDrag.reset()
+  setCurrentChatUser(el: HTMLDivElement, user: User) {
+    // Reset position of drag element
+    this.cdkDragEl.reset()
+    // Turn On flag openChat and set currentUser
     this.isChatOpen = true
-    this.currentChatUserId = user
+    this.currentChatUser = user
+    // find top difference between current list item and chat wrapper and set css 'top' property
     const { top: wrapperTop } = this.chatWrapper.nativeElement.getBoundingClientRect()
-    const { top: currentElementTop } = e.getBoundingClientRect()
+    const { top: currentElementTop } = el.getBoundingClientRect()
     const difference = currentElementTop - wrapperTop
-    this.chatOffset = `${ difference }px`
+    this.reverseChatHeader = difference > 360
+    // if chat reversed need subtract chat height
+    const CHAT_HEIGHT = 399
+    this.chatOffset = `${ this.reverseChatHeader ? difference - CHAT_HEIGHT : difference }px`
   }
 }
 
