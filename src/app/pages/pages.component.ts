@@ -71,14 +71,14 @@ export class PagesComponent implements OnInit {
   }
 
   private globalSubscription() {
-    this.updates$.pipe(
-      ofType(MessageActions.receivedNewMessage),
-      tap(({ message }) => {
-        const { text, sender } = message[0]
-        this.toastrService.show(
-          `New Message from ${ sender.name }`,
-          `${ text }`, { position: NbGlobalLogicalPosition.BOTTOM_END, duration: 3000 })
-      })
-    ).subscribe()
+    // this.updates$.pipe(
+    //   ofType(MessageActions.receivedNewMessage),
+    //   tap(({ message }) => {
+    //     const { text, sender } = message[0]
+    //     this.toastrService.show(
+    //       `New Message from ${ sender.name }`,
+    //       `${ text }`, { position: NbGlobalLogicalPosition.BOTTOM_END, duration: 3000 })
+    //   })
+    // ).subscribe()
   }
 }

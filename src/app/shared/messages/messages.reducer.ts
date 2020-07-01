@@ -1,15 +1,13 @@
 import { createReducer, on } from '@ngrx/store';
 import { MessageActions } from './messages.actions';
-import { MessageCameFromServerAndAdapt } from './models/message.model';
+import { BaseMessageEntity } from './models/message.model';
 import { messagesReducerAdapter } from './utils/messages.reducer-adapter';
 
 
 export const messagesFeatureKey = 'messages';
 
 export interface MessageState {
-  messages: {
-    [key: string]: MessageCameFromServerAndAdapt[]
-  }
+  messages: BaseMessageEntity
   loadingMessage: boolean,
   wsSubscription: boolean
 }
@@ -24,13 +22,10 @@ export const initialState: MessageState = {
 
 export const reducer = createReducer(
   initialState,
-  on(MessageActions.fetchedMessages, (state, action) => {
+  on(MessageActions.fetchedMessagesWithOneUser, (state, action) => {
     return {
       ...state,
-      messages: {
-        ...state.messages,
-        [action.chatCompanionId]: action.messages
-      },
+      messages: messagesReducerAdapter(state, action),
       loadingMessage: false
     }
   }),

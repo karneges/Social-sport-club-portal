@@ -1,37 +1,13 @@
 import { MessageState } from '../messages.reducer';
-import { MessageCameFromServerAndAdapt, NewMessageClientCreated } from '../models/message.model';
+import { BaseMessageEntity } from '../models/message.model';
 
-interface MessageFromServer {
-  message: MessageCameFromServerAndAdapt[],
-  chatCompanionId: string
-}
-
-interface MessageFromClient {
-  message: NewMessageClientCreated,
-  chatCompanionId: string
-}
-
-interface MessagesReducerAdapterOutput {
-  [key: string]: MessageCameFromServerAndAdapt[]
-}
-
-export const messagesReducerAdapter = (state: MessageState,
-                                       action: MessageFromServer | MessageFromClient): MessagesReducerAdapterOutput => {
-  let newMessage: MessageCameFromServerAndAdapt[]
-  if (action.message instanceof NewMessageClientCreated) {
-    const { message: { text }, sender } = action.message
-    newMessage = [{ text, sender }]
+export const messagesReducerAdapter = (state: MessageState, action: { messagesEntity: BaseMessageEntity }) => {
+  const intersectedKeys: string[] = Object.keys(action.messagesEntity).filter(key => key in state.messages)
+  let messages = { ...state.messages }
+  if (intersectedKeys.length > 0) {
+    intersectedKeys.forEach(key => messages[key] = [...messages[key], ...action.messagesEntity[key]])
   } else {
-    newMessage = action.message
+    messages = { ...messages, ...action.messagesEntity }
   }
-  if (state.messages[action.chatCompanionId]) {
-    return {
-      ...state.messages,
-      [action.chatCompanionId]: [...state.messages[action.chatCompanionId], ...newMessage]
-    }
-  }
-  return {
-    ...state.messages,
-    [action.chatCompanionId]: newMessage
-  }
+  return messages
 }

@@ -1,22 +1,33 @@
 import { createAction, props } from '@ngrx/store';
-import { MessageCameFromServerAndAdapt, NewMessageClientCreated } from './models/message.model';
+import {
+  BaseMessageEntity,
+  MessageCameFromServerAndAdapt,
+  NewMessageClientCreated
+} from './models/message.model';
 
 
-const fetchedMessages = createAction(
+const fetchedMessagesWithOneUser = createAction(
   '[Dashboard] message fetched',
-  props<{ messages: MessageCameFromServerAndAdapt[], chatCompanionId: string }>()
+  props<{messagesEntity: BaseMessageEntity }>()
 )
 const loadMessagesFromUser = createAction(
   '[Dashboard] message fetching',
   props<{ userId: string }>()
 )
+const loadNoReadMessages = createAction(
+  '[List Of User Component] Unread Message fetching'
+)
+const noReadMessagesFetched = createAction(
+  '[List Of User Component] Unread Message fetched',
+  props<{ messages: MessageCameFromServerAndAdapt[], chatCompanionId: string[] }>()
+)
 const receivedNewMessage = createAction(
   '[Dashboard] received a new message',
-  props<{ message: MessageCameFromServerAndAdapt[], chatCompanionId: string}>()
+  props<{messagesEntity: BaseMessageEntity }>()
 )
 const sendNewMessage = createAction(
   '[Dashboard] send a new message',
-  props<{ message: NewMessageClientCreated , chatCompanionId: string}>()
+  props<{messagesEntity: BaseMessageEntity }>()
 )
 const messageWasReade = createAction(
   '[Chat Component] message was reade',
@@ -27,7 +38,10 @@ const openWsMessageSubscription = createAction(
 )
 
 export const MessageActions = {
-  fetchedMessages,
+  fetchedMessagesWithOneUser,
+  loadNoReadMessages,
+  noReadMessagesFetched,
+  messageWasReade,
   loadMessagesFromUser,
   receivedNewMessage,
   sendNewMessage,
