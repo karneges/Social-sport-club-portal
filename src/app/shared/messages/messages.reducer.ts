@@ -29,6 +29,13 @@ export const reducer = createReducer(
       loadingMessage: false
     }
   }),
+  on(MessageActions.noReadMessagesFetched, (state, action) => {
+    return {
+      ...state,
+      messages: messagesReducerAdapter(state, action),
+      loadingMessage: false
+    }
+  }),
   on(MessageActions.loadMessagesFromUser, ((state, action) => {
     return {
       ...state,

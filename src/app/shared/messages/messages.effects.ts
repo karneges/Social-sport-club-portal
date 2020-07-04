@@ -12,9 +12,14 @@ import { AuthSelectors } from '../../pages/auth/auth.selectors';
 @Injectable()
 export class MessagesEffects {
   fetchingMessages$ = createEffect(() => this.actions$.pipe(
-    ofType(MessageActions.loadMessagesFromUser),
-    switchMap(({ userId }) => this.messagesService.getMessages(userId)),
-    map((messagesEntity) => MessageActions.fetchedMessagesWithOneUser({messagesEntity}))
+    ofType(MessageActions.loadMessagesFromUser, MessageActions.loadNoReadMessages),
+    switchMap((query) => {
+      if ('userId' in query) {
+        return this.messagesService.getMessages(query.userId)
+      }
+      return this.messagesService.getNotReadMessages()
+    }),
+    map((messagesEntity) => MessageActions.fetchedMessagesWithOneUser({ messagesEntity }))
   ))
   // fetchingNotReadMessages$ = createEffect(() => this.actions$.pipe(
   //   ofType(MessageActions.loadNoReadMessages),
@@ -26,21 +31,23 @@ export class MessagesEffects {
   openWsMessagesSubscription$ = createEffect(() => this.actions$.pipe(
     ofType(MessageActions.openWsMessageSubscription),
     switchMap(() => this.messagesService.wsMessagesSubscription()),
-    map((messagesEntity) => MessageActions.receivedNewMessage({messagesEntity}))
+    map((messagesEntity) => MessageActions.receivedNewMessage({ messagesEntity }))
   ))
 
   sendNewMessage$ = createEffect(() => this.actions$.pipe(
     ofType(MessageActions.sendNewMessage),
-    map(({messagesEntity}) => this.messagesService.wsSendNewMessage(messagesEntity))
+    map(({ messagesEntity }) => this.messagesService.wsSendNewMessage(messagesEntity))
   ), { dispatch: false })
+
   getAdaptedMessagesWithManyCompanions$(messageWithCompanionId: { messages: MessageCameFromServer[], chatCompanionId: string[] }) {
     return of(messageWithCompanionId).pipe(
       withLatestFrom(this.store.pipe(select(AuthSelectors.user), first())),
       map(([{ messages, chatCompanionId }, authUser]) => {
-        messages.map(message => ({...message, }))
+        messages.map(message => ({ ...message, }))
       })
     )
   }
+
   constructor(private actions$: Actions, private messagesService: MessagesService, private store: Store) {
   }
 

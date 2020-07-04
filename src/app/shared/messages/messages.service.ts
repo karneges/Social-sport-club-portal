@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { SocketIoBaseService } from '../socket-io-base.service';
 import {
   BaseMessageEntity,
-  MessageCameFromServerAndAdapt, MessageResponseWithOneCompanion,
+  MessageCameFromServerAndAdapt, MessageResponseWithOneCompanion, MessageResponseWithSomeCompanion,
 } from './models/message.model';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -24,10 +24,10 @@ export class MessagesService {
       .pipe(map(({ messages }) => messages))
   }
 
-  // getNotReadMessages(): Observable<{ messages: MessageCameFromServer[], chatCompanionId: string[] }> {
-  //   return this.http.get<{ status: string, count: number, messages: MessageCameFromServer[] }>(`${ this.baseUrl }`)
-  //     .pipe(map(({ messages }) => ({ messages, chatCompanionId: messages.map(({ sender }) => sender) })))
-  // }
+  getNotReadMessages(): Observable<BaseMessageEntity> {
+    return this.http.get<MessageResponseWithOneCompanion>(`${ this.baseUrl }/noread`)
+      .pipe(map(({ messages }) => messages))
+  }
 
   wsMessagesSubscription(): Observable<BaseMessageEntity> {
     return this.socketIoService.fromEvent<BaseMessageEntity>('newMessage')

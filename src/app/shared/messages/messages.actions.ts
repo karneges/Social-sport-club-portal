@@ -8,7 +8,7 @@ import {
 
 const fetchedMessagesWithOneUser = createAction(
   '[Dashboard] message fetched',
-  props<{messagesEntity: BaseMessageEntity }>()
+  props<{ messagesEntity: BaseMessageEntity }>()
 )
 const loadMessagesFromUser = createAction(
   '[Dashboard] message fetching',
@@ -19,19 +19,19 @@ const loadNoReadMessages = createAction(
 )
 const noReadMessagesFetched = createAction(
   '[List Of User Component] Unread Message fetched',
-  props<{ messages: MessageCameFromServerAndAdapt[], chatCompanionId: string[] }>()
+  props<{ messagesEntity: BaseMessageEntity }>()
 )
 const receivedNewMessage = createAction(
   '[Dashboard] received a new message',
-  props<{messagesEntity: BaseMessageEntity }>()
+  props<{ messagesEntity: BaseMessageEntity }>()
 )
 const sendNewMessage = createAction(
   '[Dashboard] send a new message',
-  props<{messagesEntity: BaseMessageEntity }>()
+  props<{ messagesEntity: BaseMessageEntity }>()
 )
 const messageWasReade = createAction(
   '[Chat Component] message was reade',
-  props<{ message: NewMessageClientCreated , chatCompanionId: string}>()
+  props<{ message: NewMessageClientCreated, chatCompanionId: string }>()
 )
 const openWsMessageSubscription = createAction(
   '[Dashboard] Open Ws Message Subscription'

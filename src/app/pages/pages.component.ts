@@ -10,6 +10,7 @@ import { UserActions } from '../shared/users/users.actions';
 import { MessageActions } from '../shared/messages/messages.actions';
 import { NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
 import { Actions, ofType } from '@ngrx/effects';
+import { BaseMessageEntity } from '../shared/messages/models/message.model';
 
 @Component({
   selector: 'ngx-pages',
@@ -71,14 +72,14 @@ export class PagesComponent implements OnInit {
   }
 
   private globalSubscription() {
-    // this.updates$.pipe(
-    //   ofType(MessageActions.receivedNewMessage),
-    //   tap(({ message }) => {
-    //     const { text, sender } = message[0]
-    //     this.toastrService.show(
-    //       `New Message from ${ sender.name }`,
-    //       `${ text }`, { position: NbGlobalLogicalPosition.BOTTOM_END, duration: 3000 })
-    //   })
-    // ).subscribe()
+    this.updates$.pipe(
+      ofType(MessageActions.receivedNewMessage),
+      tap(({ messagesEntity }) => {
+        const { message: { text }, sender } = BaseMessageEntity.convertOneMessageEntityToObject(messagesEntity)
+        this.toastrService.show(
+          `New Message from ${ sender.name }`,
+          `${ text }`, { position: NbGlobalLogicalPosition.BOTTOM_END, duration: 3000 })
+      })
+    ).subscribe()
   }
 }
