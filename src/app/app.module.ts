@@ -31,6 +31,7 @@ import {
   GoogleLoginProvider, AmazonLoginProvider, SocialAuthServiceConfig
 } from 'angularx-social-login';
 import { RemoveEmptyFieldInterceptor } from './shared/interceptors/removeEmptyField.interceptor';
+import { ToastrModule } from 'ngx-toastr';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { RemoveEmptyFieldInterceptor } from './shared/interceptors/removeEmptyFi
     NbDatepickerModule.forRoot(),
     NbDialogModule.forRoot(),
     NbToastrModule.forRoot(),
+    ToastrModule.forRoot({ positionClass: 'toast-bottom-right', timeOut: 6000000 }),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
     NbAuthModule.forRoot(),

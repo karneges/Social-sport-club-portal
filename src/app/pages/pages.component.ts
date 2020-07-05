@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList } from '@angular/core';
 
 import { MENU_ITEMS } from './pages-menu';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { AuthActions } from './auth/auth.actions';
 import { Router } from '@angular/router';
-import { startWith, tap } from 'rxjs/operators';
+import { first, startWith, tap } from 'rxjs/operators';
 import { UserActions } from '../shared/users/users.actions';
 import { MessageActions } from '../shared/messages/messages.actions';
-import { NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
+import { NbGlobalLogicalPosition, NbToastRef, NbToastrService } from '@nebular/theme';
 import { Actions, ofType } from '@ngrx/effects';
 import { BaseMessageEntity } from '../shared/messages/models/message.model';
+import { log } from 'util';
+import { ToastrService } from 'ngx-toastr';
+import { MessagesNotificationService } from '../shared/notifications/messages.notification.service';
 
 @Component({
   selector: 'ngx-pages',
@@ -40,8 +43,9 @@ export class PagesComponent implements OnInit {
 
   constructor(private store: Store<AppState>,
               private router: Router,
-              private toastrService: NbToastrService,
-              private updates$: Actions) {
+              private updates$: Actions,
+              private toastr: ToastrService,
+              private messagesNotificationService: MessagesNotificationService) {
   }
 
   ngOnInit(): void {
@@ -76,11 +80,13 @@ export class PagesComponent implements OnInit {
     this.updates$.pipe(
       ofType(MessageActions.receivedNewMessage),
       tap(({ messagesEntity }) => {
-        const { message: { text }, sender } = BaseMessageEntity.convertOneMessageEntityToObject(messagesEntity)
-        this.toastrService.show(
-          `New Message from ${ sender.name }`,
-          `${ text }`, { position: NbGlobalLogicalPosition.BOTTOM_END, duration: 3000 })
-      })
+          const { message: { text }, sender } = BaseMessageEntity.convertOneMessageEntityToObject(messagesEntity)
+          this.toastr.info(text, `from ${ sender.name }`, { timeOut: 600000 }).onTap.pipe(
+            tap(() => this.messagesNotificationService.onMessageNotificationClick(sender._id)),
+            first()
+          ).subscribe()
+        }
+      )
     ).subscribe()
   }
 }

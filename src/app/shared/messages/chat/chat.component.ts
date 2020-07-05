@@ -47,6 +47,8 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges, AfterVie
   }
 
   ngOnInit(): void {
+    // console.log(this.userChatCompanion)
+
     this.initialStoreSubscriptions()
     this.changeSubscription()
   }

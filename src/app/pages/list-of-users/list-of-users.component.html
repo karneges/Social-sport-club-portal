@@ -24,7 +24,7 @@
             <div *ngIf="user.isOnline" class="online-status"></div>
           </div>
           <nb-icon icon="message-circle-outline" class="cursor-pointer"
-                   (click)="setCurrentChatUser(userContainer, user)"
+                   (click)="setCurrentUser( user._id)"
                    pack="eva"></nb-icon>
         </nb-list-item>
       </nb-list>
