@@ -9,14 +9,14 @@
   <nb-tabset fullWidth>
     <nb-tab tabTitle="Contacts" class="overflow-visible">
       <nb-list>
-        <nb-list-item class="d-flex justify-content-between" *ngFor="let user of users$ | async let idx = index"
+        <nb-list-item class="d-flex justify-content-between" *ngFor="let user of usersWithCountMessages$ | async let idx = index"
                       [class.selected]="user?._id === currentChatUser?._id && isChatOpen">
           <div class="user-container" #userContainer>
             <nb-user
               [name]="user.name"
               [title]="user.role"
               [picture]="user.photoUrl"
-              badgeText="0"
+              [badgeText]="user.noReadMessagesCount || null"
               badgeStatus="success"
               badgePosition="bottom right"
               size="medium">

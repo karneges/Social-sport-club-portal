@@ -27,7 +27,7 @@ export const initialState: AuthState = {
   token: undefined,
   fetchingToken: false,
   error: undefined,
-  unAuthAccess: true,
+  unAuthAccess: undefined,
   webSocketAuthConnect: undefined
 };
 

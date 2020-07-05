@@ -15,7 +15,7 @@ const isMessageLoading = createSelector(
 )
 
 
-export const Messageslectors = {
+export const MessagesSelectors = {
   messages,
   isMessageLoading
 }

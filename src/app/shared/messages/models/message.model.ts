@@ -1,75 +1,30 @@
-export interface MessageCameFromServerAndAdapt {
-  text: string
-  time?: string
-  sender: Partial<User>
-  read?: boolean
-  _id?: string
-}
-
 import { User } from '../../../models/user.model';
 
 
-export interface MessageResponseWithOneCompanion {
+export interface MessageResponse {
   status: string,
   count: number,
   messages: BaseMessageEntity
 }
 
-export interface MessageResponseWithSomeCompanion {
-  status: string,
-  count: number,
-  messages: BaseMessageEntity[]
-}
-
-export interface MessageResponseWithSomeCompanions {
-  status: string,
-  count: number,
-  messages: BaseMessageEntity[]
-}
-
-
-
 export class BaseMessageEntity {
   [key: string]: {
-    messages: MessageCameFromServer[],
+    messages: BaseMessageModel[],
     countNoReadMessages?: number,
     _id?: string
   }
-
-  constructor(fieldName: string, message: {
-    messages: MessageCameFromServer[],
-    countNoReadMessages: number,
-    _id: string
-  }) {
-    this[fieldName] = message
-  }
-
-  public static convertOneMessageEntityToObject(message: BaseMessageEntity): MessageCameFromServer {
+  public static convertOneMessageEntityToObject(message: BaseMessageEntity): BaseMessageModel {
     return Object.values(message)[0].messages[0]
   }
-
-  public static messageFactory(messages: BaseMessageEntity[]) {
-
-  }
 }
 
 
-export interface MessageCameFromServer {
+export class BaseMessageModel {
   _id?: string
-  message: {
-    text: string,
-    time?: string
-  },
-  sender: Partial<User>
-  read?: string
-}
-
-
-export class NewMessageClientCreated {
   message = {
     text: ''
   }
-  sender: Partial<User> | string
+  sender: Partial<User>
   users: string[]
 
   constructor(message: string, sender: Partial<User>, receiver: string) {
@@ -80,12 +35,12 @@ export class NewMessageClientCreated {
 
   public static clientCreatedMessagesFactory(message: string, sender: Partial<User>, receiver: string): BaseMessageEntity {
     return {
-      [receiver]: { messages: [new NewMessageClientCreated(message, sender, receiver)], }
+      [receiver]: { messages: [new BaseMessageModel(message, sender, receiver)], }
     }
   }
 
-  public static getRequestModel(messages: BaseMessageEntity): NewMessageClientCreated {
-    let newMessage: NewMessageClientCreated
+  public static getRequestModel(messages: BaseMessageEntity): BaseMessageModel {
+    let newMessage: BaseMessageModel
     Object.keys(messages).forEach(messageCompanionId => {
       newMessage = {
         // index [0] because all message must be in array, even if it is new one message

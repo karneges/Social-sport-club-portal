@@ -48,6 +48,7 @@ export class PagesComponent implements OnInit {
     this.initialWsSubscription()
     this.routerEventsSubscription()
     this.globalSubscription()
+    this.store.dispatch(MessageActions.loadNoReadMessages())
     // Any first page except auth pages should try to regain access by token.
     if (!this.isAuthPage) {
       this.store.dispatch(AuthActions.authByCachedToken())

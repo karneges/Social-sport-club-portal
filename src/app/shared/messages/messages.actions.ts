@@ -1,8 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import {
   BaseMessageEntity,
-  MessageCameFromServerAndAdapt,
-  NewMessageClientCreated
+  BaseMessageModel
 } from './models/message.model';
 
 
@@ -31,7 +30,7 @@ const sendNewMessage = createAction(
 )
 const messageWasReade = createAction(
   '[Chat Component] message was reade',
-  props<{ message: NewMessageClientCreated, chatCompanionId: string }>()
+  props<{ message: BaseMessageModel, chatCompanionId: string }>()
 )
 const openWsMessageSubscription = createAction(
   '[Dashboard] Open Ws Message Subscription'

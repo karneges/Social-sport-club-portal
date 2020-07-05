@@ -17,3 +17,8 @@ export interface User {
   photoUrl?: string
   isOnline: boolean
 }
+
+export interface UserWithCountMessages extends User {
+
+  noReadMessagesCount: number
+}

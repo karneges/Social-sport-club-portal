@@ -8,7 +8,8 @@ export const messagesReducerAdapter = (state: MessageState, action: { messagesEn
   if (intersectedKeys.length > 0) {
     intersectedKeys.forEach(key => {
       messages[key] = {
-        messages: [...messages[key].messages, ...action.messagesEntity[key].messages]
+        messages: [...messages[key].messages, ...action.messagesEntity[key].messages],
+        countNoReadMessages: messages[key].countNoReadMessages + 1
       }
     })
   } else {

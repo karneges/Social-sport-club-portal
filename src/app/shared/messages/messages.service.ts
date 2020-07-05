@@ -4,10 +4,8 @@ import { environment } from '../../../environments/environment';
 import { SocketIoBaseService } from '../socket-io-base.service';
 import {
   BaseMessageEntity,
-  MessageCameFromServerAndAdapt,
-  MessageResponseWithOneCompanion,
-  MessageResponseWithSomeCompanion,
-  NewMessageClientCreated,
+  MessageResponse,
+  BaseMessageModel,
 } from './models/message.model';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -23,12 +21,12 @@ export class MessagesService {
   }
 
   getMessages(chatCompanionId: string): Observable<BaseMessageEntity> {
-    return this.http.get<MessageResponseWithOneCompanion>(`${ this.baseUrl }/${ chatCompanionId }`)
+    return this.http.get<MessageResponse>(`${ this.baseUrl }/${ chatCompanionId }`)
       .pipe(map(({ messages }) => messages))
   }
 
   getNotReadMessages(): Observable<BaseMessageEntity> {
-    return this.http.get<MessageResponseWithOneCompanion>(`${ this.baseUrl }/noread`)
+    return this.http.get<MessageResponse>(`${ this.baseUrl }/noread`)
       .pipe(map(({ messages }) => messages))
   }
 
@@ -37,10 +35,10 @@ export class MessagesService {
   }
 
   wsSendNewMessage(message: BaseMessageEntity) {
-    return this.socketIoService.emit('newMessage', NewMessageClientCreated.getRequestModel(message))
+    return this.socketIoService.emit('newMessage', BaseMessageModel.getRequestModel(message))
   }
 
-  wsMessagesWasReade(message: MessageCameFromServerAndAdapt) {
+  wsMessagesWasReade(message: any) {
     return this.socketIoService.emit('messageReade', message._id)
   }
 }
