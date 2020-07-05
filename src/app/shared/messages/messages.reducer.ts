@@ -4,7 +4,7 @@ import { BaseMessageEntity } from './models/message.model';
 import { messagesReducerAdapter } from './utils/messages.reducer-adapter';
 
 
-export const messagesFeatureKey = 'messages';
+export const messagesFeatureKey = 'allMessages';
 
 export interface MessageState {
   messages: BaseMessageEntity
@@ -14,7 +14,7 @@ export interface MessageState {
 
 export const initialState: MessageState = {
   // @ts-ignore
-  messages: [],
+  messages: {  },
   loadingMessage: undefined,
   wsSubscription: undefined
 };

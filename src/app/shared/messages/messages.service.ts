@@ -4,7 +4,10 @@ import { environment } from '../../../environments/environment';
 import { SocketIoBaseService } from '../socket-io-base.service';
 import {
   BaseMessageEntity,
-  MessageCameFromServerAndAdapt, MessageResponseWithOneCompanion, MessageResponseWithSomeCompanion,
+  MessageCameFromServerAndAdapt,
+  MessageResponseWithOneCompanion,
+  MessageResponseWithSomeCompanion,
+  NewMessageClientCreated,
 } from './models/message.model';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -34,9 +37,7 @@ export class MessagesService {
   }
 
   wsSendNewMessage(message: BaseMessageEntity) {
-    let request = {}
-    Object.values(message).forEach(val => request = { ...val[0], sender: val[0].sender._id })
-    return this.socketIoService.emit('newMessage', request)
+    return this.socketIoService.emit('newMessage', NewMessageClientCreated.getRequestModel(message))
   }
 
   wsMessagesWasReade(message: MessageCameFromServerAndAdapt) {

@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { MessageState } from './messages.reducer';
 
 
-const selectMessageState = createFeatureSelector<MessageState>('messages')
+const selectMessageState = createFeatureSelector<MessageState>('allMessages')
 
 const messages = createSelector(
   selectMessageState,

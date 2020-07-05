@@ -10,7 +10,7 @@ import {
 import { User } from '../../../models/user.model';
 import { select, Store } from '@ngrx/store';
 import { MessageState } from '../messages.reducer';
-import { MessageCameFromServer, NewMessageClientCreated } from '../models/message.model';
+import { BaseMessageEntity, MessageCameFromServer, NewMessageClientCreated } from '../models/message.model';
 import { Messageslectors } from '../messages.selectors';
 import {
   distinct,
@@ -73,7 +73,10 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges, AfterVie
     this.messages$ = this.changeDetector.pipe(
       switchMap(() => this.store.pipe(
         select(Messageslectors.messages),
-        map((messages) => messages[this.userChatCompanion._id]))
+        filter(message => !!message),
+        map((message) => {
+          return message[this.userChatCompanion._id] ? message[this.userChatCompanion._id].messages : []
+        }))
       )
     )
   }
@@ -83,8 +86,6 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges, AfterVie
       filter((changes) => !!changes.userChatCompanion),
       map<SimpleChanges, User>((changes) => changes.userChatCompanion.currentValue),
       distinct(user => user._id),
-      withLatestFrom(this.store.pipe(select(Messageslectors.messages))),
-      filter(([user, messages]) => !messages[user._id]),
       map(() => this.store
         .dispatch(MessageActions.loadMessagesFromUser({ userId: this.userChatCompanion._id }))),
       takeUntil(this.onCloseChat)

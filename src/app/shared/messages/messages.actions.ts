@@ -27,7 +27,7 @@ const receivedNewMessage = createAction(
 )
 const sendNewMessage = createAction(
   '[Dashboard] send a new message',
-  props<{ messagesEntity: BaseMessageEntity }>()
+  props<{ messagesEntity: BaseMessageEntity}>()
 )
 const messageWasReade = createAction(
   '[Chat Component] message was reade',
