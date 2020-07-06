@@ -14,7 +14,7 @@ export interface MessageState {
 
 export const initialState: MessageState = {
   // @ts-ignore
-  messages: {  },
+  messages: {},
   loadingMessage: undefined,
   wsSubscription: undefined
 };
@@ -60,6 +60,15 @@ export const reducer = createReducer(
       ...state,
       wsSubscription: true
     }
-  }))
+  })),
+  on(MessageActions.messagesWasReade, (state, action) => {
+    return {
+      ...state,
+      messages: {
+        ...state.messages,
+        [action.chatCompanionId]: { ...state.messages[action.chatCompanionId], countNoReadMessages: 0 }
+      }
+    }
+  })
 )
 

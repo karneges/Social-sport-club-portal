@@ -5,15 +5,15 @@ import { select, Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { AuthActions } from './auth/auth.actions';
 import { Router } from '@angular/router';
-import { first, startWith, tap } from 'rxjs/operators';
+import { delay, first, map, startWith, tap } from 'rxjs/operators';
 import { UserActions } from '../shared/users/users.actions';
 import { MessageActions } from '../shared/messages/messages.actions';
-import { NbGlobalLogicalPosition, NbToastRef, NbToastrService } from '@nebular/theme';
 import { Actions, ofType } from '@ngrx/effects';
 import { BaseMessageEntity } from '../shared/messages/models/message.model';
-import { log } from 'util';
 import { ToastrService } from 'ngx-toastr';
 import { MessagesNotificationService } from '../shared/notifications/messages.notification.service';
+import { Observable } from 'rxjs';
+import { AuthSelectors } from './auth/auth.selectors';
 
 @Component({
   selector: 'ngx-pages',
@@ -23,10 +23,10 @@ import { MessagesNotificationService } from '../shared/notifications/messages.no
       <nb-menu [items]="menu"></nb-menu>
       <div class="container">
         <div class="row">
-          <div class="col-md-12" [ngClass]="getClasses()">
+          <div class="col-md-12" [ngClass]="columnClass">
             <router-outlet></router-outlet>
           </div>
-          <div *ngIf="!isAuthPage" class="col-lg-4 col-xxxl-3">
+          <div *ngIf="!(isUnAuth$ | async)" class="col-lg-4 col-xxxl-3">
             <div class="sticky-top">
               <ngx-list-of-users></ngx-list-of-users>
             </div>
@@ -37,9 +37,10 @@ import { MessagesNotificationService } from '../shared/notifications/messages.no
   `,
 })
 export class PagesComponent implements OnInit {
-
+  isUnAuth$: Observable<boolean>
   menu = MENU_ITEMS;
   isAuthPage: boolean
+  columnClass: string
 
   constructor(private store: Store<AppState>,
               private router: Router,
@@ -57,6 +58,11 @@ export class PagesComponent implements OnInit {
     if (!this.isAuthPage) {
       this.store.dispatch(AuthActions.authByCachedToken())
     }
+    this.isUnAuth$ = this.store.pipe(
+      select(AuthSelectors.isUnAuthAccess),
+      delay(0),
+      tap((isUnAuth) => this.columnClass = isUnAuth ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9')
+    )
   }
 
   routerEventsSubscription() {
@@ -66,9 +72,13 @@ export class PagesComponent implements OnInit {
     ).subscribe()
   }
 
-  getClasses() {
-    return this.isAuthPage ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9'
-  }
+  // get classes() {
+  //   console.log('getClass')
+  //   return this.isUnAuth$.pipe(
+  //     map((isUnAuth) => isUnAuth ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9')
+  //   )
+  //   // return this.isAuthPage ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9'
+  // }
 
   // When app start this method init all static WS subscription
   initialWsSubscription() {
@@ -81,7 +91,7 @@ export class PagesComponent implements OnInit {
       ofType(MessageActions.receivedNewMessage),
       tap(({ messagesEntity }) => {
           const { message: { text }, sender } = BaseMessageEntity.convertOneMessageEntityToObject(messagesEntity)
-          this.toastr.info(text, `from ${ sender.name }`, { timeOut: 600000 }).onTap.pipe(
+          this.toastr.info(text, `from ${ sender.name }`, { timeOut: 10000 }).onTap.pipe(
             tap(() => this.messagesNotificationService.onMessageNotificationClick(sender._id)),
             first()
           ).subscribe()

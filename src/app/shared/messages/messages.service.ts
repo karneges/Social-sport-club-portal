@@ -29,6 +29,9 @@ export class MessagesService {
     return this.http.get<MessageResponse>(`${ this.baseUrl }/noread`)
       .pipe(map(({ messages }) => messages))
   }
+  markMessagesAsRead(chatCompanionId: string): Observable<{success: string}> {
+    return this.http.get<{success: string}>(`${ this.baseUrl }/markasread/${chatCompanionId}`)
+  }
 
   wsMessagesSubscription(): Observable<BaseMessageEntity> {
     return this.socketIoService.fromEvent<BaseMessageEntity>('newMessage')

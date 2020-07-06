@@ -10,18 +10,19 @@ import {
 import { User } from '../../../models/user.model';
 import { select, Store } from '@ngrx/store';
 import { MessageState } from '../messages.reducer';
-import { BaseMessageModel } from '../models/message.model';
+import { BaseMessageEntity, BaseMessageModel } from '../models/message.model';
 import { MessagesSelectors } from '../messages.selectors';
 import {
+  delay,
   distinct,
   filter,
   first,
-  map,
+  map, shareReplay,
   switchMap,
   takeUntil,
   tap, withLatestFrom,
 } from 'rxjs/operators';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { MessageActions } from '../messages.actions';
 import { AuthSelectors } from '../../../pages/auth/auth.selectors';
 
@@ -41,16 +42,16 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges, AfterVie
   private changeDetector = new BehaviorSubject<SimpleChanges>(null)
   user$: Observable<User>
   messages$: Observable<BaseMessageModel[]>
+  messagesEntities$: Observable<BaseMessageEntity>
 
   constructor(private hostElement: ElementRef, private store: Store<MessageState>, private cd: ChangeDetectorRef) {
 
   }
 
   ngOnInit(): void {
-    // console.log(this.userChatCompanion)
-
     this.initialStoreSubscriptions()
     this.changeSubscription()
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -70,10 +71,10 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges, AfterVie
   initialStoreSubscriptions() {
     // Auth user store subscription
     this.user$ = this.store.pipe(select(AuthSelectors.user))
+    this.messagesEntities$ = this.store.pipe(select(MessagesSelectors.messages))
     // messages input 'userChatCompanion' change subscription
     this.messages$ = this.changeDetector.pipe(
-      switchMap(() => this.store.pipe(
-        select(MessagesSelectors.messages),
+      switchMap(() => this.messagesEntities$.pipe(
         filter(message => !!message),
         map((message) => {
           return message[this.userChatCompanion._id] ? message[this.userChatCompanion._id].messages : []
@@ -86,11 +87,11 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges, AfterVie
     this.changeDetector.pipe(
       filter((changes) => !!changes.userChatCompanion),
       map<SimpleChanges, User>((changes) => changes.userChatCompanion.currentValue),
-      withLatestFrom(this.store.pipe(select(MessagesSelectors.messages))),
-      filter(([changes, messages]) => !messages[changes._id]),
-      map(() => this.store
-        .dispatch(MessageActions.loadMessagesFromUser({ userId: this.userChatCompanion._id }))),
-      takeUntil(this.onCloseChat)
+      withLatestFrom(this.messagesEntities$),
+      switchMap((r) => this.readMarker(r)),
+      filter(([currentUser, messages]) => !messages[currentUser._id]),
+      map(() => this.store.dispatch(MessageActions.loadMessagesFromUser({ userId: this.userChatCompanion._id }))),
+      takeUntil(this.onCloseChat),
     ).subscribe()
   }
 
@@ -104,6 +105,17 @@ export class ChatComponent implements OnInit, AfterViewInit, OnChanges, AfterVie
         BaseMessageModel.clientCreatedMessagesFactory(event.message, user, this.userChatCompanion._id)),
       tap(messagesEntity => this.store.dispatch(MessageActions.sendNewMessage({ messagesEntity }))),
       first()).subscribe()
+  }
+
+  readMarker<T extends [User, BaseMessageEntity]>(obs: T) {
+    return of(obs).pipe(
+      delay(0),
+      tap(([_, message]) => {
+        if (message[this.userChatCompanion?._id]?.countNoReadMessages > 0) {
+          this.store.dispatch(MessageActions.messagesWasReade({ chatCompanionId: this.userChatCompanion._id }))
+        }
+      })
+    )
   }
 
 }

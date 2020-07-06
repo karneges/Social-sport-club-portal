@@ -26,11 +26,11 @@ const receivedNewMessage = createAction(
 )
 const sendNewMessage = createAction(
   '[Dashboard] send a new message',
-  props<{ messagesEntity: BaseMessageEntity}>()
+  props<{ messagesEntity: BaseMessageEntity }>()
 )
-const messageWasReade = createAction(
+const messagesWasReade = createAction(
   '[Chat Component] message was reade',
-  props<{ message: BaseMessageModel, chatCompanionId: string }>()
+  props<{ chatCompanionId: string }>()
 )
 const openWsMessageSubscription = createAction(
   '[Dashboard] Open Ws Message Subscription'
@@ -40,7 +40,7 @@ export const MessageActions = {
   fetchedMessagesWithOneUser,
   loadNoReadMessages,
   noReadMessagesFetched,
-  messageWasReade,
+  messagesWasReade,
   loadMessagesFromUser,
   receivedNewMessage,
   sendNewMessage,

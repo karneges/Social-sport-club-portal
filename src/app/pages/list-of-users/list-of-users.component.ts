@@ -31,6 +31,7 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkDrag) cdkDragEl: CdkDrag<HTMLDivElement>
   @ViewChildren('userContainer') userContainer: QueryList<ElementRef<HTMLDivElement>>
   users$: Observable<User[]>
+  authUser$: Observable<User>
   usersWithCountMessages$: Observable<UserWithCountMessages[]>
   messages$: Observable<BaseMessageEntity>
   currentChatUserIdSetter$ = new Subject<string>()
@@ -47,6 +48,7 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
     this.store.dispatch(UserActions.loadUsers())
     this.users$ = this.store.pipe(select(UsersSelectors.users))
     this.messages$ = this.store.pipe(select(MessagesSelectors.messages))
+    this.authUser$ = this.store.pipe(select(AuthSelectors.user))
     this.computeUserWithCountMessages()
     this.currentChatUserSubscription()
     this.messageNotificationSubscription()
@@ -58,14 +60,16 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
 
   computeUserWithCountMessages() {
     const messages$ = this.store.pipe(select(MessagesSelectors.messages))
-    this.usersWithCountMessages$ = combineLatest([this.users$, messages$]).pipe(
-      map<[User[], BaseMessageEntity], UserWithCountMessages[]>(([users, messages]) => {
-        return users.map(user => {
-          return {
-            ...user,
-            noReadMessagesCount: messages[user._id]?.countNoReadMessages
-          }
-        })
+    this.usersWithCountMessages$ = combineLatest([this.users$, messages$, this.authUser$]).pipe(
+      map<[User[], BaseMessageEntity, User], UserWithCountMessages[]>(([users, messages, authUser]) => {
+        return users
+          .map(user => {
+            return {
+              ...user,
+              noReadMessagesCount: messages[user._id]?.countNoReadMessages
+            }
+          })
+          .filter((user) => user?._id !== authUser?._id)
       })
     )
   }
@@ -84,7 +88,6 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
     const currentUser$ = this.currentChatUserIdSetter$
     combineLatest([this.users$, currentUser$]).pipe(
       tap(([users, currentUserId]) => {
-        console.log('start')
         // find currentUser index from users array then get native element and current user
         const idx = users.findIndex((user) => user._id === currentUserId)
         const el: HTMLDivElement = Array.from(this.userContainer)[idx].nativeElement
@@ -101,7 +104,6 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
         // if chat reversed need subtract chat height
         const CHAT_HEIGHT = 399
         this.chatOffset = `${ this.reverseChatHeader ? difference - CHAT_HEIGHT : difference }px`
-        console.log('end')
       })
     ).subscribe()
   }
