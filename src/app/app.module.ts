@@ -50,7 +50,7 @@ import { ToastrModule } from 'ngx-toastr';
     NbDatepickerModule.forRoot(),
     NbDialogModule.forRoot(),
     NbToastrModule.forRoot(),
-    ToastrModule.forRoot({ positionClass: 'toast-bottom-right', timeOut: 6000000 }),
+    ToastrModule.forRoot({ positionClass: 'toast-bottom-right', timeOut: 5000 }),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
     NbAuthModule.forRoot(),

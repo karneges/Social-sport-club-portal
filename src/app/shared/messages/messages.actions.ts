@@ -35,6 +35,9 @@ const messagesWasReade = createAction(
 const openWsMessageSubscription = createAction(
   '[Dashboard] Open Ws Message Subscription'
 )
+const clearMessagesState = createAction(
+  '[Messages Effects] Clear Messages State'
+)
 
 export const MessageActions = {
   fetchedMessagesWithOneUser,
@@ -44,5 +47,6 @@ export const MessageActions = {
   loadMessagesFromUser,
   receivedNewMessage,
   sendNewMessage,
-  openWsMessageSubscription
+  openWsMessageSubscription,
+  clearMessagesState
 }

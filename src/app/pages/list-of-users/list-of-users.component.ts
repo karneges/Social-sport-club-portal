@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
+  ElementRef, OnDestroy,
   OnInit,
   QueryList,
   ViewChild,
@@ -12,21 +12,20 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { UsersState } from '../../shared/users/users.reducer';
 import { UsersSelectors } from '../../shared/users/users.selectors';
-import { UserActions } from '../../shared/users/users.actions';
 import { CdkDrag } from '@angular/cdk/drag-drop';
-import { BaseMessageEntity, BaseMessageModel } from '../../shared/messages/models/message.model';
+import { BaseMessageEntity } from '../../shared/messages/models/message.model';
 import { MessagesSelectors } from '../../shared/messages/messages.selectors';
-import { map, tap, withLatestFrom } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AuthSelectors } from '../auth/auth.selectors';
-import { id } from '@swimlane/ngx-charts';
-import { MessagesNotificationService } from '../../shared/notifications/messages.notification.service';
+import { MessagesNotificationService } from '../../shared/notifications/messages/messages.notification.service';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'ngx-list-of-users',
   templateUrl: './list-of-users.component.html',
   styleUrls: ['./list-of-users.component.scss']
 })
-export class ListOfUsersComponent implements OnInit, AfterViewInit {
+export class ListOfUsersComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('chatWrapper') chatWrapper: ElementRef
   @ViewChild(CdkDrag) cdkDragEl: CdkDrag<HTMLDivElement>
   @ViewChildren('userContainer') userContainer: QueryList<ElementRef<HTMLDivElement>>
@@ -39,13 +38,13 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
   chatOffset: string;
   isChatOpen: boolean;
   reverseChatHeader: boolean;
+  private subs = new SubSink()
 
   constructor(private store: Store<UsersState>, private messagesNotificationService: MessagesNotificationService) {
 
   }
 
   ngOnInit(): void {
-    this.store.dispatch(UserActions.loadUsers())
     this.users$ = this.store.pipe(select(UsersSelectors.users))
     this.messages$ = this.store.pipe(select(MessagesSelectors.messages))
     this.authUser$ = this.store.pipe(select(AuthSelectors.user))
@@ -69,13 +68,12 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
               noReadMessagesCount: messages[user._id]?.countNoReadMessages
             }
           })
-          .filter((user) => user?._id !== authUser?._id)
       })
     )
   }
 
   messageNotificationSubscription() {
-    this.messagesNotificationService.getNotificationSubscription().pipe(
+    this.subs.sink = this.messagesNotificationService.getNotificationSubscription().pipe(
       tap(({ currentUserId }) => this.setCurrentUser(currentUserId)
       )).subscribe()
   }
@@ -86,7 +84,7 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
 
   currentChatUserSubscription() {
     const currentUser$ = this.currentChatUserIdSetter$
-    combineLatest([this.users$, currentUser$]).pipe(
+    this.subs.sink = combineLatest([this.users$, currentUser$]).pipe(
       tap(([users, currentUserId]) => {
         // find currentUser index from users array then get native element and current user
         const idx = users.findIndex((user) => user._id === currentUserId)
@@ -108,6 +106,9 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit {
     ).subscribe()
   }
 
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
+  }
 
 }
 

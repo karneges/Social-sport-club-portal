@@ -32,15 +32,12 @@ export class AuthEffects {
   */
   fetchTokenByCredentials$ = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.accessTokenLoginPageRequest),
-    mergeMap(({ email, password = '', gId = '' }) => this.authService.getAccessTokenByCredentials({
-      email,
-      password,
-      gId
-    })
+    mergeMap(({ email, password = '', gId = '' }) => this.authService
+      .getAccessTokenByCredentials({ email, password, gId })
       .pipe(
         tap(res => this.localStorageService.addItem('token', res)),
         map(res => AuthActions.accessTokenReceived({ ...res })),
-        catchError(e => of(AuthActions.loginFailure({ error: e })))
+        catchError((e: HttpErrorResponse) => of(AuthActions.loginFailure({ error: e })))
       ))
     )
   )
@@ -160,7 +157,7 @@ export class AuthEffects {
       if (token) {
         return AuthActions.setAuthToken({ token })
       }
-      this.store.dispatch(AuthActions.authFailure({ error: 'no cached token' }))
+      // this.store.dispatch(AuthActions.authFailure({ error: 'no cached token' }))
       return AuthActions.unAuthorizeAccess()
     })
   ))

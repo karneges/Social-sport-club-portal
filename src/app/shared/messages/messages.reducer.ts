@@ -52,7 +52,7 @@ export const reducer = createReducer(
   on(MessageActions.sendNewMessage, ((state, action) => {
     return {
       ...state,
-      messages: messagesReducerAdapter(state, action)
+      messages: messagesReducerAdapter(state, action, true)
     }
   })),
   on(MessageActions.openWsMessageSubscription, ((state, action) => {
@@ -69,6 +69,10 @@ export const reducer = createReducer(
         [action.chatCompanionId]: { ...state.messages[action.chatCompanionId], countNoReadMessages: 0 }
       }
     }
+  }),
+  on(MessageActions.clearMessagesState, (state) => {
+    // debugger
+    return initialState
   })
 )
 

@@ -13,12 +13,17 @@ const routes: Routes = [{
       component: MyClubComponent
     },
     {
+      path: 'training',
+      loadChildren: () => import('./training/training.module').then(m => m.TrainingModule),
+    },
+    {
       path: 'auth',
       loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
     },
     { path: '', redirectTo: 'general', pathMatch: 'full' },
   ],
 }];
+
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

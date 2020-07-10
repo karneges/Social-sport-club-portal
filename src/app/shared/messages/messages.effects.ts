@@ -4,6 +4,7 @@ import { MessageActions } from './messages.actions';
 import { map, switchMap } from 'rxjs/operators';
 import { MessagesService } from './messages.service';
 import { Store } from '@ngrx/store';
+import { AuthActions } from '../../pages/auth/auth.actions';
 
 @Injectable()
 export class MessagesEffects {
@@ -34,6 +35,11 @@ export class MessagesEffects {
     ofType(MessageActions.messagesWasReade),
     switchMap(({ chatCompanionId }) => this.messagesService.markMessagesAsRead(chatCompanionId)),
   ), { dispatch: false })
+
+  clearMessagesState = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.logout),
+    map(() => MessageActions.clearMessagesState())
+  ))
 
   constructor(private actions$: Actions, private messagesService: MessagesService, private store: Store) {
   }

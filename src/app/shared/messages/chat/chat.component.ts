@@ -14,10 +14,9 @@ import { BaseMessageEntity, BaseMessageModel } from '../models/message.model';
 import { MessagesSelectors } from '../messages.selectors';
 import {
   delay,
-  distinct,
   filter,
   first,
-  map, shareReplay,
+  map,
   switchMap,
   takeUntil,
   tap, withLatestFrom,

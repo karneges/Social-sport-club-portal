@@ -34,7 +34,11 @@ const loadingUser = createSelector(
   selectAuthState,
   (authState) => authState.loadingUser
 )
+const authErrors = createSelector(
+  selectAuthState,
+  (authState) => authState.error
+)
 
 export const AuthSelectors = {
-  token, user, fetchingToken, loadingUser, tokenWithAccessType, isUnAuthAccess
+  token, user, fetchingToken, loadingUser, tokenWithAccessType, isUnAuthAccess, authErrors
 }

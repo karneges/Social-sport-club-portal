@@ -1,8 +1,7 @@
-import { Action, createReducer, on } from '@ngrx/store';
+import { createReducer, on } from '@ngrx/store';
 import { User } from '../../models/user.model';
 import { AuthActions } from './auth.actions';
-import { state } from '@angular/animations';
-import { AccessToken } from './models/auth.models';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 export const authFeatureKey = 'auth';
@@ -16,7 +15,7 @@ export interface AuthState {
     expiresIn: string
   }
   fetchingToken: boolean,
-  error: string,
+  error: HttpErrorResponse | string,
   unAuthAccess: boolean,
   webSocketAuthConnect: boolean
 }
@@ -89,7 +88,7 @@ export const reducer = createReducer(
   on(AuthActions.loginFailure, ((state, action) => {
     return {
       ...state,
-      error: action.error.message
+      error: action.error.error
     }
   })),
   on(AuthActions.authenticationSocketReceived, ((state) => {
@@ -97,6 +96,12 @@ export const reducer = createReducer(
       ...state,
       webSocketAuthConnect: true
     }
-  }))
+  })),
+  on(AuthActions.unAuthorizeAccess, (state, action) => {
+    return {
+      ...initialState,
+      unAuthAccess: true
+    }
+  })
 );
 

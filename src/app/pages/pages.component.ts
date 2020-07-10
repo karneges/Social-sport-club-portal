@@ -5,15 +5,15 @@ import { select, Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { AuthActions } from './auth/auth.actions';
 import { Router } from '@angular/router';
-import { delay, first, map, startWith, tap } from 'rxjs/operators';
+import { delay, filter, startWith, tap } from 'rxjs/operators';
 import { UserActions } from '../shared/users/users.actions';
 import { MessageActions } from '../shared/messages/messages.actions';
-import { Actions, ofType } from '@ngrx/effects';
-import { BaseMessageEntity } from '../shared/messages/models/message.model';
 import { ToastrService } from 'ngx-toastr';
-import { MessagesNotificationService } from '../shared/notifications/messages.notification.service';
+import { MessagesNotificationService } from '../shared/notifications/messages/messages.notification.service';
 import { Observable } from 'rxjs';
 import { AuthSelectors } from './auth/auth.selectors';
+import { PagesService } from './pages.service';
+import { ErrorsNotificationService } from '../shared/notifications/errors/errors.notification.service';
 
 @Component({
   selector: 'ngx-pages',
@@ -26,7 +26,7 @@ import { AuthSelectors } from './auth/auth.selectors';
           <div class="col-md-12" [ngClass]="columnClass">
             <router-outlet></router-outlet>
           </div>
-          <div *ngIf="!(isUnAuth$ | async)" class="col-lg-4 col-xxxl-3">
+          <div *ngIf="(isUnAuth$ | async) === false" class="col-lg-4 col-xxxl-3">
             <div class="sticky-top">
               <ngx-list-of-users></ngx-list-of-users>
             </div>
@@ -44,25 +44,29 @@ export class PagesComponent implements OnInit {
 
   constructor(private store: Store<AppState>,
               private router: Router,
-              private updates$: Actions,
               private toastr: ToastrService,
-              private messagesNotificationService: MessagesNotificationService) {
+              private messagesNotificationService: MessagesNotificationService,
+              private pagesService: PagesService,
+              private errorsNotificationService: ErrorsNotificationService) {
   }
 
   ngOnInit(): void {
     this.initialWsSubscription()
     this.routerEventsSubscription()
-    this.globalSubscription()
-    this.store.dispatch(MessageActions.loadNoReadMessages())
+    this.globalSubscriptions()
+
     // Any first page except auth pages should try to regain access by token.
     if (!this.isAuthPage) {
       this.store.dispatch(AuthActions.authByCachedToken())
     }
     this.isUnAuth$ = this.store.pipe(
       select(AuthSelectors.isUnAuthAccess),
+      filter((r) => r !== undefined),
       delay(0),
       tap((isUnAuth) => this.columnClass = isUnAuth ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9')
     )
+    // resolve auth/unAuth actions
+    this.pagesService.runAuthResolver(this.isUnAuth$)
   }
 
   routerEventsSubscription() {
@@ -72,31 +76,15 @@ export class PagesComponent implements OnInit {
     ).subscribe()
   }
 
-  // get classes() {
-  //   console.log('getClass')
-  //   return this.isUnAuth$.pipe(
-  //     map((isUnAuth) => isUnAuth ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9')
-  //   )
-  //   // return this.isAuthPage ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9'
-  // }
-
   // When app start this method init all static WS subscription
   initialWsSubscription() {
     this.store.dispatch(UserActions.userStatusChangedWSSubscription())
     this.store.dispatch(MessageActions.openWsMessageSubscription())
   }
 
-  private globalSubscription() {
-    this.updates$.pipe(
-      ofType(MessageActions.receivedNewMessage),
-      tap(({ messagesEntity }) => {
-          const { message: { text }, sender } = BaseMessageEntity.convertOneMessageEntityToObject(messagesEntity)
-          this.toastr.info(text, `from ${ sender.name }`, { timeOut: 10000 }).onTap.pipe(
-            tap(() => this.messagesNotificationService.onMessageNotificationClick(sender._id)),
-            first()
-          ).subscribe()
-        }
-      )
-    ).subscribe()
+  private globalSubscriptions() {
+    this.messagesNotificationService.messageNotificationSubscription()
+    this.errorsNotificationService.authErrorNotificationSubscription()
   }
+
 }

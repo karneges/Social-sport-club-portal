@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthActions } from '../auth.actions';
 import { GoogleLoginProvider, SocialAuthService } from 'angularx-social-login';
 import { fromPromise } from 'rxjs-compat/observable/fromPromise';
-import { filter, first, tap } from 'rxjs/operators';
+import { first, tap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthSelectors } from '../auth.selectors';
 
@@ -87,12 +87,5 @@ export class LoginComponent implements OnInit {
       })
     ).subscribe()
   }
-
-  // name: string,
-  // email: string,
-  // password?: string,
-  // gId?: string
-  // role?: 'admin' | 'trainer' | 'user',
-  // photoUrl?: string
 
 }

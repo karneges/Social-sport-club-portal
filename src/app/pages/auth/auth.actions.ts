@@ -3,6 +3,7 @@ import { User } from '../../models/user.model';
 import { AccessToken } from './models/auth.models';
 import { RegisterModelRequest, RegisterModelResponse } from '../../models/register.model';
 import { LoginModel } from '../../models/login.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 const login = createAction(
@@ -78,7 +79,7 @@ const authenticationSocketReceived = createAction(
 
 const loginFailure = createAction(
   '[Login Page] Login Failure',
-  props<{ error: Error }>()
+  props<{ error: HttpErrorResponse }>()
 )
 
 const authFailure = createAction(
