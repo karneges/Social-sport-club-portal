@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NbButtonModule, NbCardModule, NbChatModule, NbIconModule } from '@nebular/theme';
 import { UsersModule } from './users/users.module';
 import { MessagesModule } from './messages/messages.module';
+import { RouterModule } from '@angular/router';
 
 const SHARED_COMPONENTS = [EditorComponent]
 
@@ -20,6 +21,7 @@ const SHARED_COMPONENTS = [EditorComponent]
     ReactiveFormsModule,
     NbButtonModule,
     UsersModule,
+    RouterModule,
     NbCardModule,
     NbChatModule,
     NbIconModule,

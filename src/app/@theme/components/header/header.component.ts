@@ -2,7 +2,7 @@ import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
 import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
 
 
-import { debounceTime, delay, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { Subject, Observable } from 'rxjs';
 import { RippleGlobalOptions } from '@angular/material/core';
 import { select, Store } from '@ngrx/store';
@@ -121,8 +121,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 }
 
 
-
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class RippleService implements RippleGlobalOptions {
   public disabled: boolean = false;
 

@@ -1,12 +1,33 @@
 <div>
-  <nb-card size="tiny">
+  <nb-card>
     <nb-card-body>
       <div class="text-center">{{trainName}} </div>
-      <a [href]="STRAVA_URL">STARAVA</a>
+      <div class="row w-100">
+        <div class="col-8">
+          <div class>
+            <nb-progress-bar [nbTooltip]="activity.distance.max +' '+ activity._id"
+                             *ngFor="let activity of activities"
+                             nbTooltipStatus="primary"
+                             [value]="getPercentOfActivity(activity)"
+                             status="danger">
+              {{getPercentOfActivity(activity) > 10 ? activity.distance.sum : null}}
+            </nb-progress-bar>
+          </div>
+        </div>
+        <div class="col-4">
+          <nb-user size="giant"
+                   [name]="athlete.firstname + ' ' + athlete.lastname"
+                   [picture]="athlete.profile_medium">
+          </nb-user>
+        </div>
+
+
+      </div>
     </nb-card-body>
     <nb-card-footer class="d-flex justify-content-center">
-
-      <button nbButton status="warning">Add Strava Account</button>
+      <a [href]="STRAVA_URL">
+        <button nbButton status="warning">Add Strava Account</button>
+      </a>
     </nb-card-footer>
   </nb-card>
 </div>

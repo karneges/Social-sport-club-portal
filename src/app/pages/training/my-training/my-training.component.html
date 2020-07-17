@@ -1,1 +1,13 @@
-<ngx-training-banner></ngx-training-banner>
+<div *ngIf="stravaAthlete$ | async as athlete">
+  <ngx-training-banner *ngIf="dataFromBanner$ | async as dataFromBanner"
+                       [activitiesAndAthlete]="dataFromBanner">
+  </ngx-training-banner>
+  <nb-card>
+    <nb-card-header>
+      <ngx-training-filters (filterStateChanged)="onFilterStateChanged($event)"></ngx-training-filters>
+    </nb-card-header>
+    <nb-card-body>
+      <ngx-training-charts></ngx-training-charts>
+    </nb-card-body>
+  </nb-card>
+</div>

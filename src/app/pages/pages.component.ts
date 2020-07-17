@@ -1,4 +1,4 @@
-import { Component, OnInit, QueryList } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { MENU_ITEMS } from './pages-menu';
 import { select, Store } from '@ngrx/store';
@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { delay, filter, startWith, tap } from 'rxjs/operators';
 import { UserActions } from '../shared/users/users.actions';
 import { MessageActions } from '../shared/messages/messages.actions';
-import { ToastrService } from 'ngx-toastr';
 import { MessagesNotificationService } from '../shared/notifications/messages/messages.notification.service';
 import { Observable } from 'rxjs';
 import { AuthSelectors } from './auth/auth.selectors';
@@ -44,7 +43,6 @@ export class PagesComponent implements OnInit {
 
   constructor(private store: Store<AppState>,
               private router: Router,
-              private toastr: ToastrService,
               private messagesNotificationService: MessagesNotificationService,
               private pagesService: PagesService,
               private errorsNotificationService: ErrorsNotificationService) {

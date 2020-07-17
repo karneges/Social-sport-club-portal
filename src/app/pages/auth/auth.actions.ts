@@ -113,7 +113,8 @@ export const AuthActions = {
   authFailure,
   authenticationSocketReceived,
   unAuthorizeAccess,
-  logout
+  logout,
+  tokenFailure
 }
 
 

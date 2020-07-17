@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import {
   BaseMessageEntity,
-  BaseMessageModel
 } from './models/message.model';
 
 

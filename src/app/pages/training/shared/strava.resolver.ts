@@ -10,8 +10,6 @@ export class StravaResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    console.log('resolve')
-    // debugger
     if ('code' in route.queryParams) {
       return this.trainingService.addNewStravaUser(route.queryParams.code).pipe(
         tap(r => console.log(r))

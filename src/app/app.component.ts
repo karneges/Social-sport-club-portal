@@ -19,7 +19,7 @@ import { AppState } from './reducers';
 
 export class AppComponent implements OnInit {
 
-  constructor(private iconLibraries: NbIconLibraries, private iconsLibrary: NbIconLibraries, private store: Store<AppState>) {
+  constructor(private iconLibraries: NbIconLibraries, private iconsLibrary: NbIconLibraries) {
     this.iconLibraries.registerFontPack('font-awesome', { packClass: 'fa', iconClassPrefix: 'fa' });
     this.iconLibraries.registerFontPack('regular', { packClass: 'far', iconClassPrefix: 'fa' });
     this.iconLibraries.registerFontPack('solid', { packClass: 'fas', iconClassPrefix: 'fa' });

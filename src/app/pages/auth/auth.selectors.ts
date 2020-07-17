@@ -11,12 +11,16 @@ const token = createSelector(
 
 const tokenWithAccessType = createSelector(
   selectAuthState,
-  ({ token, unAuthAccess }) => ({token, unAuthAccess})
+  ({ token, unAuthAccess }) => ({ token, unAuthAccess })
 )
 
 const user = createSelector(
   selectAuthState,
   (authState) => authState.user
+)
+const stravaAthlete = createSelector(
+  user,
+  (user) => user?.strava?.athlete
 )
 
 
@@ -40,5 +44,5 @@ const authErrors = createSelector(
 )
 
 export const AuthSelectors = {
-  token, user, fetchingToken, loadingUser, tokenWithAccessType, isUnAuthAccess, authErrors
+  token, user, fetchingToken, loadingUser, tokenWithAccessType, isUnAuthAccess, authErrors,stravaAthlete
 }

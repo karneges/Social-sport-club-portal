@@ -1,0 +1,31 @@
+<form [formGroup]="filterForm">
+  <div class="filters">
+
+    <div class="filters__filter">
+      <p class="filter-title">
+        Start Date
+      </p>
+      <div class="date-picker">
+        <input nbInput placeholder="Pick Date" formControlName="bottomBarerDate" [nbDatepicker]="formcontrolOne">
+        <nb-datepicker #formcontrolOne></nb-datepicker>
+      </div>
+    </div>
+    <div class="filters__filter">
+      <p class="filter-title">
+        End Date
+      </p>
+      <div class="date-picker">
+        <input nbInput placeholder="Pick Date" formControlName="topBarerDate" [nbDatepicker]="formcontrolTwo">
+        <nb-datepicker #formcontrolTwo></nb-datepicker>
+      </div>
+    </div>
+  </div>
+  <div class="filters__filter">
+    <p class="filter-title">
+      Pick types
+    </p>
+    <nb-select formControlName="fields" [fullWidth]="true" multiple placeholder="Multiple Select">
+      <nb-option *ngFor="let trainingType of trainingTypes" [value]="trainingType.id">{{trainingType.fieldName}}</nb-option>
+    </nb-select>
+  </div>
+</form>

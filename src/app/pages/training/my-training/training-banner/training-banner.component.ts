@@ -1,31 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+
+import { StaravaAthlete } from '../../../../models/user.model';
 import { environment } from '../../../../../environments/environment';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { StravaActivities } from '../../shared/models/strava.request.model';
+
 
 @Component({
   selector: 'ngx-training-banner',
   templateUrl: './training-banner.component.html',
-  styleUrls: ['./training-banner.component.scss']
+  styleUrls: ['./training-banner.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TrainingBannerComponent implements OnInit {
-  trainName = 'My Awesome Train'
+  @Input() activitiesAndAthlete: { activities: StravaActivities[], athlete: StaravaAthlete }
   STRAVA_URL = environment.STRAVA_AUTH_URL
-  params$: Observable<Params>
-
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
-  }
-
+  trainName = 'My Awesome Train'
+  activities: StravaActivities[]
+  athlete: StaravaAthlete
+  sumOfTrainTypes: number
   ngOnInit(): void {
-    this.params$ = this.activatedRoute.queryParams
-    this.params$.pipe(
-      tap(p => console.log(p))
-   ).subscribe()
+    this.activities = this.activitiesAndAthlete.activities
+    this.athlete = this.activitiesAndAthlete.athlete
+    this.sumOfTrainTypes = this.activities.reduce((acc, current) => acc + current.distance.sum, 0)
+  }
+  getPercentOfActivity(activity: StravaActivities) {
+    return activity.distance.sum / this.sumOfTrainTypes * 100
   }
 
-  routeSubscription() {
-
-  }
 
 }
