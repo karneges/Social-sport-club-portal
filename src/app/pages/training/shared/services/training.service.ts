@@ -4,9 +4,9 @@ import { environment } from '../../../../../environments/environment';
 import * as moment from 'moment'
 import {
   StravaRequestModel,
-  StravaResponseModel,
+  StravaResponseBySportTypesModel,
   TrainingTypes,
-  TrainingPropsObject
+  TrainingPropsObject, StravaActivitiesByTrainValues
 } from '../models/strava.request.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -23,15 +23,20 @@ export class TrainingService {
   addNewStravaUser(userCode: string) {
     const params = { code: userCode }
     return this.http.post(this.baseUrl, {}, { params })
-    // this.getBaseStatistics(moment(), moment(), { distance: true }).pipe()
   }
 
-  getBaseStatistics<T extends Partial<TrainingPropsObject>>
+  getBaseStatisticsBySportTypes<T extends Partial<TrainingPropsObject>>
   ({ bottomBarerDate, topBarerDate, fields }: StatisticRequestModel) {
     const request = new StravaRequestModel(topBarerDate, bottomBarerDate, fields)
-    return this.http.put<StravaResponseModel<T>>(this.baseUrl + '/activities', request).pipe(
+    return this.http.put<StravaResponseBySportTypesModel<T>>(this.baseUrl + '/activities-by-sport-type', request).pipe(
       map((res) => res.activities)
     )
+  }
+
+  getBaseStatisticsByTrainValues({ bottomBarerDate, topBarerDate, fields }: StatisticRequestModel) {
+    const request = new StravaRequestModel(topBarerDate, bottomBarerDate, fields)
+    return this.http.put<{ success: boolean, activities: StravaActivitiesByTrainValues[] }>(
+      this.baseUrl + '/activities-by-train-values', request)
   }
 }
 

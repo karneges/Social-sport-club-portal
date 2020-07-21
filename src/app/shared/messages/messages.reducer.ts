@@ -71,7 +71,6 @@ export const reducer = createReducer(
     }
   }),
   on(MessageActions.clearMessagesState, (state) => {
-    // debugger
     return initialState
   })
 )

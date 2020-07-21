@@ -5,7 +5,7 @@
       <div class="row w-100">
         <div class="col-8">
           <div class>
-            <nb-progress-bar [nbTooltip]="activity.distance.max +' '+ activity._id"
+            <nb-progress-bar [nbTooltip]="activity.distance.sum +' '+ activity._id"
                              *ngFor="let activity of activities"
                              nbTooltipStatus="primary"
                              [value]="getPercentOfActivity(activity)"

@@ -52,6 +52,7 @@
     "@ngrx/store": "^9.2.0",
     "@ngrx/store-devtools": "^9.2.0",
     "@swimlane/ngx-charts": "^13.0.2",
+    "@types/echarts": "^4.6.3",
     "@types/moment": "^2.13.0",
     "@types/socket.io": "^2.1.8",
     "@types/socket.io-client": "^1.4.33",

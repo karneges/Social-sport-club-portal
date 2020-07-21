@@ -1,0 +1,8 @@
+<nb-card>
+  <nb-card-header>
+    <ngx-chart-filter (filterChanged)="onFilterChanged($event)"></ngx-chart-filter>
+  </nb-card-header>
+  <nb-card-body>
+    <ngx-pie-chart [activities]="activityWithSelectedOption"></ngx-pie-chart>
+  </nb-card-body>
+</nb-card>

@@ -19,18 +19,30 @@ import { TrainingChartsComponent } from './my-training/training-charts/training-
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { ChartModule } from 'angular2-chartjs';
+import { NgxEchartsCoreModule } from 'ngx-echarts/core';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { PieChartComponent } from './my-training/training-charts/chart-with-filter/pie-chart/pie-chart.component';
+import { ChartWithFilterComponent } from './my-training/training-charts/chart-with-filter/chart-with-filter.component';
+import { ChartFilterComponent } from './my-training/training-charts/chart-with-filter/chart-filter/chart-filter.component';
+import { StoreModule } from '@ngrx/store';
+import * as fromTraining from './shared/training.reducer'
 
 
 @NgModule({
   declarations: [MyTrainingComponent,
     TrainingBannerComponent,
     TrainingFiltersComponent,
-    TrainingChartsComponent],
+    TrainingChartsComponent,
+    PieChartComponent,
+    ChartWithFilterComponent,
+    ChartFilterComponent],
   imports: [
     CommonModule,
     TrainingRoutingModule,
     EffectsModule.forFeature([TrainingEffects]),
+    StoreModule.forFeature(fromTraining.trainingFeatureKey, fromTraining.reducer),
     NbCardModule,
     NbButtonModule,
     RouterModule,
@@ -43,7 +55,12 @@ import { ReactiveFormsModule } from '@angular/forms';
     NbSelectModule,
     MatFormFieldModule,
     MatSelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ChartModule,
+    // NgxEchartsCoreModule,
+    NgxEchartsModule,
+    NgxChartsModule,
   ]
 })
-export class TrainingModule { }
+export class TrainingModule {
+}

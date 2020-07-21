@@ -2,9 +2,9 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TrainingTypes } from '../../shared/models/strava.request.model';
 import * as moment from 'moment'
-import { distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ngx-training-filters',
@@ -31,7 +31,6 @@ export class TrainingFiltersComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // console.log(this.route.snapshot.queryParams.startDate)
     this.filterForm = this.fb.group({
       fields: [this.getInitialFields('fields'), [Validators.required]],
       bottomBarerDate: [this.getInitialDate('bottomBarerDate'), [Validators.required]],
@@ -46,9 +45,10 @@ export class TrainingFiltersComponent implements OnInit, OnDestroy {
             ...acc,
             [key]: newValue
           }
-        }, { topBarerDate: undefined, picker: [], bottomBarerDate: undefined })
+        }, { topBarerDate: undefined, fields: [], bottomBarerDate: undefined })
       }),
       distinctUntilChanged((prev, next) => JSON.stringify(prev) === JSON.stringify(next)),
+      debounceTime(1000),
       tap((formState) => this.filterStateChanged.emit(formState))
     ).subscribe()
   }
@@ -61,8 +61,12 @@ export class TrainingFiltersComponent implements OnInit, OnDestroy {
   }
 
   getInitialFields(fieldName: string) {
+    // if only one train type , this.route.snapshot.queryParams[fieldName] return string, not array
+    // need convert string to [string]
     return this.route.snapshot.queryParams[fieldName]
-      ? this.route.snapshot.queryParams[fieldName]
+      ? typeof this.route.snapshot.queryParams[fieldName] === 'object'
+        ? this.route.snapshot.queryParams[fieldName]
+        : [this.route.snapshot.queryParams[fieldName]]
       : []
   }
 
@@ -74,7 +78,7 @@ export class TrainingFiltersComponent implements OnInit, OnDestroy {
 }
 
 export interface FilterState<T> {
-  picker: TrainingTypes[],
+  fields: TrainingTypes[],
   bottomBarerDate: T,
   topBarerDate: T
 }

@@ -6,22 +6,24 @@ export class StravaRequestModel {
   // private fields: TrainingTypes []
 
   constructor(
-   private topBarerDate: string,
-   private bottomBarerDate: string,
-   private fields: TrainingTypes[]
+    private topBarerDate: string,
+    private bottomBarerDate: string,
+    private fields: TrainingTypes[]
   ) {
-    // this.topBarerDate = topBarerDate.format()
-    // this.bottomBarerDate = bottomBarerDate.format()
-    // this.fields = Object.keys(fields).map((el: TrainingTypes) => el)
   }
 }
 
-export interface StravaResponseModel<T extends Partial<TrainingPropsObject> = Partial<TrainingPropsObject>> {
+export interface StravaResponseBySportTypesModel<T extends Partial<TrainingPropsObject> = Partial<TrainingPropsObject>> {
   success: boolean
-  activities: StravaActivities[]
+  activities: StravaActivitiesBySportTypes[]
 }
 
-export type Train = 'Run' | 'Ride' | 'NordicSki'
+export interface StravaResponseByTrainValuesModel<T extends Partial<TrainingPropsObject> = Partial<TrainingPropsObject>> {
+  success: boolean
+  activities: StravaActivitiesBySportTypes[]
+}
+
+export type SportTypes = 'Run' | 'Ride' | 'NordicSki'
 export type TrainingTypes = 'elapsed_time'
   | 'distance'
   | 'moving_time'
@@ -34,13 +36,23 @@ export type TrainingTypes = 'elapsed_time'
 
 export type TrainingPropsObject = { [key in TrainingTypes]: boolean }
 
-export type StravaActivities<T = Partial<TrainingPropsObject>> = {
-  [key in keyof T]: {
-    min: number,
-    max: number,
-    sum: number,
-    avg: number
-  }
-} & { _id: Train }
+export type StravaActivitiesBySportTypes<T = Partial<TrainingPropsObject>> = {
+  [key in keyof T]: ActivitiesStatisticValues
+} & { _id: SportTypes }
+
+export interface StravaActivitiesByTrainValues {
+  _id: TrainingTypes,
+  sportTypes: ActivitiesStatisticValuesWithSportType[]
+}
+export interface ActivitiesStatisticValues {
+  min: number,
+  max: number,
+  sum: number,
+  avg: number
+}
+
+export interface ActivitiesStatisticValuesWithSportType extends ActivitiesStatisticValues {
+  sportType: SportTypes
+}
 
 

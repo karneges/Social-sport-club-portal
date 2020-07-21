@@ -1,1 +1,7 @@
-<p>training-charts works!</p>
+<ng-container *ngIf="datForPieCharts$ | async as activities">
+  <ngx-chart-with-filter
+    *ngFor="let activity of activities"
+    [dataForChart]="activity"
+  >
+  </ngx-chart-with-filter>
+</ng-container>

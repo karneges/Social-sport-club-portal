@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 
 import { StaravaAthlete } from '../../../../models/user.model';
 import { environment } from '../../../../../environments/environment';
-import { StravaActivities } from '../../shared/models/strava.request.model';
+import { StravaActivitiesBySportTypes } from '../../shared/models/strava.request.model';
 
 
 @Component({
@@ -12,10 +12,10 @@ import { StravaActivities } from '../../shared/models/strava.request.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TrainingBannerComponent implements OnInit {
-  @Input() activitiesAndAthlete: { activities: StravaActivities[], athlete: StaravaAthlete }
+  @Input() activitiesAndAthlete: { activities: StravaActivitiesBySportTypes[], athlete: StaravaAthlete }
   STRAVA_URL = environment.STRAVA_AUTH_URL
   trainName = 'My Awesome Train'
-  activities: StravaActivities[]
+  activities: StravaActivitiesBySportTypes[]
   athlete: StaravaAthlete
   sumOfTrainTypes: number
   ngOnInit(): void {
@@ -23,7 +23,7 @@ export class TrainingBannerComponent implements OnInit {
     this.athlete = this.activitiesAndAthlete.athlete
     this.sumOfTrainTypes = this.activities.reduce((acc, current) => acc + current.distance.sum, 0)
   }
-  getPercentOfActivity(activity: StravaActivities) {
+  getPercentOfActivity(activity: StravaActivitiesBySportTypes) {
     return activity.distance.sum / this.sumOfTrainTypes * 100
   }
 

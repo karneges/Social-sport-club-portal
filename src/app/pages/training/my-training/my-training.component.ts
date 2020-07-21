@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { StaravaAthlete, User } from '../../../models/user.model';
 import { AuthSelectors } from '../../auth/auth.selectors';
 import { StatisticRequestModel, TrainingService } from '../shared/services/training.service';
 import * as moment from 'moment'
 import {
-  StravaActivities,
-  StravaRequestModel,
-  TrainingPropsObject,
-  TrainingTypes
+  StravaActivitiesBySportTypes,
+
 } from '../shared/models/strava.request.model';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilterState } from './training-filters/training-filters.component';
 import { NavigateService } from '../../../shared/services/navigate.service';
-import { SubSink } from 'subsink';
+
+import { TrainingSelectors } from '../shared/training.selectors';
+import { TrainingActions } from '../shared/training.actions';
 
 @Component({
   selector: 'ngx-my-training',
@@ -23,11 +23,10 @@ import { SubSink } from 'subsink';
   styleUrls: ['./my-training.component.scss']
 })
 export class MyTrainingComponent implements OnInit {
-  authUser$: Observable<User>
   stravaAthlete$: Observable<StaravaAthlete>
-  dataFromBanner$: Observable<{ activities: StravaActivities[], athlete: StaravaAthlete }>
-  dataFromCharts$: Observable<StravaActivities[]>
-  private sub = new SubSink()
+  bannerStatistics$: Observable<StravaActivitiesBySportTypes[]>
+  dataForBanner$: Observable<{ activities: StravaActivitiesBySportTypes[], athlete: StaravaAthlete }>
+  activitiesByTraining
 
   constructor(private store: Store,
               private trainingService: TrainingService,
@@ -38,36 +37,22 @@ export class MyTrainingComponent implements OnInit {
 
   ngOnInit(): void {
     this.stravaAthlete$ = this.store.pipe(select(AuthSelectors.stravaAthlete))
-    this.getMainBannerInfo()
-    this.getActivitiesFromFilter()
+    this.bannerStatistics$ = this.store.pipe(
+      select(TrainingSelectors.bannerStatistics),
+      map(({ data }) => data)
+    )
+    this.getBannerInformation()
   }
 
-  getMainBannerInfo() {
-    const statisticConfig: TrainingTypes[] = ['distance']
-    const yearStatistics$ = this.trainingService
-      .getBaseStatistics({
-        bottomBarerDate: moment().subtract(2, 'y').format(),
-        topBarerDate: moment().format(),
-        fields: statisticConfig
-      })
-    this.dataFromBanner$ = combineLatest([this.stravaAthlete$, yearStatistics$]).pipe(
-      map(([athlete, activities]) => {
-        return { activities, athlete }
-      })
+  getBannerInformation() {
+    this.dataForBanner$ = combineLatest([this.stravaAthlete$, this.bannerStatistics$]).pipe(
+      map(([athlete, activities]) => ({ activities, athlete }))
     )
   }
 
-  getActivitiesFromFilter() {
-    this.sub.sink = this.activatedRoute.queryParams.pipe(
-      switchMap((params: StatisticRequestModel) => {
-        console.log(params)
-        return this.trainingService.getBaseStatistics(params)
-      })
-    ).subscribe()
-  }
 
-
-  onFilterStateChanged(filterState: FilterState<string>) {
+  onFilterStateChanged(filterState: FilterState<string>): void {
+    this.store.dispatch(TrainingActions.loadDataForCharts({filterState}))
     this.navigateService.navigateByQueryParams(filterState)
   }
 }

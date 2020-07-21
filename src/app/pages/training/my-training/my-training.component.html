@@ -1,6 +1,5 @@
 <div *ngIf="stravaAthlete$ | async as athlete">
-  <ngx-training-banner *ngIf="dataFromBanner$ | async as dataFromBanner"
-                       [activitiesAndAthlete]="dataFromBanner">
+  <ngx-training-banner [activitiesAndAthlete]="dataForBanner$ | async">
   </ngx-training-banner>
   <nb-card>
     <nb-card-header>

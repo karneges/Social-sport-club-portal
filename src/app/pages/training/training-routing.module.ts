@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Route, RouterModule, Routes } from '@angular/router';
 import { MyTrainingComponent } from './my-training/my-training.component';
-import { StravaResolver } from './shared/strava.resolver';
+import { StravaResolver } from './shared/resolvers/strava.resolver';
+import { ActivitiesResolver } from './shared/resolvers/activities.resolver';
 
 const routes: Routes = [
   {
@@ -10,7 +11,10 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: MyTrainingComponent
+        component: MyTrainingComponent,
+        resolve: {
+          bannerInfo: ActivitiesResolver
+        }
       },
       {
         path: 'strava',
