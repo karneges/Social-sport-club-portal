@@ -1,7 +1,11 @@
 <ng-container *ngIf="datForPieCharts$ | async as activities">
-  <ngx-chart-with-filter
-    *ngFor="let activity of activities"
-    [dataForChart]="activity"
-  >
-  </ngx-chart-with-filter>
+  <div class="row">
+    <div class="col-md-4" *ngFor="let activity of activities">
+      <ngx-chart-with-filter
+        [dataForChart]="activity"
+      >
+      </ngx-chart-with-filter>
+    </div>
+  </div>
+
 </ng-container>
