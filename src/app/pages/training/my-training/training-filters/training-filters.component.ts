@@ -5,6 +5,7 @@ import * as moment from 'moment'
 import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { ActivatedRoute } from '@angular/router';
+import { filterMap } from '../../shared/models/Strava-filter-map';
 
 @Component({
   selector: 'ngx-training-filters',
@@ -12,16 +13,9 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./training-filters.component.scss']
 })
 export class TrainingFiltersComponent implements OnInit, OnDestroy {
-  trainingTypes: { id: TrainingTypes, fieldName: string }[] = [
-    { id: 'elapsed_time', fieldName: 'Elapsed Time' },
-    { id: 'distance', fieldName: 'Distance' },
-    { id: 'total_elevation_gain', fieldName: 'Total Elevation Gain' },
-    { id: 'athlete_count', fieldName: 'Athlete Count' },
-    { id: 'average_speed', fieldName: 'Average Speed' },
-    { id: 'max_speed', fieldName: 'Max Speed' },
-    { id: 'average_watts', fieldName: 'Average Watts' },
-    { id: 'kilojoules', fieldName: 'Kilojoules' },
-  ]
+  trainingTypes: { id: TrainingTypes, fieldName: string }[] = Object.entries(filterMap)
+    .map(([id, fieldName]) => ({ id, fieldName })) as { id: TrainingTypes, fieldName: string }[]
+
   filterForm: FormGroup
   sub = new SubSink()
   @Input() data: {}

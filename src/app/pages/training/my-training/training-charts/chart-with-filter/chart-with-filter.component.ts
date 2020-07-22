@@ -4,6 +4,7 @@ import {
   StravaActivitiesByTrainValues
 } from '../../../shared/models/strava.request.model';
 import { PieEchartChartModel, PieEchartInterface } from '../models/pie-echart.model';
+import { filterMap } from '../../../shared/models/Strava-filter-map';
 
 @Component({
   selector: 'ngx-chart-with-filter',
@@ -21,9 +22,11 @@ export class ChartWithFilterComponent implements OnInit {
   }
 
   onFilterChanged(filterValue: keyof ActivitiesStatisticValues) {
-    this.activityWithSelectedOption = this.dataForChart.sportTypes.map(el => {
+    this.activityWithSelectedOption = {
+      data: this.dataForChart.sportTypes.map(el => {
         return { name: el.sportType, value: el[filterValue] }
-      }
-    )
+      }),
+      chartTitle: filterMap[this.dataForChart._id]
+    }
   }
 }

@@ -2,4 +2,8 @@ export interface PieEchartInterface {
   name: string,
   value: number
 }
-export type PieEchartChartModel = PieEchartInterface[]
+
+export interface PieEchartChartModel {
+  data: PieEchartInterface[]
+  chartTitle: string
+}
