@@ -3,7 +3,7 @@ import {
   ActivitiesStatisticValues,
   StravaActivitiesByTrainValues
 } from '../../../shared/models/strava.request.model';
-import { PieEchartChartModel, PieEchartInterface } from '../models/pie-echart.model';
+import { PieEchartChartModel } from '../models/pie-echart.model';
 import { filterMap } from '../../../shared/models/Strava-filter-map';
 
 @Component({

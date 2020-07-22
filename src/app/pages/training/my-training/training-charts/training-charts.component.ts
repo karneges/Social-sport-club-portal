@@ -1,9 +1,6 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  ActivitiesStatisticValues,
-  StravaActivitiesBySportTypes,
   StravaActivitiesByTrainValues,
-  TrainingTypes
 } from '../../shared/models/strava.request.model';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
