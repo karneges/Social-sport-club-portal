@@ -1,0 +1,6 @@
+<form [formGroup]="filterForm">
+  <nb-select formControlName="filter" [fullWidth]="true" placeholder="Multiple Select">
+    <nb-option *ngFor="let filterField of filterFields"
+               [value]="filterField.id">{{filterField.fieldName}}</nb-option>
+  </nb-select>
+</form>

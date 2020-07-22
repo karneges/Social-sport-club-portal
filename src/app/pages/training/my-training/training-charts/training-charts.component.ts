@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {
   StravaActivitiesByTrainValues,
 } from '../../shared/models/strava.request.model';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { TrainingSelectors } from '../../shared/training.selectors';
 import { filter, map, tap } from 'rxjs/operators';
-import { TrainingActions } from '../../shared/training.actions';
 
 @Component({
   selector: 'ngx-training-charts',
