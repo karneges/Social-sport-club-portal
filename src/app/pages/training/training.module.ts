@@ -6,12 +6,13 @@ import { TrainingEffects } from './shared/training.effects';
 import { TrainingRoutingModule } from './training-routing.module';
 import { TrainingBannerComponent } from './my-training/training-banner/training-banner.component';
 import {
-  NbButtonModule,
-  NbCardModule,
-  NbDatepickerModule, NbInputModule, NbOptionModule,
-  NbProgressBarModule, NbSelectModule,
-  NbTooltipModule,
-  NbUserModule
+    NbAccordionModule,
+    NbButtonModule,
+    NbCardModule,
+    NbDatepickerModule, NbInputModule, NbOptionModule,
+    NbProgressBarModule, NbSelectModule,
+    NbTooltipModule,
+    NbUserModule
 } from '@nebular/theme';
 import { RouterModule } from '@angular/router';
 import { TrainingFiltersComponent } from './my-training/training-filters/training-filters.component';
@@ -27,7 +28,9 @@ import { PieChartComponent } from './my-training/training-charts/chart-with-filt
 import { ChartWithFilterComponent } from './my-training/training-charts/chart-with-filter/chart-with-filter.component';
 import { ChartFilterComponent } from './my-training/training-charts/chart-with-filter/chart-filter/chart-filter.component';
 import { StoreModule } from '@ngrx/store';
-import * as fromTraining from './shared/training.reducer'
+import * as fromTraining from './shared/training.reducer';
+import { TrainingDetailedStatisticsComponent } from './my-training/training-detailed-statistics/training-detailed-statistics.component';
+import { TrainingLineChartComponent } from './my-training/training-detailed-statistics/training-line-chart/training-line-chart.component'
 
 
 @NgModule({
@@ -37,30 +40,32 @@ import * as fromTraining from './shared/training.reducer'
     TrainingChartsComponent,
     PieChartComponent,
     ChartWithFilterComponent,
-    ChartFilterComponent],
-  imports: [
-    CommonModule,
-    TrainingRoutingModule,
-    EffectsModule.forFeature([TrainingEffects]),
-    StoreModule.forFeature(fromTraining.trainingFeatureKey, fromTraining.reducer),
-    NbCardModule,
-    NbButtonModule,
-    RouterModule,
-    NbUserModule,
-    NbProgressBarModule,
-    NbTooltipModule,
-    NbDatepickerModule,
-    NbInputModule,
-    NbOptionModule,
-    NbSelectModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    ReactiveFormsModule,
-    ChartModule,
-    // NgxEchartsCoreModule,
-    NgxEchartsModule,
-    NgxChartsModule,
-  ]
+    ChartFilterComponent,
+    TrainingDetailedStatisticsComponent,
+    TrainingLineChartComponent],
+    imports: [
+        CommonModule,
+        TrainingRoutingModule,
+        EffectsModule.forFeature([TrainingEffects]),
+        StoreModule.forFeature(fromTraining.trainingFeatureKey, fromTraining.reducer),
+        NbCardModule,
+        NbButtonModule,
+        RouterModule,
+        NbUserModule,
+        NbProgressBarModule,
+        NbTooltipModule,
+        NbDatepickerModule,
+        NbInputModule,
+        NbOptionModule,
+        NbSelectModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        ChartModule,
+        NgxEchartsModule,
+        NgxChartsModule,
+        NbAccordionModule,
+    ]
 })
 export class TrainingModule {
 }

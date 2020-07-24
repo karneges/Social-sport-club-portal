@@ -5,7 +5,7 @@ import {
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { TrainingSelectors } from '../../shared/training.selectors';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-training-charts',
@@ -25,6 +25,4 @@ export class TrainingChartsComponent implements OnInit {
       map(({ data }) => data)
     )
   }
-
-
 }
