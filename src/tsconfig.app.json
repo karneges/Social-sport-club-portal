@@ -1,5 +1,6 @@
 {
   "extends": "../tsconfig.json",
+  "skipLibCheck": true,
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "baseUrl": "./"
@@ -7,7 +8,8 @@
   "exclude": [
     "test.ts",
     "**/*.spec.ts",
-    "../node_modules/@nebular/**/*.spec.ts"
+    "../node_modules/@nebular/**/*.spec.ts",
+    "../node_modules/**/*.ts"
   ],
   "include": [
     "../src/*.ts",

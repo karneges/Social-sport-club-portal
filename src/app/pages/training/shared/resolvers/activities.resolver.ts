@@ -15,7 +15,7 @@ export class ActivitiesResolver implements Resolve<any> {
     this.store.dispatch(TrainingActions.loadDataForMainBanner())
     return this.store.pipe(
       select(TrainingSelectors.bannerStatistics),
-      first(),
+      first(({ data }) => !!data),
     )
   }
 

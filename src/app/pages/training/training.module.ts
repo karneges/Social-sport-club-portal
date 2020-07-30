@@ -9,7 +9,7 @@ import {
     NbAccordionModule,
     NbButtonModule,
     NbCardModule,
-    NbDatepickerModule, NbInputModule, NbOptionModule,
+    NbDatepickerModule, NbIconModule, NbInputModule, NbOptionModule,
     NbProgressBarModule, NbSelectModule,
     NbTooltipModule,
     NbUserModule
@@ -30,7 +30,10 @@ import { ChartFilterComponent } from './my-training/training-charts/chart-with-f
 import { StoreModule } from '@ngrx/store';
 import * as fromTraining from './shared/training.reducer';
 import { TrainingDetailedStatisticsComponent } from './my-training/training-detailed-statistics/training-detailed-statistics.component';
-import { TrainingLineChartComponent } from './my-training/training-detailed-statistics/training-line-chart/training-line-chart.component'
+import { TrainingLineChartComponent } from './my-training/training-detailed-statistics/training-line-chart/training-line-chart.component';
+import { SportServicesComponent } from './sport-services/sport-services.component';
+import { DetailedStatisticsListComponent } from './my-training/training-detailed-statistics/detailed-statistics-list/detailed-statistics-list.component';
+import { DetailedSportTypeStatisticComponent } from './my-training/training-detailed-statistics/detailed-statistics-list/detailed-sport-type-statistic/detailed-sport-type-statistic.component'
 
 
 @NgModule({
@@ -42,7 +45,10 @@ import { TrainingLineChartComponent } from './my-training/training-detailed-stat
     ChartWithFilterComponent,
     ChartFilterComponent,
     TrainingDetailedStatisticsComponent,
-    TrainingLineChartComponent],
+    TrainingLineChartComponent,
+    SportServicesComponent,
+    DetailedStatisticsListComponent,
+    DetailedSportTypeStatisticComponent],
     imports: [
         CommonModule,
         TrainingRoutingModule,
@@ -65,6 +71,7 @@ import { TrainingLineChartComponent } from './my-training/training-detailed-stat
         NgxEchartsModule,
         NgxChartsModule,
         NbAccordionModule,
+        NbIconModule,
     ]
 })
 export class TrainingModule {

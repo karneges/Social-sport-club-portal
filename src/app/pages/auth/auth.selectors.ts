@@ -44,5 +44,5 @@ const authErrors = createSelector(
 )
 
 export const AuthSelectors = {
-  token, user, fetchingToken, loadingUser, tokenWithAccessType, isUnAuthAccess, authErrors,stravaAthlete
+  token, user, fetchingToken, loadingUser, tokenWithAccessType, isUnAuthAccess, authErrors, stravaAthlete
 }

@@ -8,7 +8,8 @@ export class StravaRequestModel {
   constructor(
     private topBarerDate: string,
     private bottomBarerDate: string,
-    private fields: TrainingTypes[]
+    private fields: TrainingTypes[],
+    private secondaryUsers?: string[]
   ) {
   }
 }
@@ -20,10 +21,10 @@ export interface StravaResponseBySportTypesModel<T extends Partial<TrainingProps
 
 export interface StravaResponseByTrainValuesModel<T extends Partial<TrainingPropsObject> = Partial<TrainingPropsObject>> {
   success: boolean
-  activities: StravaActivitiesBySportTypes[]
+  activities: StravaActivitiesByTrainValues[]
 }
 
-export type SportTypes = 'Run' | 'Ride' | 'NordicSki'
+export type SportTypes = 'Run' | 'Ride' | 'NordicSki' | 'Walk'
 export type TrainingTypes = 'elapsed_time'
   | 'distance'
   | 'moving_time'
@@ -44,6 +45,7 @@ export interface StravaActivitiesByTrainValues {
   _id: TrainingTypes,
   sportTypes: ActivitiesStatisticValuesWithSportType[]
 }
+
 export interface ActivitiesStatisticValues {
   min: number,
   max: number,

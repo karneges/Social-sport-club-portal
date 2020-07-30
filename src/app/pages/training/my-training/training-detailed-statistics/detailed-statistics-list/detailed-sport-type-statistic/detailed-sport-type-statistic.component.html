@@ -1,0 +1,4 @@
+<div *ngFor="let activity of mappedTrainingValueBySportType"> {{activity.graphName}}
+  <ngx-training-line-chart [lineChartConfig]="activity.chartConfig"></ngx-training-line-chart>
+</div>
+

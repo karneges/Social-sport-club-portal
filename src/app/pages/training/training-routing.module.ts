@@ -1,27 +1,36 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Route, RouterModule, Routes } from '@angular/router';
 import { MyTrainingComponent } from './my-training/my-training.component';
 import { StravaResolver } from './shared/resolvers/strava.resolver';
 import { ActivitiesResolver } from './shared/resolvers/activities.resolver';
+import { SportServicesComponent } from './sport-services/sport-services.component';
 
 const routes: Routes = [
   {
     path: '',
     children: [
       {
-        path: '',
+        path: 'my-training',
         component: MyTrainingComponent,
         resolve: {
           bannerInfo: ActivitiesResolver
         }
       },
       {
-        path: 'strava',
-        component: MyTrainingComponent,
-        resolve: {
-          strava: StravaResolver
-        }
+        path: 'sport-services',
+        children: [
+          {
+            path: '',
+            component: SportServicesComponent,
+          },
+          {
+            path: 'strava',
+            component: SportServicesComponent,
+            resolve: {
+              strava: StravaResolver
+            }
+          }
+        ]
       }
     ]
   }

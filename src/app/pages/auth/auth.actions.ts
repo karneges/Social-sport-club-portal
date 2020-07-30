@@ -69,6 +69,13 @@ const userInformationReceived = createAction(
   '[Login Page | Dashboard] User Information Received',
   props<{ user: User }>()
 )
+const userInformationUpdateRequest = createAction(
+  '[Sport Services Page] User Information Update Request'
+)
+const updatedUserInformationReceived = createAction(
+  '[Sport Services Page] User Information Update Received',
+  props<{ user: User }>()
+)
 
 const authenticationSocketWithToken = createAction(
   '[Login Page | Dashboard] Authorization ws connect'
@@ -105,8 +112,10 @@ export const AuthActions = {
   accessTokenLoginPageRequest,
   accessTokenRegisterPageRequest,
   authByCachedToken,
+  userInformationUpdateRequest,
   authenticationSocketWithToken,
   getAuthToken,
+  updatedUserInformationReceived,
   setAuthToken,
   removeAuthToken,
   authTokenFetching,

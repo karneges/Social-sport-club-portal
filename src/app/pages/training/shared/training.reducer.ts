@@ -4,6 +4,8 @@ import { FilterState } from '../my-training/training-filters/training-filters.co
 import * as moment from 'moment'
 import { TrainingActions } from './training.actions';
 import { compareAndReturnRenewData } from './utils/reducer-utils';
+import { StravaActivitiesByTrainingValuesDayRange } from './models/starava.models';
+import { AuthActions } from '../../auth/auth.actions';
 
 
 export const trainingFeatureKey = 'training';
@@ -13,7 +15,7 @@ export interface TrainingState {
     loading: boolean,
     data: StravaActivitiesBySportTypes[]
   }
-  filterState: FilterState<Date | moment.Moment>
+  globalFilterState: FilterState<string>
   activitiesByTrainValues: {
     loading: boolean,
     data: StravaActivitiesByTrainValues[]
@@ -21,19 +23,36 @@ export interface TrainingState {
   activitiesBySportType: {
     loading: boolean,
     data: StravaActivitiesBySportTypes[]
+  },
+  activitiesBySportTypesDayRange: {
+    observableUsers: string[]
+    loading: boolean,
+    usersData: StravaActivitiesByTrainingValuesDayRange[],
   }
+
 }
 
 export const initialState: TrainingState = {
   bannerStatistics: undefined,
-  filterState: undefined,
+  globalFilterState: undefined,
   activitiesByTrainValues: undefined,
-  activitiesBySportType: undefined
+  activitiesBySportType: undefined,
+  activitiesBySportTypesDayRange: {
+    observableUsers: [],
+    loading: false,
+    usersData: []
+  }
 };
 
 
 export const reducer = createReducer(
   initialState,
+  on(TrainingActions.globalFilterStateChanged, (state, action) => {
+    return {
+      ...state,
+      filterState: action.filterState
+    }
+  }),
   on(TrainingActions.loadDataForMainBanner, (state, action) => {
     return {
       ...state,
@@ -46,30 +65,57 @@ export const reducer = createReducer(
       bannerStatistics: { data: action.data, loading: false }
     }
   }),
-  on(TrainingActions.loadDataForCharts, (state, action) => {
+  on(TrainingActions.loadActivitiesByTrainingValue, (state, action) => {
     return {
       ...state,
       activitiesByTrainValues: { ...state.activitiesByTrainValues, loading: true }
     }
   }),
-  on(TrainingActions.dataForChartsFetched, (state, action) => {
+  on(TrainingActions.activitiesByTrainingValueFetched, (state, action) => {
 
     return {
       ...state,
       activitiesByTrainValues: {
-        data: compareAndReturnRenewData(state, action),
+        data: compareAndReturnRenewData(state.activitiesByTrainValues.data, action.data),
         loading: false
       }
     }
   }),
-  on(TrainingActions.addNewTrainValue, (state, action) => {
+  on(TrainingActions.loadActivitiesByTrainingValueDayRange, (state, action) => {
     return {
       ...state,
-      activitiesByTrainValues: {
-        ...state.activitiesByTrainValues,
-        data: [...state.activitiesByTrainValues.data, action.data]
+      activitiesBySportTypesDayRange: {
+        ...state.activitiesBySportTypesDayRange,
+        loading: true
       }
     }
+  }),
+  on(TrainingActions.activitiesByTrainingValueDayRangeFetched, (state, action) => {
+    return {
+      ...state,
+      activitiesBySportTypesDayRange: {
+        loading: false,
+        usersData: state.activitiesBySportTypesDayRange.usersData.length > 0
+          ? state.activitiesBySportTypesDayRange.usersData.map(oldData => {
+            const updatedData = action.data.find(newData => newData.user === oldData.user)
+            return updatedData ? updatedData : oldData
+          })
+          : action.data
+      }
+    }
+  }),
+  on(TrainingActions.addNewObserveUser, (state, action) => {
+    return {
+      ...state,
+      activitiesBySportTypesDayRange: {
+        ...state.activitiesBySportTypesDayRange,
+        loading: false,
+        observableUsers: [...state.activitiesBySportTypesDayRange.observableUsers, action.userId]
+      }
+    }
+  }),
+  on(AuthActions.logout, (state, action) => {
+    return initialState
   })
 );
 

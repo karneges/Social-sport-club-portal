@@ -9,6 +9,7 @@ export const authFeatureKey = 'auth';
 export interface AuthState {
   user: User
   loadingUser: boolean
+  userUpdating: boolean
   token: {
     token: string,
     refreshToken
@@ -23,6 +24,7 @@ export interface AuthState {
 export const initialState: AuthState = {
   user: undefined,
   loadingUser: false,
+  userUpdating: false,
   token: undefined,
   fetchingToken: false,
   error: undefined,
@@ -55,6 +57,19 @@ export const reducer = createReducer(
       unAuthAccess: false
     }
   })),
+  on(AuthActions.userInformationUpdateRequest, (state, action) => {
+    return {
+      ...state,
+      userUpdating: true
+    }
+  }),
+  on(AuthActions.updatedUserInformationReceived, (state, action) => {
+    return {
+      ...state,
+      userUpdating: false,
+      user: { ...state.user, ...action.user }
+    }
+  }),
   on(AuthActions.setAuthToken, ((state, action) => {
     return {
       ...state,

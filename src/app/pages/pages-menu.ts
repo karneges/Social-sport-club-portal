@@ -6,16 +6,25 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'home-outline',
     link: '/pages/general',
     home: true,
-  },
-  {
-    title: 'Training',
-    icon: 'home-outline',
-    link: '/pages/training',
-    home: true,
+    pathMatch: 'prefix'
   },
   {
     title: 'FEATURES',
     group: true,
+  },
+  {
+    title: 'Training',
+    icon: 'trending-up-outline',
+    children: [
+      {
+        title: 'My Training',
+        link: '/pages/training/my-training',
+      },
+      {
+        title: 'Sport Services',
+        link: '/pages/training/sport-services',
+      },
+    ]
   },
   {
     title: 'Auth',

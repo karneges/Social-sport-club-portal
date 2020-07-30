@@ -17,7 +17,7 @@ export interface User {
   photoUrl?: string
   isOnline: boolean
   strava: {
-    athlete: StaravaAthlete
+    athlete: StravaAthlete
   }
 }
 
@@ -26,7 +26,7 @@ export interface UserWithCountMessages extends User {
   noReadMessagesCount: number
 }
 
-export interface StaravaAthlete {
+export interface StravaAthlete {
   id: number,
   username: string,
   resource_state: number,

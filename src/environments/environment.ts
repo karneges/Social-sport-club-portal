@@ -15,5 +15,5 @@ export const environment = {
   // API_BASE_URL: 'http://41a545fafe23.ngrok.io/api/v1',
   // API_BASE_URL_SOCKET: 'http://41a545fafe23.ngrok.io'
   STRAVA_AUTH_URL : 'http://www.strava.com/oauth/authorize?client_id=48158&response_type=code&'
-    + 'redirect_uri=http://localhost:4200/pages/training/strava&approval_prompt=force&scope=activity:read_all'
+    + 'redirect_uri=http://localhost:4200/pages/training/sport-services/strava&approval_prompt=force&scope=activity:read_all'
 };

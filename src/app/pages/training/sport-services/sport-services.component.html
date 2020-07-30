@@ -1,0 +1,35 @@
+<nb-card>
+  <nb-card-header>
+    Strava Account
+  </nb-card-header>
+  <nb-card-body *ngIf="!(athlete$ | async) ;else athleteBlock">
+    <a [href]="STRAVA_URL">
+      <button nbButton status="warning">Add Strava Account</button>
+    </a>
+  </nb-card-body>
+  <ng-template #athleteBlock>
+    <nb-card-body *ngIf="athlete$ | async as athlete">
+      <div class="d-flex align-items-center">
+        {{athlete.firstname + ' ' + athlete.lastname}}
+        <nb-user
+          class="ml-2"
+          picture="{{athlete.profile_medium}}"
+          onlyPicture
+          size="large"
+        ></nb-user>
+        <nb-icon [icon]="'checkmark-circle'"></nb-icon>
+        <button
+          class="ml-auto"
+          nbButton
+          outline
+          status="danger"
+          (click)="onStravaDisconnect()"
+        >
+          Remove Strava Account
+        </button>
+      </div>
+    </nb-card-body>
+  </ng-template>
+</nb-card>
+
+
