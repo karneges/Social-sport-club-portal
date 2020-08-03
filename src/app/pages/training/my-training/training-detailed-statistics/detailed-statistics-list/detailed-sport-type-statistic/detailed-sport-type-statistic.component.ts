@@ -32,7 +32,7 @@ export class DetailedSportTypeStatisticComponent implements OnInit, OnChanges {
                   chartName: el.trainingDimensionName,
                   chartConfig: {
                     date: {
-                      startDate: moment().subtract(10, 'y').format(),
+                      startDate: moment().subtract(1, 'y').format(),
                       endDate: moment().format(),
                     },
                     usersData: [
