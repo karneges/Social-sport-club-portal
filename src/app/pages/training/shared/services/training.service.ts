@@ -54,8 +54,8 @@ export class TrainingService {
     )
   }
 
-  getRequestConfig({ bottomBarerDate, topBarerDate, fields }: StatisticRequestModel): StravaRequestModel {
-    return new StravaRequestModel(topBarerDate, bottomBarerDate, fields)
+  getRequestConfig({ bottomBarerDate, topBarerDate, fields,secondaryUsers }: StatisticRequestModel): StravaRequestModel {
+    return new StravaRequestModel(topBarerDate, bottomBarerDate, fields, secondaryUsers)
   }
 }
 

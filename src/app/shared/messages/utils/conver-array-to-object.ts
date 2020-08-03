@@ -1,4 +1,4 @@
-export const convertArrayToObject = <T>(array: T[], key): { [key: string]: T } => {
+export const convertArrayToObject = <T, K extends keyof T>(array: T[], key: K): { [key: string]: T } => {
   const initialValue = {};
   return array.reduce((obj, item) => {
     return {

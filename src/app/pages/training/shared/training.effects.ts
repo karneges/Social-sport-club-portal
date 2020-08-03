@@ -63,7 +63,7 @@ export class TrainingEffects {
     ofType(TrainingActions.globalFilterStateChanged),
     switchMap(({ filterState }) => this.combinedFilterStateAndActivitiesDayRange(filterState)),
     map(([activitiesDayRangeState, athlete, filterState]) => {
-      if (!activitiesDayRangeState?.observableUsers) {
+      if (!activitiesDayRangeState.observableUsers) {
         return filterState
       }
       return {

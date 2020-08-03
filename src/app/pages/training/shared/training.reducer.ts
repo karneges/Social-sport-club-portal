@@ -38,7 +38,7 @@ export const initialState: TrainingState = {
   activitiesByTrainValues: undefined,
   activitiesBySportType: undefined,
   activitiesBySportTypesDayRange: {
-    observableUsers: [],
+    observableUsers: ['5f1c2dea95f3e71249b1b074'],
     loading: false,
     usersData: []
   }

@@ -3,8 +3,8 @@
     <nb-accordion-item-header>{{activity.type}}</nb-accordion-item-header>
     <nb-accordion-item-body>
       <ngx-detailed-sport-type-statistic
-        [user]="mainUserStat.user"
-        [trainingValueBySportType]="activity.valuesByType"
+        [sportType]="activity.type"
+        [trainingValueBySportType]="fullUsersStatistics"
       ></ngx-detailed-sport-type-statistic>
     </nb-accordion-item-body>
   </nb-accordion-item>

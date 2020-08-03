@@ -50,9 +50,9 @@ export class TrainingChartsService {
   getLineChartConfig(config: NbJSThemeOptions, data: LineChartConfig): EChartOption {
     const colors: any = config.variables
     const echarts: any = config.variables.echarts
-    return {
+    const conf = {
       backgroundColor: echarts.bg,
-      color: Object.values(colors) as string[],
+      color: [colors.primary, colors.success],
       tooltip: {
         trigger: 'none',
         axisPointer: {
@@ -99,19 +99,9 @@ export class TrainingChartsService {
       yAxis: [
         {
           type: 'value',
-          axisLine: {
-            lineStyle: {
-              color: echarts.axisLineColor,
-            },
-          },
-          splitLine: {
-            lineStyle: {
-              color: echarts.splitLineColor,
-            },
-          },
         },
       ],
-      series: data.usersData.map(({ user, activities }) => {
+      series: data.usersData.map(({ user, activities },idx) => {
         const activitiesWithDateFormat = activities.map(activ => ({
           ...activ,
           date: moment(activ.date).format('MM-DD-YYYY')
@@ -136,6 +126,9 @@ export class TrainingChartsService {
           })
         }
       })
+
     };
+    debugger
+    return conf
   }
 }
