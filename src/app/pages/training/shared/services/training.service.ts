@@ -47,7 +47,7 @@ export class TrainingService {
       this.baseUrl + '/activities-by-train-values', this.getRequestConfig(requestBody))
   }
 
-  getActivitiesTrainValuesByDayRange(requestBody: StatisticRequestModel): Observable<StravaActivitiesByTrainingValuesDayRange[]> {
+  getActivitiesTrainValuesByDayRange(requestBody: StatisticRequestModel): Observable<StravaActivitiesByTrainingValuesDayRange<string>[]> {
     return this.http.put<StatisticResponseModelByDayRange>(
       this.baseUrl + '/activities-by-train-values/days', this.getRequestConfig(requestBody)).pipe(
       pluck('activities')

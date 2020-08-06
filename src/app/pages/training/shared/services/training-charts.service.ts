@@ -4,6 +4,7 @@ import { NbJSThemeOptions } from '@nebular/theme';
 import { ActivityFromDateAndValue } from '../models/starava.models';
 import { EChartOption } from 'echarts';
 import { convertArrayToObject } from '../../../../shared/messages/utils/conver-array-to-object';
+import { User } from '../../../../models/user.model';
 
 
 export interface LineChartConfig {
@@ -12,7 +13,7 @@ export interface LineChartConfig {
     endDate: string
   },
   usersData: {
-    user: string
+    user: User
     activities: ActivityFromDateAndValue[]
   }[]
 }
@@ -50,112 +51,10 @@ export class TrainingChartsService {
   getLineChartConfig(config: NbJSThemeOptions, data: LineChartConfig): EChartOption {
     const colors: any = config.variables
     const echarts: any = config.variables.echarts
-    const conf = {
-      // backgroundColor: echarts.bg,
-      // // dataZoom: [
-      // //   {
-      // //     show: true,
-      // //     realtime: true,
-      // //     start: 0,
-      // //     end: 70,
-      // //     xAxisIndex: [0, 1]
-      // //   },
-      // //   {
-      // //     type: 'inside',
-      // //     realtime: true,
-      // //     start: 0,
-      // //     end: 70,
-      // //     xAxisIndex: [0, 1]
-      // //   }
-      // // ],
-      // color: [colors.primary, colors.success],
-      // tooltip: {
-      //   trigger: 'none',
-      //   axisPointer: {
-      //     type: 'cross',
-      //   },
-      // },
-      // legend: {
-      //   data: data.usersData.map(({ user }) => user),
-      //   textStyle: {
-      //     color: echarts.textColor,
-      //   },
-      // },
-      // grid: {
-      //   top: 70,
-      //   bottom: 50,
-      // },
-      // xAxis: [
-      //   {
-      //     type: 'category',
-      //     axisTick: {
-      //       alignWithLabel: true,
-      //     },
-      //     axisLine: {
-      //       onZero: false,
-      //       lineStyle: {
-      //         color: colors.info
-      //       },
-      //     },
-      //     axisPointer: {
-      //       label: {
-      //         formatter: params => {
-      //           return (
-      //             'Precipitation  ' + params.value + (params.seriesData.length ? '：' + params.seriesData[0].data : '')
-      //           );
-      //         },
-      //       },
-      //     },
-      //     data: this.getDateArray(data.date.startDate, data.date.endDate)
-      //   },
-      //   {
-      //     type: 'category',
-      //   },
-      // ],
-      //
-      // yAxis: [
-      //   {
-      //     type: 'value',
-      //     axisLine: {
-      //       lineStyle: {
-      //         color: echarts.axisLineColor,
-      //       },
-      //     },
-      //     splitLine: {
-      //       lineStyle: {
-      //         color: echarts.splitLineColor,
-      //       },
-      //     },
-      //   },
-      // ],
-      // series: data.usersData.map(({ user, activities }) => {
-      //   const activitiesWithDateFormat = activities.map(activ => ({
-      //     ...activ,
-      //     date: moment(activ.date).format('MM-DD-YYYY')
-      //   }))
-      //   // Create hash map from activities array with "date" as key
-      //   const convertedActivitiesToArr = convertArrayToObject(activitiesWithDateFormat, 'date')
-      //
-      //   return {
-      //     name: user,
-      //     type: 'line',
-      //     xAxisIndex: 1,
-      //     smooth: true,
-      //     /*
-      //     Map date array
-      //      If has activities with current, date change it on activity value.
-      //      Else change on 0
-      //      */
-      //     data: this.getDateArray(data.date.startDate, data.date.endDate).map(oneDay => {
-      //       return convertedActivitiesToArr[oneDay]
-      //         ? convertedActivitiesToArr[oneDay].value
-      //         : 0
-      //     })
-      //   }
-      // })
+    return  {
       backgroundColor: echarts.bg,
       tooltip: {
-        trigger: 'none',
+        trigger: 'axis',
         axisPointer: {
           type: 'cross'
         }
@@ -165,14 +64,14 @@ export class TrainingChartsService {
             show: true,
             realtime: true,
             start: 0,
-            end: 70,
+            end: 100,
             xAxisIndex: [0, 1]
         },
         {
           type: 'inside',
           realtime: true,
           start: 0,
-          end: 70,
+          end: 100,
           xAxisIndex: [0, 1]
         }
       ],
@@ -205,7 +104,7 @@ export class TrainingChartsService {
           axisPointer: {
             label: {
               formatter: function (params) {
-                return '降水量  ' + params.value
+                return params.value
                   + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
               }
             }
@@ -237,7 +136,7 @@ export class TrainingChartsService {
         const convertedActivitiesToArr = convertArrayToObject(activitiesWithDateFormat, 'date')
 
         return {
-          name: user,
+          name: user.name,
           type: 'line',
           xAxisIndex: 1,
           smooth: true,
@@ -254,7 +153,5 @@ export class TrainingChartsService {
         }
       })
     };
-    debugger
-    return conf
   }
 }

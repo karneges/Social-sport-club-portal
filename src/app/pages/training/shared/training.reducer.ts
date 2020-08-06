@@ -25,7 +25,7 @@ export interface TrainingState {
     data: StravaActivitiesBySportTypes[]
   },
   activitiesBySportTypesDayRange: {
-    observableUsers: string[]
+    comparableUsers: string[]
     loading: boolean,
     usersData: StravaActivitiesByTrainingValuesDayRange[],
   }
@@ -38,7 +38,8 @@ export const initialState: TrainingState = {
   activitiesByTrainValues: undefined,
   activitiesBySportType: undefined,
   activitiesBySportTypesDayRange: {
-    observableUsers: ['5f1c2dea95f3e71249b1b074'],
+    //TODO remove mock value
+    comparableUsers: [],
     loading: false,
     usersData: []
   }
@@ -50,7 +51,7 @@ export const reducer = createReducer(
   on(TrainingActions.globalFilterStateChanged, (state, action) => {
     return {
       ...state,
-      filterState: action.filterState
+      globalFilterState: action.filterState
     }
   }),
   on(TrainingActions.loadDataForMainBanner, (state, action) => {
@@ -94,23 +95,29 @@ export const reducer = createReducer(
     return {
       ...state,
       activitiesBySportTypesDayRange: {
+        ...state.activitiesBySportTypesDayRange,
         loading: false,
-        usersData: state.activitiesBySportTypesDayRange.usersData.length > 0
-          ? state.activitiesBySportTypesDayRange.usersData.map(oldData => {
-            const updatedData = action.data.find(newData => newData.user === oldData.user)
-            return updatedData ? updatedData : oldData
-          })
-          : action.data
+        usersData: action.data
       }
     }
   }),
-  on(TrainingActions.addNewObserveUser, (state, action) => {
+  on(TrainingActions.addNewComparableUser, (state, action) => {
     return {
       ...state,
       activitiesBySportTypesDayRange: {
         ...state.activitiesBySportTypesDayRange,
         loading: false,
-        observableUsers: [...state.activitiesBySportTypesDayRange.observableUsers, action.userId]
+        comparableUsers: [...state.activitiesBySportTypesDayRange.comparableUsers, action.userId]
+      }
+    }
+  }),
+  on(TrainingActions.removeComparableUser, (state, action) => {
+    return {
+      ...state,
+      activitiesBySportTypesDayRange: {
+        ...state.activitiesBySportTypesDayRange,
+        loading: false,
+        comparableUsers: state.activitiesBySportTypesDayRange.comparableUsers.filter(userId => userId !== action.userId)
       }
     }
   }),

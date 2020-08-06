@@ -1,1 +1,2 @@
-<div echarts [options]="options$ | async" class="echart"></div>
+<div echarts *ngIf="options$ | async as options ; else elseBlock" [options]="options" class="echart"></div>
+<ng-template #elseBlock><nb-spinner></nb-spinner></ng-template>

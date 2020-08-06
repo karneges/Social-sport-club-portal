@@ -1,6 +1,6 @@
 import { TrainingTypes } from './strava.request.model';
 
-export const filterMap: { [key in TrainingTypes]: string } = {
+export const SportValuesFilterMap: { [key in TrainingTypes]: string } = {
   elapsed_time: 'Elapsed Time',
   moving_time: 'Moving Time',
   distance: 'Distance',

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { TrainingActions } from './training.actions';
-import { distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, pluck, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { TrainingService } from './services/training.service';
 import * as moment from 'moment';
 import { AuthActions } from '../../auth/auth.actions';
@@ -10,6 +10,7 @@ import { combineLatest, Observable, observable, of } from 'rxjs';
 import { TrainingSelectors } from './training.selectors';
 import { AuthSelectors } from '../../auth/auth.selectors';
 import { FilterState } from '../my-training/training-filters/training-filters.component';
+import { UsersSelectors } from '../../../shared/users/users.selectors';
 
 
 @Injectable()
@@ -62,20 +63,35 @@ export class TrainingEffects {
   loadingActivitiesByTrainingValueDayRange$ = createEffect(() => this.actions$.pipe(
     ofType(TrainingActions.globalFilterStateChanged),
     switchMap(({ filterState }) => this.combinedFilterStateAndActivitiesDayRange(filterState)),
-    map(([activitiesDayRangeState, athlete, filterState]) => {
-      if (!activitiesDayRangeState.observableUsers) {
-        return filterState
+    map(([activitiesDayRangeState, authUser, filterState]) => {
+      if (!activitiesDayRangeState.comparableUsers) {
+        return {
+          filterState,
+          authUser
+        }
       }
       return {
-        ...filterState,
-        secondaryUsers: activitiesDayRangeState.observableUsers
+        filterState: {
+          ...filterState,
+          secondaryUsers: activitiesDayRangeState.comparableUsers
+        },
+        authUser
       }
     }),
     switchMap((filterAndObservableUsersState) => this.trainingService
-      .getActivitiesTrainValuesByDayRange(filterAndObservableUsersState)
+      .getActivitiesTrainValuesByDayRange(filterAndObservableUsersState.filterState).pipe(
+        withLatestFrom(this.store.pipe(select(UsersSelectors.users))),
+        map(([activitiesDayRange, users]) => activitiesDayRange.map(userActivity => {
+          return {
+            ...userActivity,
+            user: users.find(userOfListOfUsers => userOfListOfUsers._id === userActivity.user)
+              || filterAndObservableUsersState.authUser
+          }
+        }))
+      )
     ),
     map((data) => {
-      return  TrainingActions.activitiesByTrainingValueDayRangeFetched({ data })
+      return TrainingActions.activitiesByTrainingValueDayRangeFetched({ data })
     })
   ))
 
@@ -86,11 +102,11 @@ export class TrainingEffects {
     const activitiesBySportTypesDaysRangeDistinct$ = this.store.pipe(
       select(TrainingSelectors.activitiesBySportTypesDaysRange),
       distinctUntilChanged((prev, next) => {
-        return prev.observableUsers?.length === prev.observableUsers?.length
-      })
+        return prev.comparableUsers?.length === next.comparableUsers?.length
+      }),
     )
-    const athlete$ = this.store.pipe(select(AuthSelectors.stravaAthlete))
-    return combineLatest([activitiesBySportTypesDaysRangeDistinct$, athlete$, of(filterState)])
+    const authUser$ = this.store.pipe(select(AuthSelectors.user))
+    return combineLatest([activitiesBySportTypesDaysRangeDistinct$, authUser$, of(filterState)])
   }
 
   constructor(private actions$: Actions, private trainingService: TrainingService, private store: Store) {

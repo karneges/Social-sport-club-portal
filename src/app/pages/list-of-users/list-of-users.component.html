@@ -9,7 +9,8 @@
   <nb-tabset fullWidth>
     <nb-tab tabTitle="Contacts" class="overflow-visible">
       <nb-list>
-        <nb-list-item class="d-flex justify-content-between" *ngFor="let user of usersWithCountMessages$ | async let idx = index"
+        <nb-list-item class="d-flex justify-content-between"
+                      *ngFor="let user of usersWithCountMessages$ | async let idx = index"
                       [class.selected]="user?._id === currentChatUser?._id && isChatOpen">
           <div class="user-container" #userContainer>
             <nb-user
@@ -29,15 +30,10 @@
         </nb-list-item>
       </nb-list>
     </nb-tab>
-
-    <nb-tab tabTitle="Recent">
-      <nb-list>
-        <!--        <nb-list-item class="contact" *ngFor="let user of users">-->
-        <!--          <nb-user [name]="user.name" [title]="user.role" size="large"></nb-user>-->
-        <!--          <span class="caption">{{ user.dateAddToClub | date: 'shortTime' }}</span>-->
-        <!--        </nb-list-item>-->
-      </nb-list>
+    <nb-tab *ngIf="nameOfFeatureList"
+            [tabTitle]="nameOfFeatureList">
+      <ng-content></ng-content>
     </nb-tab>
-
   </nb-tabset>
+
 </nb-card>

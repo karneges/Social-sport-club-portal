@@ -6,8 +6,8 @@ export class StravaRegisterUser extends HttpParams {
   code: string
 }
 
-export interface StravaActivitiesByTrainingValuesDayRange {
-  user: string
+export interface StravaActivitiesByTrainingValuesDayRange<T extends User | string = User> {
+  user: T
   userActivities: {
     type: SportTypes,
     valuesByType: ValuesBySportTypeWithDayRange[]

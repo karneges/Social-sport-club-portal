@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { EChartOption } from 'echarts';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { LineChartConfig, TrainingChartsService } from '../../../shared/services/training-charts.service';
-import { map } from 'rxjs/operators';
+import { delay, map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-training-line-chart',
@@ -24,7 +24,9 @@ export class TrainingLineChartComponent implements OnInit, OnChanges {
     this.options$ = this.theme.getJsTheme().pipe(
       map((config) => {
         return this.trainingChartsService.getLineChartConfig(config, this.lineChartConfig)
-      })
+      }),
+      // This delay only from slow animation
+      delay(1000),
     )
   }
 

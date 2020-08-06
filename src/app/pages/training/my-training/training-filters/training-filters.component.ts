@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TrainingTypes } from '../../shared/models/strava.request.model';
 import * as moment from 'moment'
-import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { ActivatedRoute } from '@angular/router';
-import { filterMap } from '../../shared/models/Strava-filter-map';
+import { SportValuesFilterMap } from '../../shared/models/Strava-filter-map';
 
 @Component({
   selector: 'ngx-training-filters',
@@ -13,7 +13,7 @@ import { filterMap } from '../../shared/models/Strava-filter-map';
   styleUrls: ['./training-filters.component.scss']
 })
 export class TrainingFiltersComponent implements OnInit, OnDestroy {
-  trainingTypes: { id: TrainingTypes, fieldName: string }[] = Object.entries(filterMap)
+  trainingTypes: { id: TrainingTypes, fieldName: string }[] = Object.entries(SportValuesFilterMap)
     .map(([id, fieldName]) => ({ id, fieldName })) as { id: TrainingTypes, fieldName: string }[]
 
   filterForm: FormGroup
@@ -39,8 +39,9 @@ export class TrainingFiltersComponent implements OnInit, OnDestroy {
             ...acc,
             [key]: newValue
           }
-        }, { topBarerDate: undefined, fields: [], bottomBarerDate: undefined })
+        }, { topBarerDate: undefined, fields: undefined, bottomBarerDate: undefined })
       }),
+      filter((filterState) => this.isFilterFullFill(filterState)),
       distinctUntilChanged((prev, next) => JSON.stringify(prev) === JSON.stringify(next)),
       debounceTime(1000),
       tap((formState) => this.filterStateChanged.emit(formState))
@@ -63,12 +64,13 @@ export class TrainingFiltersComponent implements OnInit, OnDestroy {
         : [this.route.snapshot.queryParams[fieldName]]
       : []
   }
+  isFilterFullFill(filterState: FilterState<string>) {
+    return filterState.fields.length > 0 && Object.values(filterState).every(field => !!field)
+  }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe()
   }
-
-
 }
 
 export interface FilterState<T> {

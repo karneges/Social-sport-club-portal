@@ -1,6 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { StravaActivitiesByTrainingValuesDayRange } from '../../../shared/models/starava.models';
 import { TrainingTypes } from '../../../shared/models/strava.request.model';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { FilterState } from '../../training-filters/training-filters.component';
+import { User } from '../../../../../models/user.model';
+import { AuthSelectors } from '../../../../auth/auth.selectors';
+import { TrainingSelectors } from '../../../shared/training.selectors';
+import { filter, first, map, scan, tap, withLatestFrom } from 'rxjs/operators';
+import { useAnimation } from '@angular/animations';
 
 @Component({
   selector: 'ngx-detailed-statistics-list',
@@ -9,27 +17,35 @@ import { TrainingTypes } from '../../../shared/models/strava.request.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DetailedStatisticsListComponent implements OnInit {
-  @Input() set activitiesBySportTypesDaysRange(stravaActivitiesByTrainingValuesDayRange:StravaActivitiesByTrainingValuesDayRange[]) {
-    this.mainUserStat = stravaActivitiesByTrainingValuesDayRange[0]
-    this.fullUsersStatistics = stravaActivitiesByTrainingValuesDayRange
-  }
+  private globalDateFilterState$: Observable<FilterState<string>>
+  public authUser$: Observable<User>
+  public activitiesBySportTypesDaysRange$: Observable<StravaActivitiesByTrainingValuesDayRange[]>
+  public mainUserStat: Observable<StravaActivitiesByTrainingValuesDayRange>
+  public dateFilterState$: Observable<{ startDate: string, endDate: string }>
 
-  mainUserStat:StravaActivitiesByTrainingValuesDayRange
-  fullUsersStatistics:StravaActivitiesByTrainingValuesDayRange[]
-  constructor() {
+  constructor(private store: Store) {
   }
 
   ngOnInit(): void {
-    debugger
+    this.authUser$ = this.store.pipe(select(AuthSelectors.user))
+    this.globalDateFilterState$ = this.store.pipe(select(TrainingSelectors.globalFilterState))
+    this.activitiesBySportTypesDaysRange$ = this.store.pipe(
+      select(TrainingSelectors.activitiesBySportTypesDaysRange),
+      filter((r) => r.usersData.length > 0),
+      map((activitiesDaysRangeState) => activitiesDaysRangeState.usersData)
+    )
+
+    this.mainUserStat = this.activitiesBySportTypesDaysRange$.pipe(
+      withLatestFrom(this.authUser$),
+      map(([activitiesBySportTypesDaysRange, authUser]) => activitiesBySportTypesDaysRange
+        .find(activity => activity.user._id === authUser._id)),
+      first()
+    )
+
+    this.dateFilterState$ = this.store.pipe(
+      select(TrainingSelectors.globalFilterState),
+      map(({ bottomBarerDate, topBarerDate }) => ({ startDate: bottomBarerDate, endDate: topBarerDate }))
+    )
   }
 
-}
-
-export interface Search {
-  activities:{
-    type:TrainingTypes,
-    activitiesByType: {
-
-    }
-  }[]
 }

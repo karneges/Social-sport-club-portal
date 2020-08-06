@@ -1,8 +1,12 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { StravaActivitiesByTrainingValuesDayRange } from '../../../../shared/models/starava.models';
+import {
+  StravaActivitiesByTrainingValuesDayRange,
+  ValuesBySportTypeWithDayRange
+} from '../../../../shared/models/starava.models';
 import { LineChartConfig } from '../../../../shared/services/training-charts.service';
 import * as moment from 'moment'
 import { convertArrayToObject } from '../../../../../../shared/messages/utils/conver-array-to-object';
+import { SportValuesFilterMap } from '../../../../shared/models/Strava-filter-map';
 
 @Component({
   selector: 'ngx-detailed-sport-type-statistic',
@@ -12,42 +16,44 @@ import { convertArrayToObject } from '../../../../../../shared/messages/utils/co
 export class DetailedSportTypeStatisticComponent implements OnInit, OnChanges {
   @Input() trainingValueBySportType: StravaActivitiesByTrainingValuesDayRange[]
   @Input() sportType: string
+  @Input() dateConfig: { startDate: string, endDate: string }
   mappedTrainingValueBySportType: LineChartConfigWithChartName[]
 
   constructor() {
   }
 
   ngOnInit(): void {
+    console.log('obne row init')
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.mappedTrainingValueBySportType = this.trainingValueBySportType
       .reduce<LineChartConfigWithChartName[]>((acc, nextValue) => {
-        if (acc.length === 0) {
-          return nextValue.userActivities
-            .find(el => el.type === this.sportType)
-            .valuesByType
-            .map(el => (
+        const filteredActivitiesByType = this.getValuesByType(nextValue.userActivities)
+        if (acc?.length === 0) {
+          // if this is first iteration ,need fill initial object structure
+          if (filteredActivitiesByType) {
+            return filteredActivitiesByType.map(valueBySportTypeDayRange => (
                 {
-                  chartName: el.trainingDimensionName,
+                  chartName: valueBySportTypeDayRange.trainingDimensionName,
                   chartConfig: {
                     date: {
-                      startDate: moment().subtract(1, 'y').format(),
-                      endDate: moment().format(),
+                      startDate: this.dateConfig.startDate,
+                      endDate: this.dateConfig.endDate,
                     },
                     usersData: [
                       {
                         user: nextValue.user,
-                        activities: el.valuesByTrainingDimensionName
+                        activities: valueBySportTypeDayRange.valuesByTrainingDimensionName
                       }
                     ]
                   }
                 }
               )
             )
+          }
         } else {
-          const filteredActivitiesByType = nextValue.userActivities
-            .find(activities => activities.type === this.sportType)?.valuesByType
+          // if this is not first iteration ,need update user data
           if (filteredActivitiesByType) {
             const activitiesBySportTypeArr = filteredActivitiesByType
               .map(({ trainingDimensionName, valuesByTrainingDimensionName }) => ({
@@ -59,13 +65,13 @@ export class DetailedSportTypeStatisticComponent implements OnInit, OnChanges {
               }))
 
             const activitiesBySportTypeMap = convertArrayToObject(activitiesBySportTypeArr, 'trainingDimensionName')
-            return acc.map<LineChartConfigWithChartName>((chartConfigWithChartName) => {
+            return acc?.map<LineChartConfigWithChartName>((chartConfigWithChartName) => {
                 const { chartConfig, chartName } = chartConfigWithChartName
                 return {
                   ...chartConfigWithChartName,
                   chartConfig: {
                     ...chartConfig,
-                    usersData: [...chartConfigWithChartName.chartConfig.usersData, activitiesBySportTypeMap[chartName].userData]
+                    usersData: [...chartConfigWithChartName.chartConfig.usersData, activitiesBySportTypeMap[chartName]?.userData]
                   }
                 }
               }
@@ -73,27 +79,15 @@ export class DetailedSportTypeStatisticComponent implements OnInit, OnChanges {
           }
         }
       }, [])
-    // .map<LineChartConfigWithChartName>((el) => {
-    //   const initialConfig: LineChartConfigWithChartName = {
-    //     chartName: el.trainingDimensionName,
-    //     chartConfig: {
-    //       date: {
-    //         startDate: moment().subtract(10, 'y').format(),
-    //         endDate: moment().format(),
-    //       },
-    //       usersData: [
-    //         {
-    //           user: this.user,
-    //           activities: el.valuesByTrainingDimensionName
-    //         }
-    //       ]
-    //     }
-    //   }
-    // })
-    debugger
   }
 
+  private getValuesByType(userActivities): ValuesBySportTypeWithDayRange[] {
+    return userActivities.find(activityByType => activityByType.type === this.sportType)?.valuesByType
+  }
 
+  getChartName(chartName: string) {
+    return SportValuesFilterMap[chartName]
+  }
 }
 
 export interface LineChartConfigWithChartName {

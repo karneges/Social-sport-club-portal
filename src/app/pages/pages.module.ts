@@ -20,6 +20,7 @@ import { SharedModule } from '../shared/shared.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MessagesModule } from '../shared/messages/messages.module';
 import { RouterModule } from '@angular/router';
+import { TrainingModule } from './training/training.module';
 
 @NgModule({
     imports: [
@@ -38,6 +39,7 @@ import { RouterModule } from '@angular/router';
         SharedModule,
         DragDropModule,
         MessagesModule,
+        TrainingModule,
     ],
   declarations: [
     PagesComponent,

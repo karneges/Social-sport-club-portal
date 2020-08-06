@@ -19,7 +19,7 @@ const activitiesByTrainValues = createSelector(
 )
 const activitiesBySportTypesDaysRange = createSelector(
   selectTrainingState,
-  (trainingState) => trainingState.activitiesBySportTypesDayRange
+  (trainingState) => trainingState?.activitiesBySportTypesDayRange
 )
 const activitiesBySportTypes = createSelector(
   selectTrainingState,

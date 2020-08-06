@@ -1,9 +1,11 @@
 import {
+  AfterContentChecked,
+  AfterContentInit,
   AfterViewInit,
-  Component,
-  ElementRef, OnDestroy,
+  Component, ContentChild,
+  ElementRef, Input, OnChanges, OnDestroy,
   OnInit,
-  QueryList,
+  QueryList, SimpleChange,
   ViewChild,
   ViewChildren
 } from '@angular/core';
@@ -15,24 +17,32 @@ import { UsersSelectors } from '../../shared/users/users.selectors';
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { BaseMessageEntity } from '../../shared/messages/models/message.model';
 import { MessagesSelectors } from '../../shared/messages/messages.selectors';
-import { map, tap } from 'rxjs/operators';
+import { first, map, tap } from 'rxjs/operators';
 import { AuthSelectors } from '../auth/auth.selectors';
 import { MessagesNotificationService } from '../../shared/notifications/messages/messages.notification.service';
 import { SubSink } from 'subsink';
+import { TrainingActions } from '../training/shared/training.actions';
+import { TrainingSelectors } from '../training/shared/training.selectors';
+
+import { TrainingUserFeaturesListComponent } from '../training/my-training/training-user-features-list/training-user-features-list.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-list-of-users',
   templateUrl: './list-of-users.component.html',
   styleUrls: ['./list-of-users.component.scss']
 })
-export class ListOfUsersComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ListOfUsersComponent implements OnInit, AfterContentChecked, OnDestroy{
+
   @ViewChild('chatWrapper') chatWrapper: ElementRef
   @ViewChild(CdkDrag) cdkDragEl: CdkDrag<HTMLDivElement>
   @ViewChildren('userContainer') userContainer: QueryList<ElementRef<HTMLDivElement>>
+  @ContentChild(TrainingUserFeaturesListComponent) trainingUserFeaturesList: TrainingUserFeaturesListComponent
   users$: Observable<User[]>
   authUser$: Observable<User>
   usersWithCountMessages$: Observable<UserWithCountMessages[]>
   messages$: Observable<BaseMessageEntity>
+  nameOfFeatureList: string
   currentChatUserIdSetter$ = new Subject<string>()
   currentChatUser: User
   chatOffset: string;
@@ -40,11 +50,15 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit, OnDestroy {
   reverseChatHeader: boolean;
   private subs = new SubSink()
 
-  constructor(private store: Store<UsersState>, private messagesNotificationService: MessagesNotificationService) {
+  constructor(private store: Store<UsersState>,
+              private messagesNotificationService: MessagesNotificationService,
+              private activatedRoute: ActivatedRoute,
+              private router: Router) {
 
   }
 
   ngOnInit(): void {
+
     this.users$ = this.store.pipe(select(UsersSelectors.users))
     this.messages$ = this.store.pipe(select(MessagesSelectors.messages))
     this.authUser$ = this.store.pipe(select(AuthSelectors.user))
@@ -53,8 +67,9 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.messageNotificationSubscription()
   }
 
-  ngAfterViewInit(): void {
 
+  ngAfterContentChecked(): void {
+    this.nameOfFeatureList = this.trainingUserFeaturesList?.featureUserListName
   }
 
   computeUserWithCountMessages() {
@@ -109,7 +124,6 @@ export class ListOfUsersComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.unsubscribe()
   }
-
 }
 
 

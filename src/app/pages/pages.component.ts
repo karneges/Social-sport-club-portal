@@ -27,7 +27,9 @@ import { ErrorsNotificationService } from '../shared/notifications/errors/errors
           </div>
           <div *ngIf="(isUnAuth$ | async) === false" class="col-lg-4 col-xxxl-3">
             <div class="sticky-top">
-              <ngx-list-of-users></ngx-list-of-users>
+              <ngx-list-of-users>
+                <ngx-training-user-fetures-list *ngIf="isMyTrainingPage"></ngx-training-user-fetures-list>
+              </ngx-list-of-users>
             </div>
           </div>
         </div>
@@ -39,7 +41,9 @@ export class PagesComponent implements OnInit {
   isUnAuth$: Observable<boolean>
   menu = MENU_ITEMS;
   isAuthPage: boolean
+  isMyTrainingPage: boolean
   columnClass: string
+
 
   constructor(private store: Store<AppState>,
               private router: Router,
@@ -70,7 +74,8 @@ export class PagesComponent implements OnInit {
   routerEventsSubscription() {
     this.router.events.pipe(
       startWith(this.router.url),
-      tap(e => this.isAuthPage = this.router.url.includes('auth'))
+      tap(e => this.isAuthPage = this.router.url.includes('auth')),
+      tap(e => this.isMyTrainingPage = this.router.url.includes('my-training'))
     ).subscribe()
   }
 

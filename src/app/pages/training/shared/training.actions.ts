@@ -43,8 +43,12 @@ const removeStatisticsByTrainValuesFromOneUser = createAction(
   '[Training Page] Remove Statistics From User',
   props<{ userId: string }>()
 )
-const addNewObserveUser = createAction(
-  '[Training Page] Add New User To Observe',
+const addNewComparableUser = createAction(
+  '[Training Page] Add New User To Comparable',
+  props<{ userId: string }>()
+)
+const removeComparableUser = createAction(
+  '[Training Page] Remove User from Comparable',
   props<{ userId: string }>()
 )
 
@@ -60,7 +64,8 @@ export const TrainingActions = {
   loadActivitiesByTrainingValueDayRange,
   activitiesByTrainingValueDayRangeFetched,
   removeStatisticsByTrainValuesFromOneUser,
-  addNewObserveUser,
+  addNewComparableUser,
+  removeComparableUser
 }
 
 
