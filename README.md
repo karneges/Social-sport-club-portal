@@ -1,7 +1,5 @@
 # Social Sport Club
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.
-
 ## About Project
 This project is a social network that unites athletes in groups. The application uses external APIs such as Strava Huawei Health and so on.
  Users will be able to compete, compare their statistics, challenge and pass challenges. It is also planned to add a calendar that will organize athletes for events
