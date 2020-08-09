@@ -123,6 +123,9 @@ export const reducer = createReducer(
   }),
   on(AuthActions.logout, (state, action) => {
     return initialState
+  }),
+  on(TrainingActions.removeAllTrainingData, (state, action) => {
+    return initialState
   })
 );
 

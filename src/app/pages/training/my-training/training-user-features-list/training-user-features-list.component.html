@@ -1,24 +1,29 @@
- <nb-list>
-    <nb-list-item class="d-flex justify-content-between"
-                  *ngFor="let user of users$ | async let idx = index">
-      <div class="user-container">
-        <nb-user
-          [name]="user.name"
-          [title]="user.role"
-          [picture]="user.photoUrl"
-          size="medium">
-        </nb-user>
-      </div>
-      <nb-icon *ngIf="isUserComparable(user._id) | async ; else notComparableUser"
-               icon="undo-outline"
+<nb-list>
+  <nb-list-item class="d-flex justify-content-between"
+                *ngFor="let user of users$ | async let idx = index">
+    <div class="user-container">
+      <nb-user
+        [name]="user.name"
+        [title]="user.role"
+        [picture]="user.photoUrl"
+        size="medium">
+      </nb-user>
+    </div>
+    <nb-icon *ngIf="isUserComparable(user._id) | async ; else notComparableUser"
+             nbTooltip="Stop Compare"
+             nbTooltipStatus="info"
+             icon="undo-outline"
+             class="cursor-pointer"
+             (click)="addOrDeleteComparableUser( user._id, false)"
+             pack="eva"></nb-icon>
+    <ng-template #notComparableUser>
+      <nb-icon *ngIf="user.strava"
+               [nbTooltip]="(getTooltipConfig(user.name) | async).text"
+               [nbTooltipStatus]="(getTooltipConfig(user.name) | async).hasStat ? 'primary': 'danger'"
+               icon="activity-outline"
                class="cursor-pointer"
-               (click)="addOrDeleteComparableUser( user._id, false)"
+               (click)="addOrDeleteComparableUser( user._id, true)"
                pack="eva"></nb-icon>
-      <ng-template #notComparableUser>
-        <nb-icon icon="activity-outline"
-                 class="cursor-pointer"
-                 (click)="addOrDeleteComparableUser( user._id, true)"
-                 pack="eva"></nb-icon>
-      </ng-template>
-    </nb-list-item>
-  </nb-list>
+    </ng-template>
+  </nb-list-item>
+</nb-list>

@@ -7,7 +7,9 @@
               (onCloseChat)="isChatOpen = false"></ngx-chat>
   </div>
   <nb-tabset fullWidth>
-    <nb-tab tabTitle="Contacts" class="overflow-visible">
+    <nb-tab
+      [active]="!nameOfFeatureList"
+      tabTitle="Friends" class="overflow-visible" >
       <nb-list>
         <nb-list-item class="d-flex justify-content-between"
                       *ngFor="let user of usersWithCountMessages$ | async let idx = index"
@@ -29,8 +31,10 @@
                    pack="eva"></nb-icon>
         </nb-list-item>
       </nb-list>
-    </nb-tab>
-    <nb-tab *ngIf="nameOfFeatureList"
+    </nb-tab >
+    <nb-tab
+      [active]="!!nameOfFeatureList"
+      *ngIf="nameOfFeatureList"
             [tabTitle]="nameOfFeatureList">
       <ng-content></ng-content>
     </nb-tab>

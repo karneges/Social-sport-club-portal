@@ -4,6 +4,7 @@ import { MyTrainingComponent } from './my-training/my-training.component';
 import { StravaResolver } from './shared/resolvers/strava.resolver';
 import { ActivitiesResolver } from './shared/resolvers/activities.resolver';
 import { SportServicesComponent } from './sport-services/sport-services.component';
+import { MyTrainingDeactivateGuard } from './shared/guards/my-training-deactivate-guard.service';
 
 const routes: Routes = [
   {
@@ -14,7 +15,8 @@ const routes: Routes = [
         component: MyTrainingComponent,
         resolve: {
           bannerInfo: ActivitiesResolver
-        }
+        },
+        canDeactivate:[MyTrainingDeactivateGuard]
       },
       {
         path: 'sport-services',

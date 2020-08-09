@@ -44,6 +44,7 @@ export class DetailedStatisticsListComponent implements OnInit {
 
     this.dateFilterState$ = this.store.pipe(
       select(TrainingSelectors.globalFilterState),
+      filter((r) => !!r),
       map(({ bottomBarerDate, topBarerDate }) => ({ startDate: bottomBarerDate, endDate: topBarerDate }))
     )
   }

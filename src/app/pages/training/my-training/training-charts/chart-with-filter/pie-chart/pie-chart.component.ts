@@ -1,16 +1,13 @@
 import {
-  AfterViewChecked,
-  AfterViewInit,
-  ChangeDetectionStrategy,
   Component,
   Input, OnChanges,
   OnInit, SimpleChanges,
 } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { EChartOption } from 'echarts';
-import { combineLatest, Observable, of, interval, Subject } from 'rxjs';
-import { delay, finalize, first, map, startWith, tap } from 'rxjs/operators';
-import { PieEchartChartModel, PieEchartInterface } from '../../models/pie-echart.model';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { PieEchartChartModel } from '../../models/pie-echart.model';
 
 const getSeries = (data, echarts, isDoble: boolean) => {
   const oneSeries = {
@@ -51,7 +48,6 @@ const getSeries = (data, echarts, isDoble: boolean) => {
   selector: 'ngx-pie-chart',
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PieChartComponent implements OnInit, OnChanges {
 
@@ -84,7 +80,8 @@ export class PieChartComponent implements OnInit, OnChanges {
       color: [colors.warningLight, colors.infoLight, colors.dangerLight, colors.successLight, colors.primaryLight],
       tooltip: {
         trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)',
+        position: ['0', '10%'],
+        formatter: `{b} <br/> {c0} ({d0}%)`,
       },
       title: {
         text: chartTitle,
@@ -103,9 +100,8 @@ export class PieChartComponent implements OnInit, OnChanges {
       },
       series: [
         {
-          name: 'Countries',
           type: 'pie',
-          radius: '70%',
+          radius: '40%',
           center: ['50%', '50%'],
           data,
           itemStyle: {

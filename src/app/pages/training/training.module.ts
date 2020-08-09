@@ -35,6 +35,7 @@ import { SportServicesComponent } from './sport-services/sport-services.componen
 import { DetailedStatisticsListComponent } from './my-training/training-detailed-statistics/detailed-statistics-list/detailed-statistics-list.component';
 import { DetailedSportTypeStatisticComponent } from './my-training/training-detailed-statistics/detailed-statistics-list/detailed-sport-type-statistic/detailed-sport-type-statistic.component';
 import { TrainingUserFeaturesListComponent } from './my-training/training-user-features-list/training-user-features-list.component'
+import { MyTrainingDeactivateGuard } from './shared/guards/my-training-deactivate-guard.service';
 
 
 @NgModule({
@@ -80,6 +81,9 @@ import { TrainingUserFeaturesListComponent } from './my-training/training-user-f
     NbListModule,
     NbTabsetModule,
     NbSpinnerModule,
+  ],
+  providers:[
+    MyTrainingDeactivateGuard
   ]
 })
 export class TrainingModule {

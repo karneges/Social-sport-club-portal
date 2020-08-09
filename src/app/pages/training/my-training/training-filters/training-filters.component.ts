@@ -6,6 +6,7 @@ import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/opera
 import { SubSink } from 'subsink';
 import { ActivatedRoute } from '@angular/router';
 import { SportValuesFilterMap } from '../../shared/models/Strava-filter-map';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'ngx-training-filters',
@@ -21,7 +22,9 @@ export class TrainingFiltersComponent implements OnInit, OnDestroy {
   @Input() data: {}
   @Output() filterStateChanged = new EventEmitter<FilterState<string>>()
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute) {
+  constructor(private fb: FormBuilder,
+              private route: ActivatedRoute,
+              private store: Store) {
   }
 
   ngOnInit(): void {
@@ -52,7 +55,6 @@ export class TrainingFiltersComponent implements OnInit, OnDestroy {
     return this.route.snapshot.queryParams[fieldName]
       ? new Date(this.route.snapshot.queryParams[fieldName])
       : null
-
   }
 
   getInitialFields(fieldName: string) {

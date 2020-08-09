@@ -56,8 +56,12 @@ export class TrainingChartsService {
       tooltip: {
         trigger: 'axis',
         axisPointer: {
-          type: 'cross'
-        }
+          type: 'cross',
+          label: {
+            backgroundColor: '#6a7985'
+          }
+        },
+
       },
       dataZoom: [
         {

@@ -51,6 +51,9 @@ const removeComparableUser = createAction(
   '[Training Page] Remove User from Comparable',
   props<{ userId: string }>()
 )
+const removeAllTrainingData = createAction(
+  '[TrainingDeactivateGuard] Remove All Training Data'
+)
 
 
 export const TrainingActions = {
@@ -65,7 +68,8 @@ export const TrainingActions = {
   activitiesByTrainingValueDayRangeFetched,
   removeStatisticsByTrainValuesFromOneUser,
   addNewComparableUser,
-  removeComparableUser
+  removeComparableUser,
+  removeAllTrainingData
 }
 
 
