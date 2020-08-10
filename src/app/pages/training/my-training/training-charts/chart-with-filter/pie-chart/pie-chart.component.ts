@@ -103,7 +103,7 @@ export class PieChartComponent implements OnInit, OnChanges {
           type: 'pie',
           radius: '40%',
           center: ['50%', '50%'],
-          data,
+          data: data.filter(one => !!one.value),
           itemStyle: {
             emphasis: {
               shadowBlur: 10,

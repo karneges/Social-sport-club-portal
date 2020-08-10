@@ -26,7 +26,7 @@ export class MyTrainingComponent implements OnInit {
   stravaAthlete$: Observable<StravaAthlete>
   bannerStatistics$: Observable<StravaActivitiesBySportTypes[]>
   dataForBanner$: Observable<{ activities: StravaActivitiesBySportTypes[], athlete: StravaAthlete }>
-  activitiesByTraining
+  allActivitiesIsFetched: Observable<boolean>
 
   constructor(private store: Store,
               private trainingService: TrainingService,
@@ -47,6 +47,8 @@ export class MyTrainingComponent implements OnInit {
     )
     this.getBannerInformation()
   }
+
+
 
   getBannerInformation() {
     this.dataForBanner$ = combineLatest([this.stravaAthlete$, this.bannerStatistics$]).pipe(

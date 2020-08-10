@@ -10,8 +10,8 @@
 
 export const environment = {
   production: false,
-  API_BASE_URL: 'http://localhost:4000/api/v1',
-  API_BASE_URL_SOCKET: 'http://localhost:4000',
+  API_BASE_URL: 'http://localhost:5000/api/v1',
+  API_BASE_URL_SOCKET: 'http://localhost:5000',
   // API_BASE_URL: 'http://41a545fafe23.ngrok.io/api/v1',
   // API_BASE_URL_SOCKET: 'http://41a545fafe23.ngrok.io'
   STRAVA_AUTH_URL : 'http://www.strava.com/oauth/authorize?client_id=48158&response_type=code&'

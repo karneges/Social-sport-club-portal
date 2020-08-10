@@ -49,6 +49,18 @@ export class TrainingFiltersComponent implements OnInit, OnDestroy {
       debounceTime(1000),
       tap((formState) => this.filterStateChanged.emit(formState))
     ).subscribe()
+
+    this.fillDefaultValuesFromFilterValue()
+
+  }
+  fillDefaultValuesFromFilterValue() {
+    if (this.filterForm.invalid) {
+      this.filterForm.patchValue({
+        fields:['distance'],
+        bottomBarerDate: new Date(moment().subtract(3,'y').format()),
+        topBarerDate: new Date(moment().format())
+      })
+    }
   }
 
   getInitialDate(fieldName: string) {

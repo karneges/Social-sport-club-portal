@@ -1,4 +1,4 @@
-<ng-container *ngIf="datForPieCharts$ | async as activities">
+<ng-container *ngIf="datForPieCharts$ | async as activities; else loadingBlock">
   <div class="row justify-content-center">
     <div [ngClass]="last && activities.length % 2 === 1 ? 'col-md-12': 'col-md-6'"
          *ngFor="let activity of activities let idx = index let last = last">
@@ -10,3 +10,6 @@
   </div>
 
 </ng-container>
+<ng-template #loadingBlock>
+  <nb-spinner></nb-spinner>
+</ng-template>
