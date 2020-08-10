@@ -26,6 +26,12 @@
             <nb-checkbox>Check me out</nb-checkbox>
           </div>
           <button type="submit" nbButton fullWidth status="danger">Submit</button>
+          <button type="button"
+                  (click)="demoMode()"
+                  [ngStyle]="{marginTop:'20px'}"
+                  nbButton
+                  fullWidth
+                  status="warning">Go To Demo Mode</button>
           <div class="google-btn" (click)="isSignUp ? registerWithGoogle() : signInWithGoogle()">
             <div class="google-icon-wrapper">
               <img class="google-icon-svg"

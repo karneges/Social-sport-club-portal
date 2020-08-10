@@ -1,6 +1,6 @@
 import { NbMenuItem } from '@nebular/theme';
 
-export const MENU_ITEMS: NbMenuItem[] = [
+export const MENU_ITEMS_AUTH: NbMenuItem[] = [
   {
     title: 'general',
     icon: 'home-outline',
@@ -17,7 +17,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'trending-up-outline',
     children: [
       {
-        title: 'My Training',
+        title: 'My Training Statistics',
         link: '/pages/training/my-training',
       },
       {
@@ -25,6 +25,15 @@ export const MENU_ITEMS: NbMenuItem[] = [
         link: '/pages/training/sport-services',
       },
     ]
+  },
+];
+export const MENU_ITEMS_UN_AUTH: NbMenuItem[] = [
+  {
+    title: 'general',
+    icon: 'home-outline',
+    link: '/pages/general',
+    home: true,
+    pathMatch: 'prefix'
   },
   {
     title: 'Auth',

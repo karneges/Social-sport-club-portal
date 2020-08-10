@@ -88,4 +88,7 @@ export class LoginComponent implements OnInit {
     ).subscribe()
   }
 
+  demoMode() {
+    this.store.dispatch(AuthActions.login({email:'admin@mail.ru', password:'123456'}))
+  }
 }

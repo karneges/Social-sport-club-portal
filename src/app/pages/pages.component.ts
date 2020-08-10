@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { MENU_ITEMS } from './pages-menu';
+import { MENU_ITEMS_AUTH, MENU_ITEMS_UN_AUTH } from './pages-menu';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { AuthActions } from './auth/auth.actions';
@@ -39,7 +39,7 @@ import { ErrorsNotificationService } from '../shared/notifications/errors/errors
 })
 export class PagesComponent implements OnInit {
   isUnAuth$: Observable<boolean>
-  menu = MENU_ITEMS;
+  menu = MENU_ITEMS_AUTH;
   isAuthPage: boolean
   isMyTrainingPage: boolean
   columnClass: string
@@ -65,6 +65,13 @@ export class PagesComponent implements OnInit {
       select(AuthSelectors.isUnAuthAccess),
       filter((r) => r !== undefined),
       delay(0),
+      tap((isUnAuth) => {
+        if (isUnAuth) {
+          this.menu = MENU_ITEMS_UN_AUTH
+        } else {
+          this.menu = MENU_ITEMS_AUTH
+        }
+      }),
       tap((isUnAuth) => this.columnClass = isUnAuth ? 'col-lg-12 col-xxxl-12' : 'col-lg-8 col-xxxl-9')
     )
     // resolve auth/unAuth actions
